@@ -1,0 +1,194 @@
+{
+  "ACTIONS": {
+    "CONFIRMATION": {
+      "NO": "Nein",
+      "YES": "Ja",
+      "NO.TOOLTIP": "Abbruch der Aktion",
+      "YES.TOOLTIP": "Fortfahren mit der Aktion"
+    },
+    "COPY": {
+      "LABEL": "Kopieren",
+      "APP": {
+        "HEADER": "App kopieren"
+      },
+      "PRODUCT": {
+        "HEADER": "Produkt kopieren"
+      }
+    },
+    "CREATE": {
+      "ROLE.TOOLTIPS.NAME": "Nach Rollenname suchen",
+      "LABEL": "Erstellen",
+      "USER.LABEL": "Benutzer",
+      "USER.TOOLTIP": "Benutzer Search",
+      "ROLES.LABEL": "Rollen",
+      "ROLES.TOOLTIP": "Rollen Search"
+    },
+    "DELETE": {
+      "LABEL": "Löschen"
+    },
+    "EDIT": {
+      "LABEL": "Bearbeiten"
+    },
+    "NAVIGATION": {
+      "CLOSE": "Schließen",
+      "CLOSE.TOOLTIP": "Dialog schließen",
+      "CLOSE_WITHOUT_SAVE": "Dialog ohne Speichern schließen",
+      "BACK": "Zurück",
+      "NEXT": "Weiter",
+      "NEXT.TOOLTIP": "Nächste Seite",
+      "BACK.TOOLTIP": "Vorherige Seite",
+      "DETAILS.TOOLTIP": "Anzeige Details",
+      "NEW.TOOLTIP": "Erstelle neuen Eintrag",
+      "LINKS": {
+        "GOTO.PRODUCT": "Produktdetails anzeigen"
+      }
+    },
+    "DATAVIEW": {
+      "FILTER": "Filter",
+      "FILTER_OF": "Filter für ",
+      "SORT_BY": "Sortiert nach",
+      "SORT_DIRECTION_ASC": "aufsteigend",
+      "SORT_DIRECTION_DESC": "absteigend",
+      "VIEW_MODE_GRID": "Kachelansicht",
+      "VIEW_MODE_LIST": "Listenansicht",
+      "VIEW_MODE_TABLE": "Tabellenansicht"
+    },
+    "SEARCH": {
+      "NOT_FOUND": "Keine Daten gefunden",
+      "APP": {
+        "NOT_EXISTS": "Eine App mit diesem Namen konnte nicht gefunden werden.",
+        "LOAD_ERROR": "App konnte nicht geladen werden",
+        "NOT_FOUND": "Das Produkt hat noch keine Apps",
+        "FILTER": {
+          "TOOLTIP": "App Typ",
+          "ALL": "Alle",
+          "MS": "MS",
+          "MFE": "MFE"
+        },
+        "QUICK_FILTER": {
+          "TOOLTIP": "Quickfilter für App Typ",
+          "ALL": "Alle",
+          "MS": "Microservices",
+          "MFE": "Microfrontends"
+        }
+      },
+      "PRODUCT": {
+        "NOT_EXISTS": "Ein Produkt mit diesem Namen konnte nicht gefunden werden.",
+        "LOAD_ERROR": "Produkt konnte nicht geladen werden",
+        "NOT_FOUND": "Produkt nicht gefunden"
+      }
+    },
+    "VIEW": {
+      "LABEL": "Ansehen",
+      "MFE.HEADER": "Microfrontend Details",
+      "MS.HEADER": "Microservice Details",
+      "PRODUCT": {
+        "HEADER": "Produkt bearbeiten"
+      }
+    },
+    "CANCEL": "Abbrechen",
+    "CHOOSE": "Auswählen",
+    "SAVE": "Speichern",
+    "UPLOAD": "Hochladen",
+    "TOOLTIPS": {
+      "CANCEL": "Aktion abbrechen ",
+      "SAVE": "Änderungen speichern"
+    }
+  },
+  "BREADCRUMBS": {
+    "APPS": "Apps",
+    "CREATE": "Neu",
+    "DETAIL": "Details",
+    "EDIT": "Ändern"
+  },
+  "DIALOG": {
+    "SEARCH.USER.HEADER": "Benutzer",
+    "SEARCH.USER.SUBHEADER": "Benutzer suchen",
+    "DETAIL.USER.SUBHEADER": "Benutzer Details",
+    "SEARCH.ROLE.HEADER": "Rolle",
+    "SEARCH.ROLE.SUBHEADER": "Rolle suchen",
+    "DETAIL.ROLE.SUBHEADER": "Rollendetails",
+    "SEARCH.USER.LABEL": "Benutzer",
+    "SEARCH.USER.TOOLTIP": "Benutzer suchen",
+    "SEARCH.ROLE.LABEL": "Rollen",
+    "SEARCH.ROLE.TOOLTIP": "Rollen suchen",
+    "TABS": {
+      "USER": "Benutzer",
+      "INTERN": "Intern",
+      "PROPERTIES": "Eigenschaften"
+    }
+  },
+  "USER": {
+    "ID": "ID",
+    "NAME": "Name",
+    "CRITERIA": "Suchkriterien",
+    "USERNAME": "Benutzername",
+    "LASTNAME": "Nachname",
+    "FIRSTNAME": "Vorname",
+    "VERSION": "Version",
+    "DESCRIPTION": "Beschreibung",
+    "DISPLAY_NAME": "Anzeigename",
+    "OPERATOR": "Erzeugt durch",
+    "OPERATOR.MANUAL": "Manuell",
+    "OPERATOR.DEPLOYMENT": "Deployment Operator",
+    "IMAGE_URL": "Externe Image URL",
+    "BASE_PATH": "Basispfad",
+    "ICON_NAME": "Iconname",
+    "CLASSIFICATIONS": "Klassifizierungen",
+    "WORKSPACES": "Verwendet in Workspaces",
+    "TOOLTIPS": {
+      "USERNAME": "Nach Benutzernamen suchen",
+      "LASTNAME": "Nach Nachnamem suchen",
+      "FIRSTNAME": "Nach Vornamen suchen",
+      "CRITERIA": "Nach Kriterien suchen"
+    }
+  },
+  "ROLE": {
+    "ID": "ID",
+    "NAME": "Name",
+    "VERSION": "Version",
+    "DESCRIPTION": "Beschreibung",
+    "DISPLAY_NAME": "Anzeigename",
+    "OPERATOR": "Erzeugt durch",
+    "OPERATOR.MANUAL": "Manuell",
+    "OPERATOR.DEPLOYMENT": "Deployment Operator",
+    "IMAGE_URL": "Externe Image URL",
+    "BASE_PATH": "Basispfad",
+    "ICON_NAME": "Iconname",
+    "CLASSIFICATIONS": "Klassifizierungen",
+    "WORKSPACES": "Verwendet in Workspaces",
+    "TOOLTIPS": {
+      "NAME": "Nach Rollenname suchen"
+    }
+  },
+  "EXCEPTIONS": {
+    "HTTP_STATUS_0": {
+      "PRODUCTS": "Unbekanntes Problem beim Abrufen von Produkte-Daten - Bitte versuchen sie es noch einmal.",
+      "APPS": "Unbekanntes Problem beim Abrufen von App-Daten - Bitte versuchen sie es noch einmal."
+    },
+    "HTTP_STATUS_403": {
+      "PRODUCTS": "Sie haben keine Rechte um Produkte zu sehen.",
+      "APPS": "Sie haben keine Rechte um Apps zu sehen."
+    },
+    "HTTP_STATUS_404": {
+      "PRODUCTS": "Es konnten keine Produkte gefunden werden.",
+      "APPS": "Es konnten keine Apps gefunden werden."
+    },
+    "HTTP_STATUS_500": {
+      "PRODUCTS": "Unbekanntes Server-Problem beim Abrufen von Produkt-Daten - Bitte versuchen sie es noch einmal.",
+      "APPS": "Unbekanntes Server-Problem beim Abrufen von App-Daten - Bitte versuchen sie es noch einmal."
+    }
+  },
+  "VALIDATION": {
+    "FORM_INVALID": "Die Daten sind nicht bereit zum Speichern.",
+    "ERRORS": {
+      "PARSE_ERROR": "Parserfehler: Die enthaltene Struktur entspricht nicht dem erwarteten Format.",
+      "INTERNAL_ERROR": "Interner Fehler",
+      "EMPTY_REQUIRED_FIELD": "Dieses Feld ist ein Pflichtfeld.",
+      "MAXIMUM_LENGTH": "Es sind nur {{chars}} Zeichen erlaubt.",
+      "MINIMUM_LENGTH": "Es sind mindestens {{chars}} Zeichen erforderlich.",
+      "PATTERN_ERROR": "Ihre Eingabe entspricht nicht dem benötigten Format.",
+      "FILETYPE_PATTERN_ERROR": "Ihre Datei entspricht nicht den erlaubten Formaten: .png, .jpg, .jpeg"
+    }
+  }
+}

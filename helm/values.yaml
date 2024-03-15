@@ -1,0 +1,44 @@
+app:
+  name: ui
+  image:
+    repository: 'onecx/onecx-iam-ui'
+  routing:
+    enabled: true
+    path: /mfe/iam/
+    
+  operator:
+    # Microfrontend
+    microfrontend:
+      enabled: true
+      spec:
+        exposedModule: "./OneCXIamModule"
+        description: "OneCX Iam UI"
+        note: "OneCX IAM UI module auto import via MF operator"
+    # Permission
+    permission:
+      enabled: true
+      spec:
+        permissions:
+          APP:
+            CREATE: Create app
+            DELETE: Delete app
+            EDIT: Edit app
+            SAVE: Update and save app
+            SEARCH: Search apps
+            VIEW: View app details
+          PRODUCT:
+            CREATE: Create iam
+            DELETE: Delete product
+            EDIT: Edit product
+            SAVE: Update and save product
+            SEARCH: Search products
+            VIEW: View product details
+    # Keycloak
+    keycloak:
+      client:
+        enabled: true
+        spec:
+          kcConfig:
+            clientId: "onecx-iam-ui"
+
+# PIPE Config
