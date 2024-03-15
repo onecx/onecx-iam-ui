@@ -92,28 +92,41 @@ export class UserSearchComponent implements OnInit {
    * DIALOG
    */
   private prepareDialogTranslations(): void {
-    this.translate.get(['USER.USERNAME', 'USER.LASTNAME', 'USER.FIRSTNAME']).subscribe((data) => {
-      this.dataViewControlsTranslations = {
-        sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
-        filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
-        filterInputTooltip:
-          data['ACTIONS.DATAVIEW.FILTER_OF'] +
-          data['USER.USERNAME'] +
-          ', ' +
-          data['USER.LASTNAME'] +
-          ', ' +
-          data['USER.FIRSTNAME'],
-        viewModeToggleTooltips: {
-          grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'],
-          list: data['ACTIONS.DATAVIEW.VIEW_MODE_LIST']
-        },
-        sortOrderTooltips: {
-          ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
-          descending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_DESC']
-        },
-        sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
-      }
-    })
+    this.translate
+      .get([
+        'USER.USERNAME',
+        'USER.LASTNAME',
+        'USER.FIRSTNAME',
+        'ACTIONS.DATAVIEW.SORT_BY',
+        'ACTIONS.DATAVIEW.FILTER',
+        'ACTIONS.DATAVIEW.FILTER_OF',
+        'ACTIONS.DATAVIEW.VIEW_MODE_GRID',
+        'ACTIONS.DATAVIEW.VIEW_MODE_LIST',
+        'ACTIONS.DATAVIEW.SORT_DIRECTION_ASC',
+        'ACTIONS.DATAVIEW.SORT_DIRECTION_DESC'
+      ])
+      .subscribe((data) => {
+        this.dataViewControlsTranslations = {
+          sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
+          filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
+          filterInputTooltip:
+            data['ACTIONS.DATAVIEW.FILTER_OF'] +
+            data['USER.USERNAME'] +
+            ', ' +
+            data['USER.LASTNAME'] +
+            ', ' +
+            data['USER.FIRSTNAME'],
+          viewModeToggleTooltips: {
+            grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'],
+            list: data['ACTIONS.DATAVIEW.VIEW_MODE_LIST']
+          },
+          sortOrderTooltips: {
+            ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
+            descending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_DESC']
+          },
+          sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
+        }
+      })
   }
 
   private prepareActionButtons(): void {

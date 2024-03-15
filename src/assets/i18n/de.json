@@ -103,15 +103,15 @@
   },
   "DIALOG": {
     "SEARCH.USER.HEADER": "Benutzer",
-    "SEARCH.USER.SUBHEADER": "Benutzer suchen",
+    "SEARCH.USER.SUBHEADER": "Benutzer im IAM suchen",
     "DETAIL.USER.SUBHEADER": "Benutzer Details",
     "SEARCH.ROLE.HEADER": "Rolle",
-    "SEARCH.ROLE.SUBHEADER": "Rolle suchen",
+    "SEARCH.ROLE.SUBHEADER": "Rolle im IAM suchen",
     "DETAIL.ROLE.SUBHEADER": "Rollendetails",
     "SEARCH.USER.LABEL": "Benutzer",
-    "SEARCH.USER.TOOLTIP": "Benutzer suchen",
+    "SEARCH.USER.TOOLTIP": "Benutzer ima IAM suchen",
     "SEARCH.ROLE.LABEL": "Rollen",
-    "SEARCH.ROLE.TOOLTIP": "Rollen suchen",
+    "SEARCH.ROLE.TOOLTIP": "Rollen im IAM suchen",
     "TABS": {
       "USER": "Benutzer",
       "INTERN": "Intern",
@@ -138,7 +138,7 @@
     "WORKSPACES": "Verwendet in Workspaces",
     "TOOLTIPS": {
       "USERNAME": "Nach Benutzernamen suchen",
-      "LASTNAME": "Nach Nachnamem suchen",
+      "LASTNAME": "Nach Nachnamen suchen",
       "FIRSTNAME": "Nach Vornamen suchen",
       "CRITERIA": "Nach Kriterien suchen"
     }
