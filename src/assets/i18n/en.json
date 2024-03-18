@@ -103,15 +103,15 @@
   },
   "DIALOG": {
     "SEARCH.USER.HEADER": "User",
-    "SEARCH.USER.SUBHEADER": "Search Users in IAM",
+    "SEARCH.USER.SUBHEADER": "Search Users in Identity and Access Management (IAM)",
     "DETAIL.USER.SUBHEADER": "User Details",
     "SEARCH.ROLE.HEADER": "Role",
-    "SEARCH.ROLE.SUBHEADER": "Search Role in IAM",
+    "SEARCH.ROLE.SUBHEADER": "Search Role in Identity and Access Management (IAM)",
     "DETAIL.ROLE.SUBHEADER": "Role Details",
     "SEARCH.USER.LABEL": "User",
-    "SEARCH.USER.TOOLTIP": "Search Users in IAM",
+    "SEARCH.USER.TOOLTIP": "Search Users in Identity and Access Management (IAM)",
     "SEARCH.ROLE.LABEL": "Roles",
-    "SEARCH.ROLE.TOOLTIP": "Search Roles in IAM",
+    "SEARCH.ROLE.TOOLTIP": "Search Roles in Identity and Access Management (IAM)",
     "TABS": {
       "USER": "User",
       "INTERN": "Intern",
@@ -140,7 +140,7 @@
       "USERNAME": "Seach by user name",
       "LASTNAME": "Seach by lastname",
       "FIRSTNAME": "Seach by firstname",
-      "CRITERIA": "Search by Criteria"
+      "CRITERIA": "Substring search in Criteria"
     }
   },
   "ROLE": {
@@ -158,25 +158,25 @@
     "CLASSIFICATIONS": "Classifications",
     "WORKSPACES": "Used in Workspaces",
     "TOOLTIPS": {
-      "NAME": "Search by role name"
+      "NAME": "Substring search by role name"
     }
   },
   "EXCEPTIONS": {
     "HTTP_STATUS_0": {
-      "PRODUCTS": "Unknown problem retrieving Product data - please try again.",
-      "APPS": "Unknown problem retrieving App data - please try again."
+      "USER": "Unknown problem retrieving Users data - please try again.",
+      "ROLE": "Unknown problem retrieving Role data - please try again."
     },
     "HTTP_STATUS_403": {
-      "PRODUCTS": "You have no permissions to see Products.",
-      "APPS": "You have no permissions to see Apps."
+      "USER": "You have no permissions to see Users.",
+      "ROLE": "You have no permissions to see Roles."
     },
     "HTTP_STATUS_404": {
-      "PRODUCTS": "No Products could be found.",
-      "APPS": "No Apps could be found."
+      "USER": "No Users could be found.",
+      "ROLE": "No Roles could be found."
     },
     "HTTP_STATUS_500": {
-      "PRODUCTS": "Unknown server problem retrieving Product data - please try again.",
-      "APPS": "Unknown server problem retrieving App data - please try again."
+      "USER": "Unknown server problem retrieving User data - please try again.",
+      "ROLE": "Unknown server problem retrieving Roles data - please try again."
     }
   },
   "VALIDATION": {

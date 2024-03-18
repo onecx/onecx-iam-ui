@@ -161,7 +161,7 @@ describe('UserSearchComponent', () => {
       next: (users) => {
         if (users.stream) {
           expect(users.stream.length).toBe(0)
-          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_403.PRODUCTS')
+          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_403.USER')
         }
         done()
       },
@@ -229,7 +229,7 @@ describe('UserSearchComponent', () => {
         firstAction.actionCallback()
         expect(component.onRoleSearch).toHaveBeenCalled()
         expect(actions[0].label).toBe('Roles')
-        expect(actions[0].title).toBe('Search Roles in IAM')
+        expect(actions[0].title).toBe('Search Roles in Identity and Access Management (IAM)')
         expect(actions[0].icon).toBe('pi pi-bars')
         expect(actions[0].show).toBe('always')
       })

@@ -136,6 +136,7 @@ export class RolesSearchComponent implements OnInit {
               label: data['ACTIONS.NAVIGATION.BACK'],
               title: data['ACTIONS.NAVIGATION.BACK.TOOLTIP'],
               actionCallback: () => this.onBack(),
+              permission: 'USER#SEARCH',
               icon: 'pi pi-arrow-left',
               show: 'always'
             }

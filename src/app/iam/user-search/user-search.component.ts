@@ -137,6 +137,7 @@ export class UserSearchComponent implements OnInit {
             label: data['DIALOG.SEARCH.ROLE.LABEL'],
             title: data['DIALOG.SEARCH.ROLE.TOOLTIP'],
             actionCallback: () => this.onRoleSearch(),
+            permission: 'ROLE#SEARCH',
             icon: 'pi pi-bars',
             show: 'always'
           }
