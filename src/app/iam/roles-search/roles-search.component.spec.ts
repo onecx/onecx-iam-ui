@@ -161,7 +161,7 @@ describe('RolesSearchComponent', () => {
       next: (roles) => {
         if (roles.stream) {
           expect(roles.stream.length).toBe(0)
-          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_403.PRODUCTS')
+          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_403.ROLE')
         }
         done()
       },
