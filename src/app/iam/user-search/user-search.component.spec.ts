@@ -3,11 +3,15 @@ import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { RouterTestingModule } from '@angular/router/testing'
 import { Router, ActivatedRoute } from '@angular/router'
-import { of } from 'rxjs'
+import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
-
-import { UserSearchComponent } from './user-search.component'
+import { FormControl, FormGroup } from '@angular/forms'
+import { UserSearchComponent, UserSearchCriteria } from './user-search.component'
 import { User, UserPageResult, UsersInternalAPIService } from 'src/app/shared/generated'
+
+const form = new FormGroup<UserSearchCriteria>({
+  criteria: new FormControl<string | null>(null)
+})
 
 describe('UserSearchComponent', () => {
   let component: UserSearchComponent
@@ -136,6 +140,33 @@ describe('UserSearchComponent', () => {
       },
       error: done.fail
     })
+
+    component.users$.subscribe({
+      next: (users) => {
+        expect(users.length).toBe(2)
+        expect(users[0].username).toBe('username1')
+      },
+      error: done.fail
+    })
+  })
+
+  it('should search user Error response', (done) => {
+    const err = { status: 403 }
+    component.formGroup.controls['criteria'].setValue('testcriteria')
+    apiUserServiceSpy.searchUsersByCriteria.and.returnValue(throwError(() => err))
+
+    component.searchUsers()
+
+    component.usersPageResult$.subscribe({
+      next: (users) => {
+        if (users.stream) {
+          expect(users.stream.length).toBe(0)
+          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_403.PRODUCTS')
+        }
+        done()
+      },
+      error: done.fail
+    })
   })
 
   it('should update filter and and sort Field', () => {
@@ -148,5 +179,60 @@ describe('UserSearchComponent', () => {
     component.onSortChange('field')
 
     expect(component.sortField).toBe('field')
+  })
+
+  it('should update viewMode onLayoutChange', () => {
+    component.onLayoutChange('EDIT')
+
+    expect(component.viewMode).toBe('EDIT')
+  })
+
+  it('should update filter and call dv.filter onFilterChange', () => {
+    const filter = 'testFilter'
+
+    component.onFilterChange(filter)
+
+    expect(component.filter).toBe(filter)
+  })
+
+  it('should update sortOrder based on asc boolean onSortDirChange', () => {
+    component.onSortDirChange(true)
+    expect(component.sortOrder).toBe(-1)
+
+    component.onSortDirChange(false)
+    expect(component.sortOrder).toBe(1)
+  })
+
+  it('should navigate back onRoleSeartcjh', () => {
+    component.onRoleSearch()
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['./roles'], { relativeTo: routeMock })
+  })
+
+  it('should reset roleSearchCriteriaGroup onSearchReset is called', () => {
+    component.formGroup = form
+    spyOn(form, 'reset').and.callThrough()
+
+    component.onSearchReset()
+
+    expect(component.formGroup.reset).toHaveBeenCalled()
+  })
+
+  it('should prepare action buttons with translated labels and tooltips', () => {
+    spyOn(component, 'onRoleSearch')
+
+    component.ngOnInit()
+
+    if (component.actions$) {
+      component.actions$.subscribe((actions) => {
+        const firstAction = actions[0]
+        firstAction.actionCallback()
+        expect(component.onRoleSearch).toHaveBeenCalled()
+        expect(actions[0].label).toBe('Roles')
+        expect(actions[0].title).toBe('Search Roles in IAM')
+        expect(actions[0].icon).toBe('pi pi-bars')
+        expect(actions[0].show).toBe('always')
+      })
+    }
   })
 })

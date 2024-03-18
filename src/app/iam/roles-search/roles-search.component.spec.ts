@@ -3,16 +3,20 @@ import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { RouterTestingModule } from '@angular/router/testing'
 import { Router, ActivatedRoute } from '@angular/router'
-import { of } from 'rxjs'
+import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
-
-import { RolesSearchComponent } from './roles-search.component'
+import { FormControl, FormGroup } from '@angular/forms'
+import { RolesSearchComponent, RolesSearchCriteria } from './roles-search.component'
 import { Role, RolesInternalAPIService, RolePageResult } from 'src/app/shared/generated'
+
+const form = new FormGroup<RolesSearchCriteria>({
+  name: new FormControl<string | null>(null)
+})
 
 describe('RolesSearchComponent', () => {
   let component: RolesSearchComponent
   let fixture: ComponentFixture<RolesSearchComponent>
-  let routerSpy = jasmine.createSpyObj('Router', ['navigate'])
+  let routerSpy = jasmine.createSpyObj('router', ['navigate'])
   let routeMock = { snapshot: { paramMap: new Map() } }
 
   const role: Role = {
@@ -136,6 +140,33 @@ describe('RolesSearchComponent', () => {
       },
       error: done.fail
     })
+
+    component.roles$.subscribe({
+      next: (roles) => {
+        expect(roles.length).toBe(2)
+        expect(roles[0].name).toBe('name1')
+      },
+      error: done.fail
+    })
+  })
+
+  it('should search roles Error response', (done) => {
+    const err = { status: 403 }
+    component.rolesSearchCriteriaGroup.controls['name'].setValue('testname')
+    apiRoleServiceSpy.searchRolesByCriteria.and.returnValue(throwError(() => err))
+
+    component.searchRoles()
+
+    component.rolesPageResult$.subscribe({
+      next: (roles) => {
+        if (roles.stream) {
+          expect(roles.stream.length).toBe(0)
+          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_403.PRODUCTS')
+        }
+        done()
+      },
+      error: done.fail
+    })
   })
 
   it('should update filter and and sort Field', () => {
@@ -148,5 +179,60 @@ describe('RolesSearchComponent', () => {
     component.onSortChange('field')
 
     expect(component.sortField).toBe('field')
+  })
+
+  it('should update viewMode onLayoutChange', () => {
+    component.onLayoutChange('EDIT')
+
+    expect(component.viewMode).toBe('EDIT')
+  })
+
+  it('should update filter and call dv.filter onFilterChange', () => {
+    const filter = 'testFilter'
+
+    component.onFilterChange(filter)
+
+    expect(component.filter).toBe(filter)
+  })
+
+  it('should update sortOrder based on asc boolean onSortDirChange', () => {
+    component.onSortDirChange(true)
+    expect(component.sortOrder).toBe(-1)
+
+    component.onSortDirChange(false)
+    expect(component.sortOrder).toBe(1)
+  })
+
+  it('should reset roleSearchCriteriaGroup onSearchReset is called', () => {
+    component.rolesSearchCriteriaGroup = form
+    spyOn(form, 'reset').and.callThrough()
+
+    component.onSearchReset()
+
+    expect(component.rolesSearchCriteriaGroup.reset).toHaveBeenCalled()
+  })
+
+  it('should navigate back onBack', () => {
+    component.onBack()
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['../'], { relativeTo: routeMock })
+  })
+
+  it('should prepare action buttons with translated labels and tooltips', () => {
+    spyOn(component, 'onBack')
+
+    component.ngOnInit()
+
+    if (component.actions$) {
+      component.actions$.subscribe((actions) => {
+        const firstAction = actions[0]
+        firstAction.actionCallback()
+        expect(component.onBack).toHaveBeenCalled()
+        expect(actions[0].label).toBe('Back')
+        expect(actions[0].title).toBe('Previous page')
+        expect(actions[0].icon).toBe('pi pi-arrow-left')
+        expect(actions[0].show).toBe('always')
+      })
+    }
   })
 })
