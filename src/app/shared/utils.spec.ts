@@ -1,12 +1,6 @@
 import { SelectItem } from 'primeng/api'
 
-import {
-  limitText,
-  dropDownSortItemsByLabel,
-  dropDownGetLabelByValue,
-  sortByLocale,
-  convertToUniqueStringArray
-} from './utils'
+import { limitText, dropDownSortItemsByLabel, dropDownGetLabelByValue, sortByLocale } from './utils'
 
 describe('utils', () => {
   describe('limitText', () => {
@@ -70,16 +64,6 @@ describe('utils', () => {
       const sortedStrings = strings.sort(sortByLocale)
 
       expect(sortedStrings[0]).toEqual('str1')
-    })
-  })
-
-  describe('convertToUniqueStringArray', () => {
-    it('should convert a comma-separated string to array with unique items', () => {
-      const s = 'c, b, a'
-
-      const sortedArray = convertToUniqueStringArray(s) ?? []
-
-      expect(sortedArray[0]).toEqual('a')
     })
   })
 })
