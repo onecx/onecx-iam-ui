@@ -1,0 +1,115 @@
+<ocx-portal-page permission="ROLE#SEARCH" helpArticleId="PAGE_ROLE_SEARCH">
+  <ocx-search-header
+    [header]="'DIALOG.SEARCH.ROLE.HEADER' | translate"
+    [subheader]="'DIALOG.SEARCH.ROLE.SUBHEADER' | translate"
+    (searched)="onSearch()"
+    (resetted)="onSearchReset()"
+    [manualBreadcrumbs]="false"
+    [actions]="(actions$ | async) ?? []"
+  >
+    <div id="roles_search_criteria" [formGroup]="rolesSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3">
+      <span class="p-float-label">
+        <input
+          id="roles_search_criteria_roles_name"
+          pInputText
+          type="text"
+          formControlName="name"
+          class="w-18rem"
+          [clear]="true"
+          [title]="'ROLE.TOOLTIPS.NAME' | translate"
+        />
+        <label for="roles_search_criteria_roles_name">{{ 'ROLE.NAME' | translate }}</label>
+      </span>
+    </div>
+  </ocx-search-header>
+
+  <ocx-page-content>
+    <div *ngIf="exceptionKey" id="roles_search_criteria_error" class="card px-3 align-items-center">
+      <p-message
+        id="roles_search_criteria_error_message"
+        severity="error"
+        styleClass="p-2"
+        [text]="exceptionKey | translate"
+      ></p-message>
+    </div>
+    <p-dataView
+      *ngIf="!exceptionKey"
+      id="roles_search_dataview"
+      [value]="(rolesPageResult$ | async)?.stream!.sort()"
+      [paginator]="true"
+      [alwaysShowPaginator]="false"
+      [rowsPerPageOptions]="[10, 20, 50]"
+      [rows]="viewMode === 'grid' ? 12 : 10"
+      [layout]="viewMode"
+      [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
+      filterBy="name"
+      [sortField]="sortField"
+      [sortOrder]="sortOrder"
+    >
+      <ng-template pTemplate="header">
+        <ocx-data-view-controls
+          id="roles_search_dataview_controls"
+          [enableFiltering]="true"
+          [enableSorting]="true"
+          [supportedViews]="['grid', 'list']"
+          [initialViewMode]="viewMode"
+          [sortingOptions]="[
+            { label: 'ROLE.NAME' | translate, value: 'name' },
+            { label: 'ROLE.DESCRIPTION' | translate, value: 'description' }
+          ]"
+          [defaultSortOption]="sortField"
+          [defaultSortDirection]="sortOrder === 1"
+          (dataViewChange)="onLayoutChange($event)"
+          (filterChange)="onFilterChange($event)"
+          [filterColumns]="['ROLE.NAME' | translate, 'ROLE.DESCRIPTION' | translate]"
+          (sortChange)="onSortChange($event)"
+          (sortDirectionChange)="onSortDirChange($event)"
+          [translations]="dataViewControlsTranslations"
+        >
+        </ocx-data-view-controls
+      ></ng-template>
+      <ng-template let-role let-idx="rowIndex" pTemplate="listItem">
+        <div
+          [id]="'roles_search_data_list_' + idx"
+          class="col-12 grid grid-nogutter align-items-center row-gap-1 listview-row p-1 hover:bg-gray-200 cursor-pointer"
+        >
+          <div class="col-12 md:col-5 lg:col-5 xl:col-6">
+            <div class="flex flex-column justify-content-center gap-1 text-center md:text-left">
+              <div
+                [id]="'roles_search_data_list_' + idx + '_roles_display_name'"
+                class="font-bold"
+                [title]="'ROLE.DISPLAY_NAME' | translate"
+              >
+                {{ limitText(role.name, 100) }}
+              </div>
+              <div [id]="'roles_search_data_list_' + idx + '_roles_name'" [title]="'ROLE.DESCRIPTION' | translate">
+                {{ limitText(role.description, 100) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template let-role let-idx="rowIndex" pTemplate="gridItem">
+        <div [id]="'roles_search_data_grid_' + idx" class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3">
+          <div class="card p-2 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
+            <div class="h-3rem flex flex-column justify-content-between gap-1 lg:gap-2 mt-0 mb-1 text-center">
+              <div
+                [id]="'roles_search_data_grid_' + idx + '_roles_name'"
+                class="font-bold text-xl"
+                [title]="('ROLE.NAME' | translate) + ': ' + limitText(role.name, 100)"
+              >
+                {{ limitText(role.name, 20) }}
+              </div>
+              <div
+                [id]="'roles_search_data_grid_' + idx + '_roles_name'"
+                [title]="('ROLE.NAME' | translate) + ': ' + role.description"
+              >
+                {{ limitText(role.description, 25) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-dataView>
+  </ocx-page-content>
+</ocx-portal-page>

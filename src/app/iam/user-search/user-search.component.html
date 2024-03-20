@@ -1,0 +1,135 @@
+<ocx-portal-page permission="USER#SEARCH" helpArticleId="PAGE_USER_SEARCH">
+  <ocx-search-header
+    [header]="'DIALOG.SEARCH.USER.HEADER' | translate"
+    [subheader]="'DIALOG.SEARCH.USER.SUBHEADER' | translate"
+    (searched)="onSearch()"
+    (resetted)="onSearchReset()"
+    [manualBreadcrumbs]="false"
+    [actions]="(actions$ | async) ?? []"
+  >
+    <div id="user_search_criteria" [formGroup]="formGroup" class="flex flex-wrap gap-4 row-gap-3">
+      <span class="p-float-label">
+        <input
+          id="user_search_criteria"
+          pInputText
+          type="text"
+          formControlName="criteria"
+          class="w-18rem"
+          [clear]="true"
+          [title]="'USER.TOOLTIPS.CRITERIA' | translate"
+        />
+        <label for="user_search_criteria_">{{ 'USER.CRITERIA' | translate }}</label>
+      </span>
+    </div>
+  </ocx-search-header>
+
+  <ocx-page-content>
+    <div *ngIf="exceptionKey" id="user_search_criteria_error" class="card px-3 align-items-center">
+      <p-message
+        id="user_search_criteria_error_message"
+        severity="error"
+        styleClass="p-2"
+        [text]="exceptionKey | translate"
+      ></p-message>
+    </div>
+    <p-dataView
+      *ngIf="!exceptionKey"
+      id="user_search_dataview"
+      [value]="(usersPageResult$ | async)?.stream!.sort()"
+      [paginator]="true"
+      [alwaysShowPaginator]="false"
+      [rowsPerPageOptions]="[10, 20, 50]"
+      [rows]="viewMode === 'grid' ? 12 : 10"
+      [layout]="viewMode"
+      [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
+      filterBy="username,lastName,firstName"
+      [sortField]="sortField"
+      [sortOrder]="sortOrder"
+    >
+      <ng-template pTemplate="header">
+        <ocx-data-view-controls
+          id="user_search_dataview_controls"
+          [enableFiltering]="true"
+          [enableSorting]="true"
+          [supportedViews]="['grid', 'list']"
+          [initialViewMode]="viewMode"
+          [sortingOptions]="[
+            { label: 'USER.USERNAME' | translate, value: 'username' },
+            { label: 'USER.LASTNAME' | translate, value: 'lastName' },
+            { label: 'USER.FIRSTNAME' | translate, value: 'firstName' }
+          ]"
+          [defaultSortOption]="sortField"
+          [defaultSortDirection]="sortOrder === 1"
+          (dataViewChange)="onLayoutChange($event)"
+          (filterChange)="onFilterChange($event)"
+          [filterColumns]="['USER.USERNAME' | translate, 'USER.FIRSTNAME' | translate, 'USER.LASTNAME' | translate]"
+          (sortChange)="onSortChange($event)"
+          (sortDirectionChange)="onSortDirChange($event)"
+          [translations]="dataViewControlsTranslations"
+        >
+        </ocx-data-view-controls
+      ></ng-template>
+      <ng-template let-user let-idx="rowIndex" pTemplate="listItem">
+        <div
+          [id]="'user_search_data_list_' + idx"
+          class="col-12 grid grid-nogutter align-items-center row-gap-1 listview-row p-1 hover:bg-gray-200 cursor-pointer"
+        >
+          <div class="col-12 md:col-5 lg:col-5 xl:col-6">
+            <div class="flex flex-column justify-content-center gap-1 text-center md:text-left">
+              <div
+                [id]="'user_search_data_list_' + idx + '_user_user_name'"
+                class="font-bold"
+                [title]="'USER.USERNAME' | translate"
+              >
+                {{ limitText(user.username, 100) }}
+              </div>
+              <div
+                [id]="'user_search_data_grid_' + idx + '_last_name'"
+                [title]="
+                  ('USER.LASTNAME' | translate) +
+                  ': ' +
+                  user.lastName +
+                  ' ' +
+                  ('USER.FIRSTNAME' | translate) +
+                  ': ' +
+                  user.firstName
+                "
+              >
+                {{ limitText(user.firstName, 25) }} {{ limitText(user.lastName, 25) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template let-user let-idx="rowIndex" pTemplate="gridItem">
+        <div [id]="'user_search_data_grid_' + idx" class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3">
+          <div class="card p-2 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
+            <div class="h-3rem flex flex-column justify-content-between gap-1 lg:gap-2 mt-0 mb-1 text-center">
+              <div
+                [id]="'user_search_data_grid_' + idx + '_user_display_name'"
+                class="font-bold text-xl"
+                [title]="('USER.USERNAME' | translate) + ': ' + limitText(user.userName, 100)"
+              >
+                {{ limitText(user.username, 20) }}
+              </div>
+              <div
+                [id]="'user_search_data_grid_' + idx + '_last_name'"
+                [title]="
+                  ('USER.LASTNAME' | translate) +
+                  ': ' +
+                  user.lastName +
+                  ' ' +
+                  ('USER.FIRSTNAME' | translate) +
+                  ': ' +
+                  user.firstName
+                "
+              >
+                {{ limitText(user.firstName, 25) }} {{ limitText(user.lastName, 25) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-dataView>
+  </ocx-page-content>
+</ocx-portal-page>
