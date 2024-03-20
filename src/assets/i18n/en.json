@@ -7,21 +7,10 @@
       "YES.TOOLTIP": "Proceed with the action"
     },
     "COPY": {
-      "LABEL": "Copy",
-      "APP": {
-        "HEADER": "Copy App"
-      },
-      "PRODUCT": {
-        "HEADER": "Copy Product"
-      }
+      "LABEL": "Copy"
     },
     "CREATE": {
-      "ROLE.TOOLTIPS.NAME": "Search by role name",
-      "LABEL": "Create",
-      "USER.LABEL": "Users",
-      "USER.TOOLTIP": "Users Search",
-      "ROLES.LABEL": "Roles",
-      "ROLES.TOOLTIP": "Roles Search"
+      "LABEL": "Create"
     },
     "DELETE": {
       "LABEL": "Delete"
@@ -54,37 +43,10 @@
       "VIEW_MODE_TABLE": "Table view"
     },
     "SEARCH": {
-      "NOT_FOUND": "No data found",
-      "USER": {
-        "NOT_EXISTS": "An App with this name could not be found.",
-        "LOAD_ERROR": "Failed to load App",
-        "NOT_FOUND": "The product does not have an App",
-        "FILTER": {
-          "TOOLTIP": "App Type",
-          "ALL": "All",
-          "MS": "MS",
-          "MFE": "MFE"
-        },
-        "QUICK_FILTER": {
-          "TOOLTIP": "Quick Filter for App type",
-          "ALL": "All",
-          "MS": "Microservices",
-          "MFE": "Microfrontends"
-        }
-      },
-      "PRODUCT": {
-        "NOT_EXISTS": "A Product with this name could not be found.",
-        "LOAD_ERROR": "Failed to load Product",
-        "NOT_FOUND": "Product was not found"
-      }
+      "NOT_FOUND": "No data found"
     },
     "VIEW": {
-      "LABEL": "View",
-      "MFE.HEADER": "Microfrontend Details",
-      "MS.HEADER": "Microservice Details",
-      "PRODUCT": {
-        "HEADER": "Edit Product"
-      }
+      "LABEL": "View"
     },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
@@ -96,26 +58,23 @@
     }
   },
   "BREADCRUMBS": {
-    "APPS": "Apps",
-    "CREATE": "New",
-    "DETAIL": "Details",
-    "EDIT": "Edit"
+    "ROLES": "Roles",
+    "USERS": "Users"
   },
   "DIALOG": {
-    "SEARCH.USER.HEADER": "User",
-    "SEARCH.USER.SUBHEADER": "Search Users in Identity and Access Management (IAM)",
-    "DETAIL.USER.SUBHEADER": "User Details",
-    "SEARCH.ROLE.HEADER": "Role",
-    "SEARCH.ROLE.SUBHEADER": "Search Role in Identity and Access Management (IAM)",
-    "DETAIL.ROLE.SUBHEADER": "Role Details",
-    "SEARCH.USER.LABEL": "User",
-    "SEARCH.USER.TOOLTIP": "Search Users in Identity and Access Management (IAM)",
-    "SEARCH.ROLE.LABEL": "Roles",
-    "SEARCH.ROLE.TOOLTIP": "Search Roles in Identity and Access Management (IAM)",
-    "TABS": {
-      "USER": "User",
-      "INTERN": "Intern",
-      "PROPERTIES": "Eigenschaften"
+    "SEARCH": {
+      "ROLE.HEADER": "IAM Roles",
+      "ROLE.SUBHEADER": "Search Roles in Identity Access Management (IAM)",
+      "ROLE.LABEL": "Roles",
+      "ROLE.TOOLTIP": "Search Roles in Identity Access Management (IAM)",
+      "USER.HEADER": "IAM Users",
+      "USER.SUBHEADER": "Search Users in Identity Access Management (IAM)",
+      "USER.LABEL": "User",
+      "USER.TOOLTIP": "Search Users in Identity Access Management (IAM)"
+    },
+    "DETAIL": {
+      "ROLE.SUBHEADER": "Role Details",
+      "USER.SUBHEADER": "User Details"
     }
   },
   "USER": {
@@ -127,20 +86,11 @@
     "FIRSTNAME": "First name",
     "VERSION": "Version",
     "DESCRIPTION": "Description",
-    "DISPLAY_NAME": "Display Name",
-    "OPERATOR": "Created by",
-    "OPERATOR.MANUAL": "Manual",
-    "OPERATOR.DEPLOYMENT": "Deployment Operator",
-    "IMAGE_URL": "Extern Image URL",
-    "BASE_PATH": "Base Path",
-    "ICON_NAME": "Icon Name",
-    "CLASSIFICATIONS": "Classifications",
-    "WORKSPACES": "Used in Workspaces",
     "TOOLTIPS": {
-      "USERNAME": "Seach by user name",
-      "LASTNAME": "Seach by lastname",
-      "FIRSTNAME": "Seach by firstname",
-      "CRITERIA": "Substring search in Criteria"
+      "USERNAME": "Search by user name",
+      "LASTNAME": "Search by last name",
+      "FIRSTNAME": "Search by first name",
+      "CRITERIA": "Substring search by names"
     }
   },
   "ROLE": {
@@ -148,15 +98,6 @@
     "NAME": "Name",
     "VERSION": "Version",
     "DESCRIPTION": "Description",
-    "DISPLAY_NAME": "Display Name",
-    "OPERATOR": "Created by",
-    "OPERATOR.MANUAL": "Manual",
-    "OPERATOR.DEPLOYMENT": "Deployment Operator",
-    "IMAGE_URL": "Extern Image URL",
-    "BASE_PATH": "Base Path",
-    "ICON_NAME": "Icon Name",
-    "CLASSIFICATIONS": "Classifications",
-    "WORKSPACES": "Used in Workspaces",
     "TOOLTIPS": {
       "NAME": "Substring search by role name"
     }
@@ -177,6 +118,10 @@
     "HTTP_STATUS_500": {
       "USER": "Unknown server problem retrieving User data - please try again.",
       "ROLE": "Unknown server problem retrieving Roles data - please try again."
+    },
+    "HTTP_STATUS_504": {
+      "USER": "Timeout retrieving User data - please try again.",
+      "ROLE": "Timeout retrieving Role data - please try again."
     }
   },
   "VALIDATION": {

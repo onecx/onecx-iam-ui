@@ -2,10 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
-
 import { finalize, map, of, Observable, Subject, catchError } from 'rxjs'
-import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 import { DataView } from 'primeng/dataview'
+
+import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 
 import { limitText } from 'src/app/shared/utils'
 import { User, UserPageResult, UsersInternalAPIService } from 'src/app/shared/generated'
@@ -74,7 +74,7 @@ export class UserSearchComponent implements OnInit {
       })
       .pipe(
         catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.USER'
           console.error('searchUsers():', err)
           return of({} as UserPageResult)
         }),
