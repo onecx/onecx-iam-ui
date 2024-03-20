@@ -204,7 +204,7 @@ describe('UserSearchComponent', () => {
   })
 
   it('should navigate back onRoleSeartcjh', () => {
-    component.onRoleSearch()
+    component.onGoToRoleSearch()
 
     expect(routerSpy.navigate).toHaveBeenCalledWith(['./roles'], { relativeTo: routeMock })
   })
@@ -219,7 +219,7 @@ describe('UserSearchComponent', () => {
   })
 
   it('should prepare action buttons with translated labels and tooltips', () => {
-    spyOn(component, 'onRoleSearch')
+    spyOn(component, 'onGoToRoleSearch')
 
     component.ngOnInit()
 
@@ -227,9 +227,9 @@ describe('UserSearchComponent', () => {
       component.actions$.subscribe((actions) => {
         const firstAction = actions[0]
         firstAction.actionCallback()
-        expect(component.onRoleSearch).toHaveBeenCalled()
+        expect(component.onGoToRoleSearch).toHaveBeenCalled()
         expect(actions[0].label).toBe('Roles')
-        expect(actions[0].title).toBe('Search Roles in Identity and Access Management (IAM)')
+        expect(actions[0].title).toBe('Search Roles in Identity Access Management (IAM)')
         expect(actions[0].icon).toBe('pi pi-bars')
         expect(actions[0].show).toBe('always')
       })

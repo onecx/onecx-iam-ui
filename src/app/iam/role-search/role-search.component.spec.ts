@@ -6,16 +6,17 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { FormControl, FormGroup } from '@angular/forms'
-import { RolesSearchComponent, RolesSearchCriteria } from './roles-search.component'
-import { Role, RolesInternalAPIService, RolePageResult } from 'src/app/shared/generated'
 
-const form = new FormGroup<RolesSearchCriteria>({
+import { Role, RolesInternalAPIService, RolePageResult } from 'src/app/shared/generated'
+import { RoleSearchComponent, RoleSearchCriteria } from './role-search.component'
+
+const form = new FormGroup<RoleSearchCriteria>({
   name: new FormControl<string | null>(null)
 })
 
-describe('RolesSearchComponent', () => {
-  let component: RolesSearchComponent
-  let fixture: ComponentFixture<RolesSearchComponent>
+describe('RoleSearchComponent', () => {
+  let component: RoleSearchComponent
+  let fixture: ComponentFixture<RoleSearchComponent>
   let routerSpy = jasmine.createSpyObj('router', ['navigate'])
   let routeMock = { snapshot: { paramMap: new Map() } }
 
@@ -52,7 +53,7 @@ describe('RolesSearchComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [RolesSearchComponent],
+      declarations: [RoleSearchComponent],
       imports: [
         RouterTestingModule,
         HttpClientTestingModule,
@@ -71,7 +72,7 @@ describe('RolesSearchComponent', () => {
   }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RolesSearchComponent)
+    fixture = TestBed.createComponent(RoleSearchComponent)
     component = fixture.componentInstance
     // fixture.detectChanges()
     fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
@@ -95,7 +96,7 @@ describe('RolesSearchComponent', () => {
   })
 
   it('should search roles result stream list equals 1', (done) => {
-    component.rolesSearchCriteriaGroup.controls['name'].setValue('testname')
+    component.roleSearchCriteriaGroup.controls['name'].setValue('testname')
     apiRoleServiceSpy.searchRolesByCriteria.and.returnValue(of(rolePageResult as RolePageResult))
 
     component.searchRoles()
@@ -111,7 +112,7 @@ describe('RolesSearchComponent', () => {
   })
 
   it('should search roles result empty', (done) => {
-    component.rolesSearchCriteriaGroup.controls['name'].setValue('testname')
+    component.roleSearchCriteriaGroup.controls['name'].setValue('testname')
     apiRoleServiceSpy.searchRolesByCriteria.and.returnValue(of({} as RolePageResult))
 
     component.searchRoles()
@@ -126,7 +127,7 @@ describe('RolesSearchComponent', () => {
   })
 
   it('should search roles result stream list equals 2', (done) => {
-    component.rolesSearchCriteriaGroup.controls['name'].setValue('testname')
+    component.roleSearchCriteriaGroup.controls['name'].setValue('testname')
     apiRoleServiceSpy.searchRolesByCriteria.and.returnValue(of(rolePageResult2 as RolePageResult))
 
     component.searchRoles()
@@ -152,7 +153,7 @@ describe('RolesSearchComponent', () => {
 
   it('should search roles Error response', (done) => {
     const err = { status: 403 }
-    component.rolesSearchCriteriaGroup.controls['name'].setValue('testname')
+    component.roleSearchCriteriaGroup.controls['name'].setValue('testname')
     apiRoleServiceSpy.searchRolesByCriteria.and.returnValue(throwError(() => err))
 
     component.searchRoles()
@@ -204,12 +205,12 @@ describe('RolesSearchComponent', () => {
   })
 
   it('should reset roleSearchCriteriaGroup onSearchReset is called', () => {
-    component.rolesSearchCriteriaGroup = form
+    component.roleSearchCriteriaGroup = form
     spyOn(form, 'reset').and.callThrough()
 
     component.onSearchReset()
 
-    expect(component.rolesSearchCriteriaGroup.reset).toHaveBeenCalled()
+    expect(component.roleSearchCriteriaGroup.reset).toHaveBeenCalled()
   })
 
   it('should navigate back onBack', () => {

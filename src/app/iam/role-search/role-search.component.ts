@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
-
 import { finalize, map, of, Observable, catchError } from 'rxjs'
 import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 import { DataView } from 'primeng/dataview'
@@ -10,16 +9,16 @@ import { DataView } from 'primeng/dataview'
 import { limitText } from 'src/app/shared/utils'
 import { Role, RolePageResult, RolesInternalAPIService } from 'src/app/shared/generated'
 
-export interface RolesSearchCriteria {
+export interface RoleSearchCriteria {
   name: FormControl<string | null>
 }
 
 @Component({
-  selector: 'app-roles-search',
-  templateUrl: './roles-search.component.html',
-  styleUrls: ['./roles-search.component.scss']
+  selector: 'app-role-search',
+  templateUrl: './role-search.component.html',
+  styleUrls: ['./role-search.component.scss']
 })
-export class RolesSearchComponent implements OnInit {
+export class RoleSearchComponent implements OnInit {
   public exceptionKey: string | undefined
   public loading = true
 
@@ -37,7 +36,7 @@ export class RolesSearchComponent implements OnInit {
   public hasCreatePermission = false
   public hasEditPermission = false
   public hasDeletePermission = false
-  rolesSearchCriteriaGroup: FormGroup<RolesSearchCriteria>
+  roleSearchCriteriaGroup: FormGroup<RoleSearchCriteria>
   public limitText = limitText
 
   ngOnInit(): void {
@@ -55,15 +54,15 @@ export class RolesSearchComponent implements OnInit {
     private rolesService: RolesInternalAPIService,
     private translate: TranslateService
   ) {
-    this.rolesSearchCriteriaGroup = new FormGroup<RolesSearchCriteria>({
+    this.roleSearchCriteriaGroup = new FormGroup<RoleSearchCriteria>({
       name: new FormControl<string | null>(null)
     })
   }
 
   public searchRoles() {
     let name: string = ''
-    if (this.rolesSearchCriteriaGroup.controls['name'] && this.rolesSearchCriteriaGroup.controls['name'].value != '') {
-      name = this.rolesSearchCriteriaGroup.controls['name'].value!
+    if (this.roleSearchCriteriaGroup.controls['name'] && this.roleSearchCriteriaGroup.controls['name'].value != '') {
+      name = this.roleSearchCriteriaGroup.controls['name'].value!
     }
     this.rolesPageResult$ = this.rolesService
       .searchRolesByCriteria({
@@ -73,7 +72,7 @@ export class RolesSearchComponent implements OnInit {
       })
       .pipe(
         catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.ROLE'
           console.error('searchRoles():', err)
           return of({} as RolePageResult)
         }),
@@ -90,35 +89,14 @@ export class RolesSearchComponent implements OnInit {
   /**
    * DIALOG
    */
-  private prepareDialogTranslations(): void {
-    this.translate
-      .get([
-        'ROLE.NAME',
-        'ROLE.DESCRIPTION',
-        'ACTIONS.DATAVIEW.SORT_BY',
-        'ACTIONS.DATAVIEW.FILTER',
-        'ACTIONS.DATAVIEW.FILTER_OF',
-        'ACTIONS.DATAVIEW.VIEW_MODE_GRID',
-        'ACTIONS.DATAVIEW.VIEW_MODE_LIST',
-        'ACTIONS.DATAVIEW.SORT_DIRECTION_ASC',
-        'ACTIONS.DATAVIEW.SORT_DIRECTION_DESC'
-      ])
-      .subscribe((data) => {
+  private prepareDialogTranslations() {
+    this.translate.get(['ROLE.NAME', 'ROLE.DESCRIPTION', 'ACTIONS.DATAVIEW.FILTER_OF']).pipe(
+      map((data) => {
         this.dataViewControlsTranslations = {
-          sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
-          filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
-          filterInputTooltip: data['ACTIONS.DATAVIEW.FILTER_OF'] + data['ROLE.NAME'] + ', ' + data['ROLE.DESCRIPTION'],
-          viewModeToggleTooltips: {
-            grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'],
-            list: data['ACTIONS.DATAVIEW.VIEW_MODE_LIST']
-          },
-          sortOrderTooltips: {
-            ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
-            descending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_DESC']
-          },
-          sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
+          filterInputTooltip: data['ACTIONS.DATAVIEW.FILTER_OF'] + data['ROLE.NAME'] + ', ' + data['ROLE.DESCRIPTION']
         }
       })
+    )
   }
 
   private prepareActionButtons(): void {
@@ -145,10 +123,6 @@ export class RolesSearchComponent implements OnInit {
       )
   }
 
-  onBack() {
-    this.router.navigate(['../'], { relativeTo: this.route })
-  }
-
   /**
    * UI EVENTS
    */
@@ -166,11 +140,13 @@ export class RolesSearchComponent implements OnInit {
     this.sortOrder = asc ? -1 : 1
   }
 
+  onBack() {
+    this.router.navigate(['../'], { relativeTo: this.route })
+  }
   public onSearch() {
     this.searchRoles()
   }
-
   public onSearchReset() {
-    this.rolesSearchCriteriaGroup.reset()
+    this.roleSearchCriteriaGroup.reset()
   }
 }

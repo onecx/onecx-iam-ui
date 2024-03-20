@@ -2,10 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
-
 import { finalize, map, of, Observable, Subject, catchError } from 'rxjs'
-import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 import { DataView } from 'primeng/dataview'
+
+import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 
 import { limitText } from 'src/app/shared/utils'
 import { User, UserPageResult, UsersInternalAPIService } from 'src/app/shared/generated'
@@ -34,11 +34,6 @@ export class UserSearchComponent implements OnInit {
   public filter: string | undefined
   public sortField = 'username'
   public sortOrder = 1
-  public displayDetailDialog = false
-  public displayDeleteDialog = false
-  public hasCreatePermission = false
-  public hasEditPermission = false
-  public hasDeletePermission = false
   public formGroup: FormGroup<UserSearchCriteria>
   public limitText = limitText
 
@@ -74,7 +69,7 @@ export class UserSearchComponent implements OnInit {
       })
       .pipe(
         catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.USER'
           console.error('searchUsers():', err)
           return of({} as UserPageResult)
         }),
@@ -91,42 +86,20 @@ export class UserSearchComponent implements OnInit {
   /**
    * DIALOG
    */
-  private prepareDialogTranslations(): void {
-    this.translate
-      .get([
-        'USER.USERNAME',
-        'USER.LASTNAME',
-        'USER.FIRSTNAME',
-        'ACTIONS.DATAVIEW.SORT_BY',
-        'ACTIONS.DATAVIEW.FILTER',
-        'ACTIONS.DATAVIEW.FILTER_OF',
-        'ACTIONS.DATAVIEW.VIEW_MODE_GRID',
-        'ACTIONS.DATAVIEW.VIEW_MODE_LIST',
-        'ACTIONS.DATAVIEW.SORT_DIRECTION_ASC',
-        'ACTIONS.DATAVIEW.SORT_DIRECTION_DESC'
-      ])
-      .subscribe((data) => {
+  private prepareDialogTranslations() {
+    this.translate.get(['USER.USERNAME', 'USER.LASTNAME', 'USER.FIRSTNAME', 'ACTIONS.DATAVIEW.FILTER_OF']).pipe(
+      map((data) => {
         this.dataViewControlsTranslations = {
-          sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
-          filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
           filterInputTooltip:
             data['ACTIONS.DATAVIEW.FILTER_OF'] +
             data['USER.USERNAME'] +
             ', ' +
             data['USER.LASTNAME'] +
             ', ' +
-            data['USER.FIRSTNAME'],
-          viewModeToggleTooltips: {
-            grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'],
-            list: data['ACTIONS.DATAVIEW.VIEW_MODE_LIST']
-          },
-          sortOrderTooltips: {
-            ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
-            descending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_DESC']
-          },
-          sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
+            data['USER.FIRSTNAME']
         }
       })
+    )
   }
 
   private prepareActionButtons(): void {
@@ -136,7 +109,7 @@ export class UserSearchComponent implements OnInit {
           {
             label: data['DIALOG.SEARCH.ROLE.LABEL'],
             title: data['DIALOG.SEARCH.ROLE.TOOLTIP'],
-            actionCallback: () => this.onRoleSearch(),
+            actionCallback: () => this.onGoToRoleSearch(),
             permission: 'ROLE#SEARCH',
             icon: 'pi pi-bars',
             show: 'always'
@@ -163,10 +136,9 @@ export class UserSearchComponent implements OnInit {
     this.sortOrder = asc ? -1 : 1
   }
 
-  onRoleSearch() {
+  public onGoToRoleSearch() {
     this.router.navigate(['./roles'], { relativeTo: this.route })
   }
-
   public onSearch() {
     this.searchUsers()
   }

@@ -1,4 +1,4 @@
-<ocx-portal-page permission="ROLE#SEARCH" helpArticleId="PAGE_ROLE_SEARCH">
+<ocx-portal-page permission="ROLE#SEARCH" helpArticleId="PAGE_IAM_ROLE_SEARCH">
   <ocx-search-header
     [header]="'DIALOG.SEARCH.ROLE.HEADER' | translate"
     [subheader]="'DIALOG.SEARCH.ROLE.SUBHEADER' | translate"
@@ -7,7 +7,7 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div id="roles_search_criteria" [formGroup]="rolesSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3">
+    <div id="roles_search_criteria" [formGroup]="roleSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3">
       <span class="p-float-label">
         <input
           id="roles_search_criteria_roles_name"
@@ -36,12 +36,12 @@
       *ngIf="!exceptionKey"
       id="roles_search_dataview"
       [value]="(rolesPageResult$ | async)?.stream!.sort()"
-      [paginator]="true"
-      [alwaysShowPaginator]="false"
-      [rowsPerPageOptions]="[10, 20, 50]"
-      [rows]="viewMode === 'grid' ? 12 : 10"
       [layout]="viewMode"
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
+      [paginator]="true"
+      [alwaysShowPaginator]="true"
+      [rowsPerPageOptions]="[20, 40, 80]"
+      [rows]="viewMode === 'grid' ? 20 : 10"
       filterBy="name"
       [sortField]="sortField"
       [sortOrder]="sortOrder"
@@ -69,40 +69,43 @@
         </ocx-data-view-controls
       ></ng-template>
       <ng-template let-role let-idx="rowIndex" pTemplate="listItem">
-        <div
-          [id]="'roles_search_data_list_' + idx"
-          class="col-12 grid grid-nogutter align-items-center row-gap-1 listview-row p-1 hover:bg-gray-200 cursor-pointer"
-        >
-          <div class="col-12 md:col-5 lg:col-5 xl:col-6">
-            <div class="flex flex-column justify-content-center gap-1 text-center md:text-left">
-              <div
-                [id]="'roles_search_data_list_' + idx + '_roles_display_name'"
-                class="font-bold"
-                [title]="'ROLE.DISPLAY_NAME' | translate"
-              >
-                {{ limitText(role.name, 100) }}
-              </div>
-              <div [id]="'roles_search_data_list_' + idx + '_roles_name'" [title]="'ROLE.DESCRIPTION' | translate">
-                {{ limitText(role.description, 100) }}
-              </div>
+        <div class="col-12 md:col-5 lg:col-5 xl:col-6 px-3 flex flex-column justify-content-center">
+          <div
+            [id]="'roles_search_data_list_' + idx"
+            class="flex flex-column justify-content-center gap-1 text-center md:text-left"
+          >
+            <div
+              [id]="'roles_search_data_list_' + idx + '_roles_display_name'"
+              class="font-bold"
+              [title]="('ROLE.NAME' | translate) + ': ' + limitText(role.name, 100)"
+            >
+              {{ limitText(role.name, 100) }}
+            </div>
+            <div
+              [id]="'roles_search_data_list_' + idx + '_roles_name'"
+              class="text-sm"
+              [title]="'ROLE.DESCRIPTION' | translate"
+            >
+              {{ limitText(role.description, 100) }}
             </div>
           </div>
         </div>
       </ng-template>
       <ng-template let-role let-idx="rowIndex" pTemplate="gridItem">
         <div [id]="'roles_search_data_grid_' + idx" class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3">
-          <div class="card p-2 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
-            <div class="h-3rem flex flex-column justify-content-between gap-1 lg:gap-2 mt-0 mb-1 text-center">
+          <div class="card p-2 flex flex-column justify-content-center">
+            <div class="h-2rem flex flex-column justify-content-between gap-1 mb-1 text-center">
               <div
-                [id]="'roles_search_data_grid_' + idx + '_roles_name'"
-                class="font-bold text-xl"
+                [id]="'roles_search_data_grid_' + idx + '_role_name'"
+                class="font-bold text-md"
                 [title]="('ROLE.NAME' | translate) + ': ' + limitText(role.name, 100)"
               >
                 {{ limitText(role.name, 20) }}
               </div>
               <div
-                [id]="'roles_search_data_grid_' + idx + '_roles_name'"
-                [title]="('ROLE.NAME' | translate) + ': ' + role.description"
+                [id]="'roles_search_data_grid_' + idx + '_description'"
+                class="text-sm"
+                [title]="('ROLE.DESCRIPTION' | translate) + ': ' + role.description"
               >
                 {{ limitText(role.description, 25) }}
               </div>

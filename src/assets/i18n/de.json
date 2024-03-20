@@ -7,21 +7,10 @@
       "YES.TOOLTIP": "Fortfahren mit der Aktion"
     },
     "COPY": {
-      "LABEL": "Kopieren",
-      "APP": {
-        "HEADER": "App kopieren"
-      },
-      "PRODUCT": {
-        "HEADER": "Produkt kopieren"
-      }
+      "LABEL": "Kopieren"
     },
     "CREATE": {
-      "ROLE.TOOLTIPS.NAME": "Nach Rollenname suchen",
-      "LABEL": "Erstellen",
-      "USER.LABEL": "Benutzer",
-      "USER.TOOLTIP": "Benutzer Search",
-      "ROLES.LABEL": "Rollen",
-      "ROLES.TOOLTIP": "Rollen Search"
+      "LABEL": "Erstellen"
     },
     "DELETE": {
       "LABEL": "Löschen"
@@ -54,37 +43,10 @@
       "VIEW_MODE_TABLE": "Tabellenansicht"
     },
     "SEARCH": {
-      "NOT_FOUND": "Keine Daten gefunden",
-      "APP": {
-        "NOT_EXISTS": "Eine App mit diesem Namen konnte nicht gefunden werden.",
-        "LOAD_ERROR": "App konnte nicht geladen werden",
-        "NOT_FOUND": "Das Produkt hat noch keine Apps",
-        "FILTER": {
-          "TOOLTIP": "App Typ",
-          "ALL": "Alle",
-          "MS": "MS",
-          "MFE": "MFE"
-        },
-        "QUICK_FILTER": {
-          "TOOLTIP": "Quickfilter für App Typ",
-          "ALL": "Alle",
-          "MS": "Microservices",
-          "MFE": "Microfrontends"
-        }
-      },
-      "PRODUCT": {
-        "NOT_EXISTS": "Ein Produkt mit diesem Namen konnte nicht gefunden werden.",
-        "LOAD_ERROR": "Produkt konnte nicht geladen werden",
-        "NOT_FOUND": "Produkt nicht gefunden"
-      }
+      "NOT_FOUND": "Keine Daten gefunden"
     },
     "VIEW": {
-      "LABEL": "Ansehen",
-      "MFE.HEADER": "Microfrontend Details",
-      "MS.HEADER": "Microservice Details",
-      "PRODUCT": {
-        "HEADER": "Produkt bearbeiten"
-      }
+      "LABEL": "Ansehen"
     },
     "CANCEL": "Abbrechen",
     "CHOOSE": "Auswählen",
@@ -96,26 +58,23 @@
     }
   },
   "BREADCRUMBS": {
-    "APPS": "Apps",
-    "CREATE": "Neu",
-    "DETAIL": "Details",
-    "EDIT": "Ändern"
+    "ROLES": "Rollen",
+    "USERS": "Benutzer"
   },
   "DIALOG": {
-    "SEARCH.USER.HEADER": "Benutzer",
-    "SEARCH.USER.SUBHEADER": "Benutzer im Identity und Access Management (IAM) suchen",
-    "DETAIL.USER.SUBHEADER": "Benutzer Details",
-    "SEARCH.ROLE.HEADER": "Rolle",
-    "SEARCH.ROLE.SUBHEADER": "Rolle im Identity und Access Management (IAM) suchen",
-    "DETAIL.ROLE.SUBHEADER": "Rollendetails",
-    "SEARCH.USER.LABEL": "Benutzer",
-    "SEARCH.USER.TOOLTIP": "Benutzer ima Identity und Access Management (IAM) suchen",
-    "SEARCH.ROLE.LABEL": "Rollen",
-    "SEARCH.ROLE.TOOLTIP": "Rollen im Identity und Access Management (IAM) suchen",
-    "TABS": {
-      "USER": "Benutzer",
-      "INTERN": "Intern",
-      "PROPERTIES": "Eigenschaften"
+    "SEARCH": {
+      "ROLE.HEADER": "IAM Rollen",
+      "ROLE.SUBHEADER": "Rollen im Identity Access Management (IAM) suchen",
+      "ROLE.LABEL": "Rollen",
+      "ROLE.TOOLTIP": "Rollen im Identity Access Management (IAM) suchen",
+      "USER.HEADER": "IAM Benutzer",
+      "USER.SUBHEADER": "Benutzer im Identity Access Management (IAM) suchen",
+      "USER.LABEL": "Benutzer",
+      "USER.TOOLTIP": "Benutzer im Identity Access Management (IAM) suchen"
+    },
+    "DETAIL": {
+      "ROLE.SUBHEADER": "Rollendetails",
+      "USER.SUBHEADER": "Benutzer Details"
     }
   },
   "USER": {
@@ -127,20 +86,11 @@
     "FIRSTNAME": "Vorname",
     "VERSION": "Version",
     "DESCRIPTION": "Beschreibung",
-    "DISPLAY_NAME": "Anzeigename",
-    "OPERATOR": "Erzeugt durch",
-    "OPERATOR.MANUAL": "Manuell",
-    "OPERATOR.DEPLOYMENT": "Deployment Operator",
-    "IMAGE_URL": "Externe Image URL",
-    "BASE_PATH": "Basispfad",
-    "ICON_NAME": "Iconname",
-    "CLASSIFICATIONS": "Klassifizierungen",
-    "WORKSPACES": "Verwendet in Workspaces",
     "TOOLTIPS": {
       "USERNAME": "Nach Benutzernamen suchen",
       "LASTNAME": "Nach Nachnamen suchen",
       "FIRSTNAME": "Nach Vornamen suchen",
-      "CRITERIA": "Suche nach Teilstring in Kriterien"
+      "CRITERIA": "Suche nach Teilstrings in Namensfeldern"
     }
   },
   "ROLE": {
@@ -148,17 +98,8 @@
     "NAME": "Name",
     "VERSION": "Version",
     "DESCRIPTION": "Beschreibung",
-    "DISPLAY_NAME": "Anzeigename",
-    "OPERATOR": "Erzeugt durch",
-    "OPERATOR.MANUAL": "Manuell",
-    "OPERATOR.DEPLOYMENT": "Deployment Operator",
-    "IMAGE_URL": "Externe Image URL",
-    "BASE_PATH": "Basispfad",
-    "ICON_NAME": "Iconname",
-    "CLASSIFICATIONS": "Klassifizierungen",
-    "WORKSPACES": "Verwendet in Workspaces",
     "TOOLTIPS": {
-      "NAME": "Suche nach Teilstring in Rollenname"
+      "NAME": "Suche nach Teilstrings im Rollenname"
     }
   },
   "EXCEPTIONS": {
@@ -177,6 +118,10 @@
     "HTTP_STATUS_500": {
       "USER": "Unbekanntes Server-Problem beim Abrufen von Benutzer-Daten - Bitte versuchen sie es noch einmal.",
       "ROLE": "Unbekanntes Server-Problem beim Abrufen von Rollen-Daten - Bitte versuchen sie es noch einmal."
+    },
+    "HTTP_STATUS_504": {
+      "USER": "Timeout beim Abrufen von Benutzer-Daten - Bitte versuchen sie es noch einmal.",
+      "ROLE": "Timeout beim Abrufen von Rollen-Daten - Bitte versuchen sie es noch einmal."
     }
   },
   "VALIDATION": {
