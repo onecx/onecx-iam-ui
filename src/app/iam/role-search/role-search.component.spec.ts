@@ -53,7 +53,7 @@ describe('RoleSearchComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [RolesSearchComponent],
+      declarations: [RoleSearchComponent],
       imports: [
         RouterTestingModule,
         HttpClientTestingModule,
@@ -72,7 +72,7 @@ describe('RoleSearchComponent', () => {
   }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RolesSearchComponent)
+    fixture = TestBed.createComponent(RoleSearchComponent)
     component = fixture.componentInstance
     // fixture.detectChanges()
     fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
@@ -96,7 +96,7 @@ describe('RoleSearchComponent', () => {
   })
 
   it('should search roles result stream list equals 1', (done) => {
-    component.rolesSearchCriteriaGroup.controls['name'].setValue('testname')
+    component.roleSearchCriteriaGroup.controls['name'].setValue('testname')
     apiRoleServiceSpy.searchRolesByCriteria.and.returnValue(of(rolePageResult as RolePageResult))
 
     component.searchRoles()
@@ -112,7 +112,7 @@ describe('RoleSearchComponent', () => {
   })
 
   it('should search roles result empty', (done) => {
-    component.rolesSearchCriteriaGroup.controls['name'].setValue('testname')
+    component.roleSearchCriteriaGroup.controls['name'].setValue('testname')
     apiRoleServiceSpy.searchRolesByCriteria.and.returnValue(of({} as RolePageResult))
 
     component.searchRoles()
@@ -127,7 +127,7 @@ describe('RoleSearchComponent', () => {
   })
 
   it('should search roles result stream list equals 2', (done) => {
-    component.rolesSearchCriteriaGroup.controls['name'].setValue('testname')
+    component.roleSearchCriteriaGroup.controls['name'].setValue('testname')
     apiRoleServiceSpy.searchRolesByCriteria.and.returnValue(of(rolePageResult2 as RolePageResult))
 
     component.searchRoles()
@@ -153,7 +153,7 @@ describe('RoleSearchComponent', () => {
 
   it('should search roles Error response', (done) => {
     const err = { status: 403 }
-    component.rolesSearchCriteriaGroup.controls['name'].setValue('testname')
+    component.roleSearchCriteriaGroup.controls['name'].setValue('testname')
     apiRoleServiceSpy.searchRolesByCriteria.and.returnValue(throwError(() => err))
 
     component.searchRoles()
@@ -205,12 +205,12 @@ describe('RoleSearchComponent', () => {
   })
 
   it('should reset roleSearchCriteriaGroup onSearchReset is called', () => {
-    component.rolesSearchCriteriaGroup = form
+    component.roleSearchCriteriaGroup = form
     spyOn(form, 'reset').and.callThrough()
 
     component.onSearchReset()
 
-    expect(component.rolesSearchCriteriaGroup.reset).toHaveBeenCalled()
+    expect(component.roleSearchCriteriaGroup.reset).toHaveBeenCalled()
   })
 
   it('should navigate back onBack', () => {

@@ -136,7 +136,7 @@ export class UserSearchComponent implements OnInit {
     this.sortOrder = asc ? -1 : 1
   }
 
-  onGoToRoleSearch() {
+  public onGoToRoleSearch() {
     this.router.navigate(['./roles'], { relativeTo: this.route })
   }
   public onSearch() {
