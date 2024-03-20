@@ -102,7 +102,7 @@
 @mixin dataview-zebra-rows {
   :host ::ng-deep {
     .p-dataview-content .p-grid > div {
-      min-height: 60px;
+      min-height: 50px;
       &.listview-row {
         &:nth-child(odd) {
           background-color: #f8f9fa;

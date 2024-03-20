@@ -11,7 +11,7 @@ import { SharedModule } from 'src/app/shared/shared.module'
 import { LabelResolver } from 'src/app/shared/label.resolver'
 
 import { UserSearchComponent } from './user-search/user-search.component'
-import { RolesSearchComponent } from './roles-search/roles-search.component'
+import { RoleSearchComponent } from './role-search/role-search.component'
 
 const routes: Routes = [
   {
@@ -28,7 +28,7 @@ const routes: Routes = [
   },
   {
     path: 'roles',
-    component: RolesSearchComponent,
+    component: RoleSearchComponent,
     pathMatch: 'full',
     data: {
       breadcrumb: 'BREADCRUMBS.ROLES',
@@ -41,7 +41,7 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [UserSearchComponent, RolesSearchComponent],
+  declarations: [UserSearchComponent, RoleSearchComponent],
   imports: [
     CommonModule,
     ConfirmDialogModule,

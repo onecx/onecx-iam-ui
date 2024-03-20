@@ -73,8 +73,8 @@
       "USER.TOOLTIP": "Benutzer im Identity Access Management (IAM) suchen"
     },
     "DETAIL": {
-      "DETAIL.ROLE.SUBHEADER": "Rollendetails",
-      "DETAIL.USER.SUBHEADER": "Benutzer Details"
+      "ROLE.SUBHEADER": "Rollendetails",
+      "USER.SUBHEADER": "Benutzer Details"
     }
   },
   "USER": {

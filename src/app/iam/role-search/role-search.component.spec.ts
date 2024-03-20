@@ -6,16 +6,17 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { FormControl, FormGroup } from '@angular/forms'
-import { RolesSearchComponent, RolesSearchCriteria } from './roles-search.component'
-import { Role, RolesInternalAPIService, RolePageResult } from 'src/app/shared/generated'
 
-const form = new FormGroup<RolesSearchCriteria>({
+import { Role, RolesInternalAPIService, RolePageResult } from 'src/app/shared/generated'
+import { RoleSearchComponent, RoleSearchCriteria } from './role-search.component'
+
+const form = new FormGroup<RoleSearchCriteria>({
   name: new FormControl<string | null>(null)
 })
 
-describe('RolesSearchComponent', () => {
-  let component: RolesSearchComponent
-  let fixture: ComponentFixture<RolesSearchComponent>
+describe('RoleSearchComponent', () => {
+  let component: RoleSearchComponent
+  let fixture: ComponentFixture<RoleSearchComponent>
   let routerSpy = jasmine.createSpyObj('router', ['navigate'])
   let routeMock = { snapshot: { paramMap: new Map() } }
 
