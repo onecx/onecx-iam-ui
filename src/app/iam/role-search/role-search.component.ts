@@ -90,12 +90,19 @@ export class RoleSearchComponent implements OnInit {
    * DIALOG
    */
   private prepareDialogTranslations() {
-    this.translate.get(['ROLE.NAME', 'ROLE.DESCRIPTION', 'ACTIONS.DATAVIEW.FILTER_OF']).subscribe(
-      (data) => {
-        this.dataViewControlsTranslations = {
-          filterInputTooltip: data['ACTIONS.DATAVIEW.FILTER_OF'] + data['ROLE.NAME'] + ', ' + data['ROLE.DESCRIPTION']
-        }
-      })
+    this.translate
+      .get(['ROLE.NAME', 'ROLE.DESCRIPTION', 'ACTIONS.DATAVIEW.FILTER_OF', 'ACTIONS.DATAVIEW.SORT_BY'])
+      .pipe(
+        map((data) => {
+          this.dataViewControlsTranslations = {
+            filterInputTooltip:
+              data['ACTIONS.DATAVIEW.FILTER_OF'] + data['ROLE.NAME'] + ', ' + data['ROLE.DESCRIPTION'],
+            sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY'],
+            sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY']
+          }
+        })
+      )
+      .subscribe()
   }
 
   private prepareActionButtons(): void {
