@@ -58,7 +58,7 @@ export class UserSearchComponent implements OnInit {
   }
 
   public searchUsers() {
-    let queryString: string | undefined = this.formGroup.controls['criteria']
+    let queryString: string | undefined = this.formGroup.controls['criteria'].value
       ? this.formGroup.controls['criteria'].value!
       : undefined
     this.usersPageResult$ = this.userService
@@ -87,8 +87,9 @@ export class UserSearchComponent implements OnInit {
    * DIALOG
    */
   private prepareDialogTranslations() {
-    this.translate.get(['USER.USERNAME', 'USER.LASTNAME', 'USER.FIRSTNAME', 'ACTIONS.DATAVIEW.FILTER_OF']).pipe(
-      map((data) => {
+    this.translate
+      .get(['USER.USERNAME', 'USER.LASTNAME', 'USER.FIRSTNAME', 'ACTIONS.DATAVIEW.FILTER_OF'])
+      .subscribe((data) => {
         this.dataViewControlsTranslations = {
           filterInputTooltip:
             data['ACTIONS.DATAVIEW.FILTER_OF'] +
@@ -99,7 +100,6 @@ export class UserSearchComponent implements OnInit {
             data['USER.FIRSTNAME']
         }
       })
-    )
   }
 
   private prepareActionButtons(): void {
