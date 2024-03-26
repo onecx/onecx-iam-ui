@@ -58,7 +58,7 @@ export class UserSearchComponent implements OnInit {
   }
 
   public searchUsers() {
-    let queryString: string | undefined = this.formGroup.controls['criteria']
+    let queryString: string | undefined = this.formGroup.controls['criteria'].value
       ? this.formGroup.controls['criteria'].value!
       : undefined
     this.usersPageResult$ = this.userService
@@ -87,19 +87,30 @@ export class UserSearchComponent implements OnInit {
    * DIALOG
    */
   private prepareDialogTranslations() {
-    this.translate.get(['USER.USERNAME', 'USER.LASTNAME', 'USER.FIRSTNAME', 'ACTIONS.DATAVIEW.FILTER_OF']).pipe(
-      map((data) => {
-        this.dataViewControlsTranslations = {
-          filterInputTooltip:
-            data['ACTIONS.DATAVIEW.FILTER_OF'] +
-            data['USER.USERNAME'] +
-            ', ' +
-            data['USER.LASTNAME'] +
-            ', ' +
-            data['USER.FIRSTNAME']
-        }
-      })
-    )
+    this.translate
+      .get([
+        'USER.USERNAME',
+        'USER.LASTNAME',
+        'USER.FIRSTNAME',
+        'ACTIONS.DATAVIEW.FILTER_OF',
+        'ACTIONS.DATAVIEW.SORT_BY'
+      ])
+      .pipe(
+        map((data) => {
+          this.dataViewControlsTranslations = {
+            filterInputTooltip:
+              data['ACTIONS.DATAVIEW.FILTER_OF'] +
+              data['USER.USERNAME'] +
+              ', ' +
+              data['USER.LASTNAME'] +
+              ', ' +
+              data['USER.FIRSTNAME'],
+            sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY'],
+            sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY']
+          }
+        })
+      )
+      .subscribe()
   }
 
   private prepareActionButtons(): void {
