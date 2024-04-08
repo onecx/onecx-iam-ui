@@ -9,7 +9,7 @@ COPY dist/onecx-iam-ui/ $DIR_HTML
 #ENV CONFIG_ENV_LIST BFF_URL,APP_BASE_HREF
 
 # Application environments default values
-ENV BFF_URL http://onecx-iam-kc-bff:8080/
+ENV BFF_URL http://onecx-iam-bff:8080/
 ENV APP_BASE_HREF /
 
 RUN chmod 775 -R "$DIR_HTML"/assets
