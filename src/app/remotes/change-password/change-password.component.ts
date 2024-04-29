@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpClientModule } from '@angular/common/http'
 import { Component, OnInit } from '@angular/core'
 import { AbstractControl } from '@angular/forms'
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
@@ -25,7 +25,14 @@ import { SharedModule } from 'src/app/shared/shared.module'
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.scss'],
   standalone: true,
-  imports: [AngularRemoteComponentsModule, CommonModule, PortalCoreModule, TranslateModule, SharedModule],
+  imports: [
+    AngularRemoteComponentsModule,
+    CommonModule,
+    HttpClientModule,
+    PortalCoreModule,
+    TranslateModule,
+    SharedModule
+  ],
   providers: [
     {
       provide: BASE_URL,
@@ -41,7 +48,7 @@ import { SharedModule } from 'src/app/shared/shared.module'
     })
   ]
 })
-export class ChangePasswordComponent implements OnInit, ocxRemoteComponent {
+export class OneCXChangePasswordComponent implements OnInit, ocxRemoteComponent {
   // public passwordChangeForm!: UntypedFormGroup
   // public helpArticleId = 'PAGE_SELF_REGISTRATION_PASSWORD_CHANGE'
   // public translatedData: any
