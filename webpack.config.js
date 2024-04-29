@@ -5,7 +5,8 @@ const config = withModuleFederationPlugin({
   name: 'onecx-iam-ui',
   filename: 'remoteEntry.js',
   exposes: {
-    './OneCXIamModule': 'src/app/onecx-iam-remote.module.ts'
+    './OneCXIamModule': 'src/app/onecx-iam-remote.module.ts',
+    './OneCXChangePasswordComponent': 'src/app/remotes/change-password/change-password.component.ts'
   },
   shared: share({
     '@angular/core': { singleton: true, requiredVersion: 'auto' },

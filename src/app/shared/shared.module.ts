@@ -26,7 +26,8 @@ import {
   AppStateService,
   ConfigurationService,
   PortalDialogService,
-  PortalApiConfiguration
+  PortalApiConfiguration,
+  PortalCoreModule
 } from '@onecx/portal-integration-angular'
 
 import { Configuration } from 'src/app/shared/generated'
@@ -40,6 +41,7 @@ export function apiConfigProvider(configService: ConfigurationService, appStateS
 @NgModule({
   declarations: [],
   imports: [
+    PortalCoreModule.forMicroFrontend(),
     AutoCompleteModule,
     CommonModule,
     ConfirmDialogModule,
