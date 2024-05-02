@@ -10,10 +10,12 @@ app:
     # Microfrontend
     microfrontend:
       enabled: true
-      spec:
-        exposedModule: "./OneCXIamModule"
-        description: "OneCX IAM UI"
-        note: "OneCX IAM UI module auto import via MF operator"
+      specs:
+        main:
+          exposedModule: "./OneCXIamModule"
+          description: "OneCX IAM UI"
+          note: "OneCX IAM UI module auto import via MF operator"
+          type: MODULE
     # Permission
     permission:
       enabled: true
