@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common'
 import { HttpClient, HttpClientModule } from '@angular/common/http'
-import { Component, OnInit } from '@angular/core'
-import { AbstractControl } from '@angular/forms'
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
+import { Component, Inject } from '@angular/core'
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
 import {
   AngularRemoteComponentsModule,
   BASE_URL,
@@ -11,29 +10,43 @@ import {
   provideTranslateServiceForRoot
 } from '@onecx/angular-remote-components'
 import {
+  DialogState,
   PortalCoreModule,
+  PortalDialogService,
   PortalMessageService,
-  createRemoteComponentTranslateLoader
+  UserService,
+  createRemoteComponentTranslateLoader,
+  providePortalDialogService
 } from '@onecx/portal-integration-angular'
-import { ReplaySubject, of } from 'rxjs'
+import { Observable, ReplaySubject, mergeMap, of } from 'rxjs'
+import { RippleModule } from 'primeng/ripple'
+import { TooltipModule } from 'primeng/tooltip'
+import { PrimeIcons } from 'primeng/api'
 import { SharedModule } from 'src/app/shared/shared.module'
+import { ChangePasswordDialogComponent } from './change-password-dialog/change-password-dialog.component'
 // import { IAMAPIService, ResetPasswordRequestParams, UserResetPasswordRequest } from 'src/app/shared/generated'
 // import { UserProfileService } from '../user-profile.service'
 
 @Component({
-  selector: 'app-change-password',
+  selector: 'app-ocx-change-password',
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.scss'],
   standalone: true,
   imports: [
-    AngularRemoteComponentsModule,
     CommonModule,
     HttpClientModule,
-    PortalCoreModule,
+    RippleModule,
+    TooltipModule,
+    ChangePasswordDialogComponent,
     TranslateModule,
-    SharedModule
+    SharedModule,
+    PortalCoreModule,
+    AngularRemoteComponentsModule
   ],
   providers: [
+    // api
+    PortalMessageService,
+    providePortalDialogService(),
     {
       provide: BASE_URL,
       useValue: new ReplaySubject<string>(1)
@@ -48,65 +61,77 @@ import { SharedModule } from 'src/app/shared/shared.module'
     })
   ]
 })
-export class OneCXChangePasswordComponent implements OnInit, ocxRemoteComponent {
-  // public passwordChangeForm!: UntypedFormGroup
-  // public helpArticleId = 'PAGE_SELF_REGISTRATION_PASSWORD_CHANGE'
-  // public translatedData: any
+export class OneCXChangePasswordComponent implements ocxRemoteComponent {
+  // permissions: string[] = []
+  permissions: string[] = ['PROFILE_PASSWORD#EDIT']
 
   constructor(
-    // private readonly fb: UntypedFormBuilder,
+    @Inject(BASE_URL) private baseUrl: ReplaySubject<string>,
     // private readonly userProfileService: UserProfileService,
     // private readonly iamService: IAMAPIService,
-    private msgService: PortalMessageService
-  ) {}
-
-  public ngOnInit(): void {
-    console.log('a')
-    // this.buildForm()
+    private userService: UserService,
+    private portalDialogService: PortalDialogService,
+    private msgService: PortalMessageService,
+    private translateService: TranslateService
+  ) {
+    this.userService.lang$.subscribe((lang) => this.translateService.use(lang))
   }
 
-  ocxInitRemoteComponent(config: RemoteComponentConfig): void {}
+  ocxInitRemoteComponent(config: RemoteComponentConfig): void {
+    this.baseUrl.next(config.baseUrl)
+    // this.permissions = config.permissions
+    // this.helpDataService.configuration = new Configuration({ //   basePath: Location.joinWithSlash(config.baseUrl, environment.apiPrefix) // })
+  }
 
-  public onSubmit(): void {
-    // const userResetPasswordRequest: UserResetPasswordRequest = {
-    //   password: this.passwordChangeForm.get('password')?.value
-    // }
-    // let resetPasswordRequestParams: ResetPasswordRequestParams = {
-    //   userResetPasswordRequest: userResetPasswordRequest
-    // }
-    // IAM HTTP service call
-    of(true).subscribe(
-      () => {
-        this.msgService.success({ summaryKey: 'CHANGE_PASSWORD.PASSWORD_CHANGED_SUCCESSFULLY' })
+  private openChangePasswordEditorDialog(): Observable<DialogState<string>> {
+    return this.portalDialogService.openDialog<string>(
+      'CHANGE_PASSWORD.DIALOG.TITLE',
+      {
+        type: ChangePasswordDialogComponent,
+        inputs: {}
       },
-      () => {
-        this.msgService.error({ summaryKey: 'CHANGE_PASSWORD.PASSWORD_CHANGE_ERROR' })
+      {
+        key: 'CHANGE_PASSWORD.DIALOG.CHANGE_BUTTON'
+      },
+      {
+        key: 'CHANGE_PASSWORD.DIALOG.CANCEL'
       }
     )
   }
 
-  // private buildForm(): void {
-  //   this.passwordChangeForm = this.fb.group(
-  //     {
-  //       password: ['', Validators.required],
-  //       repeatPassword: ['', Validators.required]
-  //     },
-  //     {
-  //       validator: this.matchPasswords('password', 'repeatPassword')
-  //     }
-  //   )
-  // }
+  private openChangePasswordConfirmationDialog() {
+    return this.portalDialogService.openDialog(
+      'CHANGE_PASSWORD.CONFIRM_DIALOG.TITLE',
+      {
+        message: 'CHANGE_PASSWORD.CONFIRM_DIALOG.MESSAGE',
+        icon: PrimeIcons.QUESTION
+      },
+      'CHANGE_PASSWORD.CONFIRM_DIALOG.YES',
+      'CHANGE_PASSWORD.CONFIRM_DIALOG.NO'
+    )
+  }
 
-  public matchPasswords(firstField: string, secondField: string): (control: AbstractControl) => void {
-    return (control: AbstractControl): void => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      if (control.get(firstField)!.value === control.get(secondField)!.value) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        control.get(secondField)!.setErrors(null)
-      } else {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        control.get(secondField)!.setErrors({ notEqual: true })
-      }
-    }
+  public editPassword(event: any) {
+    return this.openChangePasswordEditorDialog()
+      .pipe(
+        mergeMap((dialogState) => {
+          if (dialogState.button === 'primary') {
+            return this.openChangePasswordConfirmationDialog().pipe(
+              mergeMap((confirmationState) => {
+                if (confirmationState.button === 'primary') return of(dialogState.result)
+                return of('')
+              })
+            )
+          }
+          return of('')
+        })
+      )
+      .subscribe((password) => {
+        if (password) {
+          console.log('handle password change')
+          // display success message on success
+          // display error message on error
+        }
+      })
   }
 }
