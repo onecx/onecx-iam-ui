@@ -111,7 +111,7 @@ export class OneCXChangePasswordComponent implements ocxRemoteComponent {
     return this.openChangePasswordEditorDialog()
       .pipe(
         mergeMap((dialogState) => {
-          if (dialogState.button === 'primary') {
+          if (dialogState?.button === 'primary') {
             return this.openChangePasswordConfirmationDialog().pipe(
               mergeMap((confirmationState) => {
                 if (confirmationState.button === 'primary') return of(dialogState.result)
