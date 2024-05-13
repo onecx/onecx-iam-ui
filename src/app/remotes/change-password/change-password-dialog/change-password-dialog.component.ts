@@ -23,7 +23,7 @@ export class ChangePasswordDialogComponent
   implements DialogPrimaryButtonDisabled, DialogResult<string>, DialogButtonClicked
 {
   public formGroup!: FormGroup
-  dialogResult!: string
+  dialogResult: string = ''
   @Output() primaryButtonEnabled: EventEmitter<boolean> = new EventEmitter()
 
   constructor(private fb: FormBuilder) {

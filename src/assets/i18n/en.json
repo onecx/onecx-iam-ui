@@ -155,6 +155,8 @@
       "MESSAGE": "Are you sure you want to change your password?",
       "YES": "Yes, change password",
       "NO": "No"
-    }
+    },
+    "PASSWORD_CHANGE_ERROR": "An error has occurred, the password has not been changed",
+    "PASSWORD_CHANGED_SUCCESSFULLY": "Password changed successfully"
   }
 }

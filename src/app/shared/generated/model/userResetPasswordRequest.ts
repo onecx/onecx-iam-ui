@@ -11,8 +11,7 @@
  */
 
 
-export interface ProblemDetailParam { 
-    key?: string;
-    value?: string;
+export interface UserResetPasswordRequest { 
+    password: string;
 }
 

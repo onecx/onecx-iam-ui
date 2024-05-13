@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common'
+import { CommonModule, Location } from '@angular/common'
 import { HttpClient, HttpClientModule } from '@angular/common/http'
 import { Component, Inject } from '@angular/core'
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
@@ -18,14 +18,13 @@ import {
   createRemoteComponentTranslateLoader,
   providePortalDialogService
 } from '@onecx/portal-integration-angular'
-import { Observable, ReplaySubject, mergeMap, of } from 'rxjs'
+import { Observable, ReplaySubject, catchError, mergeMap, of } from 'rxjs'
 import { RippleModule } from 'primeng/ripple'
 import { TooltipModule } from 'primeng/tooltip'
-import { PrimeIcons } from 'primeng/api'
 import { SharedModule } from 'src/app/shared/shared.module'
+import { Configuration, UsersInternalAPIService } from 'src/app/shared/generated'
+import { environment } from 'src/environments/environment'
 import { ChangePasswordDialogComponent } from './change-password-dialog/change-password-dialog.component'
-// import { IAMAPIService, ResetPasswordRequestParams, UserResetPasswordRequest } from 'src/app/shared/generated'
-// import { UserProfileService } from '../user-profile.service'
 
 @Component({
   selector: 'app-ocx-change-password',
@@ -44,7 +43,7 @@ import { ChangePasswordDialogComponent } from './change-password-dialog/change-p
     AngularRemoteComponentsModule
   ],
   providers: [
-    // api
+    UsersInternalAPIService,
     PortalMessageService,
     providePortalDialogService(),
     {
@@ -62,13 +61,11 @@ import { ChangePasswordDialogComponent } from './change-password-dialog/change-p
   ]
 })
 export class OneCXChangePasswordComponent implements ocxRemoteComponent {
-  // permissions: string[] = []
-  permissions: string[] = ['PROFILE_PASSWORD#EDIT']
+  permissions: string[] = []
 
   constructor(
     @Inject(BASE_URL) private baseUrl: ReplaySubject<string>,
-    // private readonly userProfileService: UserProfileService,
-    // private readonly iamService: IAMAPIService,
+    private usersInternalService: UsersInternalAPIService,
     private userService: UserService,
     private portalDialogService: PortalDialogService,
     private msgService: PortalMessageService,
@@ -79,8 +76,10 @@ export class OneCXChangePasswordComponent implements ocxRemoteComponent {
 
   ocxInitRemoteComponent(config: RemoteComponentConfig): void {
     this.baseUrl.next(config.baseUrl)
-    // this.permissions = config.permissions
-    // this.helpDataService.configuration = new Configuration({ //   basePath: Location.joinWithSlash(config.baseUrl, environment.apiPrefix) // })
+    this.permissions = config.permissions
+    this.usersInternalService.configuration = new Configuration({
+      basePath: Location.joinWithSlash(config.baseUrl, environment.apiPrefix)
+    })
   }
 
   private openChangePasswordEditorDialog(): Observable<DialogState<string>> {
@@ -102,10 +101,7 @@ export class OneCXChangePasswordComponent implements ocxRemoteComponent {
   private openChangePasswordConfirmationDialog() {
     return this.portalDialogService.openDialog(
       'CHANGE_PASSWORD.CONFIRM_DIALOG.TITLE',
-      {
-        message: 'CHANGE_PASSWORD.CONFIRM_DIALOG.MESSAGE',
-        icon: PrimeIcons.QUESTION
-      },
+      'CHANGE_PASSWORD.CONFIRM_DIALOG.MESSAGE',
       'CHANGE_PASSWORD.CONFIRM_DIALOG.YES',
       'CHANGE_PASSWORD.CONFIRM_DIALOG.NO'
     )
@@ -124,14 +120,24 @@ export class OneCXChangePasswordComponent implements ocxRemoteComponent {
             )
           }
           return of('')
+        }),
+        mergeMap((password) => {
+          if (!password) return of(false)
+          return this.usersInternalService
+            .resetPassword({
+              userResetPasswordRequest: { password: password }
+            })
+            .pipe(
+              catchError(() => {
+                this.msgService.error({ summaryKey: 'CHANGE_PASSWORD.PASSWORD_CHANGE_ERROR' })
+                return of()
+              }),
+              mergeMap(() => of(true))
+            )
         })
       )
-      .subscribe((password) => {
-        if (password) {
-          console.log('handle password change')
-          // display success message on success
-          // display error message on error
-        }
+      .subscribe((confirmed) => {
+        if (confirmed) this.msgService.success({ summaryKey: 'CHANGE_PASSWORD.PASSWORD_CHANGED_SUCCESSFULLY' })
       })
   }
 }

@@ -6,4 +6,5 @@ export * from './rolePageResult';
 export * from './roleSearchCriteria';
 export * from './user';
 export * from './userPageResult';
+export * from './userResetPasswordRequest';
 export * from './userSearchCriteria';
