@@ -85,10 +85,7 @@ export class OneCXChangePasswordComponent implements ocxRemoteComponent {
   private openChangePasswordEditorDialog(): Observable<DialogState<string>> {
     return this.portalDialogService.openDialog<string>(
       'CHANGE_PASSWORD.DIALOG.TITLE',
-      {
-        type: ChangePasswordDialogComponent,
-        inputs: {}
-      },
+      ChangePasswordDialogComponent,
       {
         key: 'CHANGE_PASSWORD.DIALOG.CHANGE_BUTTON'
       },
