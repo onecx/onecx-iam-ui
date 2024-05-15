@@ -86,12 +86,8 @@ export class OneCXChangePasswordComponent implements ocxRemoteComponent {
     return this.portalDialogService.openDialog<string>(
       'CHANGE_PASSWORD.DIALOG.TITLE',
       ChangePasswordDialogComponent,
-      {
-        key: 'CHANGE_PASSWORD.DIALOG.CHANGE_BUTTON'
-      },
-      {
-        key: 'CHANGE_PASSWORD.DIALOG.CANCEL'
-      }
+      'CHANGE_PASSWORD.DIALOG.CHANGE_BUTTON',
+      'CHANGE_PASSWORD.DIALOG.CANCEL'
     )
   }
 
@@ -104,6 +100,10 @@ export class OneCXChangePasswordComponent implements ocxRemoteComponent {
     )
   }
 
+  public onEnterClick() {
+    return this.editPassword({})
+  }
+
   public editPassword(event: any) {
     return this.openChangePasswordEditorDialog()
       .pipe(
@@ -111,7 +111,7 @@ export class OneCXChangePasswordComponent implements ocxRemoteComponent {
           if (dialogState?.button === 'primary') {
             return this.openChangePasswordConfirmationDialog().pipe(
               mergeMap((confirmationState) => {
-                if (confirmationState.button === 'primary') return of(dialogState.result)
+                if (confirmationState?.button === 'primary') return of(dialogState.result)
                 return of('')
               })
             )
