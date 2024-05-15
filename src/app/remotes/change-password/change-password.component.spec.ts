@@ -37,9 +37,9 @@ describe('ChangePasswordComponent', () => {
 
   const portalDialogServiceSpy = jasmine.createSpyObj<PortalDialogService>('PortalDialogService', ['openDialog'])
 
-  let baseUrlSbuject: ReplaySubject<any>
+  let baseUrlSubject: ReplaySubject<any>
   beforeEach(() => {
-    baseUrlSbuject = new ReplaySubject<any>(1)
+    baseUrlSubject = new ReplaySubject<any>(1)
     TestBed.configureTestingModule({
       declarations: [],
       imports: [
@@ -52,7 +52,7 @@ describe('ChangePasswordComponent', () => {
         provideHttpClientTesting(),
         {
           provide: BASE_URL,
-          useValue: baseUrlSbuject
+          useValue: baseUrlSubject
         }
       ]
     })
@@ -76,7 +76,7 @@ describe('ChangePasswordComponent', () => {
       })
       .compileComponents()
 
-    baseUrlSbuject.next('base_url_mock')
+    baseUrlSubject.next('base_url_mock')
 
     usersInternalApiServiceSpy.resetPassword.calls.reset()
     portalDialogServiceSpy.openDialog.calls.reset()
@@ -106,7 +106,7 @@ describe('ChangePasswordComponent', () => {
 
     expect(component.permissions).toEqual(['USER#EDIT'])
     expect(usersInternalApiServiceSpy.configuration.basePath).toEqual('base_url/bff')
-    baseUrlSbuject.asObservable().subscribe((item) => {
+    baseUrlSubject.asObservable().subscribe((item) => {
       expect(item).toEqual('base_url')
       done()
     })
