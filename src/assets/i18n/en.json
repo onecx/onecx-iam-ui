@@ -138,7 +138,7 @@
   },
   "CHANGE_PASSWORD": {
     "BUTTON_LABEL": "Change Password",
-    "BUTTON_TOOLTIP": "Change password",
+    "BUTTON_TOOLTIP": "Change the password for current user",
     "NO_PERMISSION": "You do not have permissions to change password",
     "DIALOG": {
       "TITLE": "Change password",

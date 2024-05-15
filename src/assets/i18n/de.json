@@ -138,7 +138,7 @@
   },
   "CHANGE_PASSWORD": {
     "BUTTON_LABEL": "Passwort ändern",
-    "BUTTON_TOOLTIP": "Passwort ändern",
+    "BUTTON_TOOLTIP": "Passwort für den aktuellen Benutzer ändern",
     "NO_PERMISSION": "Sie haben keine Berechtigung, das Passwort zu ändern",
     "DIALOG": {
       "TITLE": "Passwort ändern",
