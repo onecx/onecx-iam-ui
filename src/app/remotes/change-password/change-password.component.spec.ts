@@ -120,6 +120,9 @@ describe('ChangePasswordComponent', () => {
     oneCXChangePasswordHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, OneCXChangePasswordHarness)
 
     expect(await oneCXChangePasswordHarness.getChangePasswordButton()).toBeNull()
+    expect(await (await oneCXChangePasswordHarness.getNoPermissionDiv())?.text()).toBe(
+      'You do not have permissions to change password'
+    )
   })
 
   it('should show button if permissions are met', async () => {
@@ -134,6 +137,7 @@ describe('ChangePasswordComponent', () => {
     oneCXChangePasswordHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, OneCXChangePasswordHarness)
 
     expect(await (await oneCXChangePasswordHarness.getChangePasswordButton())?.getLabel()).toBe('Change Password')
+    expect(await oneCXChangePasswordHarness.getNoPermissionDiv()).toBeNull()
   })
 
   it('should call editPassword on enter click', () => {
