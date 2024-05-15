@@ -29,7 +29,6 @@ import { ChangePasswordDialogComponent } from './change-password-dialog/change-p
 @Component({
   selector: 'app-ocx-change-password',
   templateUrl: './change-password.component.html',
-  styleUrls: ['./change-password.component.scss'],
   standalone: true,
   imports: [
     CommonModule,
