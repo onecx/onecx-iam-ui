@@ -10,7 +10,7 @@ app:
     # Microfrontend
     microfrontend:
       enabled: true
-      spec:
+      specs:
         main:
           exposedModule: "./OneCXIamModule"
           description: "OneCX IAM UI"
