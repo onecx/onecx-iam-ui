@@ -1,5 +1,5 @@
 import { ComponentHarness } from '@angular/cdk/testing'
-import { PPasswordHarness } from './p-password.harness'
+import { PPasswordHarness } from '@onecx/angular-testing'
 
 export class ChangePasswordDialogHarness extends ComponentHarness {
   static readonly hostSelector = 'app-ocx-change-password-dialog'
