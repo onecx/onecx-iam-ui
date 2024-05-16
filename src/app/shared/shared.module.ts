@@ -10,13 +10,13 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup'
 import { ConfirmationService } from 'primeng/api'
 import { DataViewModule } from 'primeng/dataview'
 import { DialogModule } from 'primeng/dialog'
-import { DialogService } from 'primeng/dynamicdialog'
 import { DropdownModule } from 'primeng/dropdown'
 import { InputTextModule } from 'primeng/inputtext'
 import { InputTextareaModule } from 'primeng/inputtextarea'
 import { KeyFilterModule } from 'primeng/keyfilter'
 import { ListboxModule } from 'primeng/listbox'
 import { MultiSelectModule } from 'primeng/multiselect'
+import { PasswordModule } from 'primeng/password'
 import { SelectButtonModule } from 'primeng/selectbutton'
 import { TableModule } from 'primeng/table'
 import { TabViewModule } from 'primeng/tabview'
@@ -25,8 +25,8 @@ import { ToastModule } from 'primeng/toast'
 import {
   AppStateService,
   ConfigurationService,
-  PortalDialogService,
-  PortalApiConfiguration
+  PortalApiConfiguration,
+  PortalCoreModule
 } from '@onecx/portal-integration-angular'
 
 import { Configuration } from 'src/app/shared/generated'
@@ -40,6 +40,7 @@ export function apiConfigProvider(configService: ConfigurationService, appStateS
 @NgModule({
   declarations: [],
   imports: [
+    PortalCoreModule.forMicroFrontend(),
     AutoCompleteModule,
     CommonModule,
     ConfirmDialogModule,
@@ -53,6 +54,7 @@ export function apiConfigProvider(configService: ConfigurationService, appStateS
     KeyFilterModule,
     ListboxModule,
     MultiSelectModule,
+    PasswordModule,
     ReactiveFormsModule,
     SelectButtonModule,
     TableModule,
@@ -97,6 +99,7 @@ export function apiConfigProvider(configService: ConfigurationService, appStateS
     KeyFilterModule,
     ListboxModule,
     MultiSelectModule,
+    PasswordModule,
     ReactiveFormsModule,
     SelectButtonModule,
     TableModule,
@@ -108,7 +111,6 @@ export function apiConfigProvider(configService: ConfigurationService, appStateS
   providers: [
     ConfirmationService,
     LabelResolver,
-    { provide: DialogService, useClass: PortalDialogService },
     { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] }
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA]

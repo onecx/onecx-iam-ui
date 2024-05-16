@@ -135,5 +135,29 @@
       "PATTERN_ERROR": "Your input does not match the required pattern",
       "FILETYPE_PATTERN_ERROR": "Your file does not match the allowed filetypes: .png, .jpg, .jpeg"
     }
+  },
+  "CHANGE_PASSWORD": {
+    "BUTTON_LABEL": "Change Password",
+    "BUTTON_TOOLTIP": "Change the password for current user",
+    "NO_PERMISSION": "You do not have permissions to change password",
+    "DIALOG": {
+      "TITLE": "Change password",
+      "CHANGE_BUTTON": "Change",
+      "CANCEL": "Cancel",
+      "NEW_PASSWORD": "New password",
+      "CONFIRM_NEW_PASSWORD": "Confirm new password",
+      "PROMPT": "Choose a password",
+      "WEAK": "Weak password",
+      "MEDIUM": "Average complexity password",
+      "STRONG": "Strong password"
+    },
+    "CONFIRM_DIALOG": {
+      "TITLE": "Confirm password change",
+      "MESSAGE": "Are you sure you want to change your password?",
+      "YES": "Yes, change password",
+      "NO": "No"
+    },
+    "PASSWORD_CHANGE_ERROR": "An error has occurred, the password has not been changed",
+    "PASSWORD_CHANGED_SUCCESSFULLY": "Password changed successfully"
   }
 }

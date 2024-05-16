@@ -16,6 +16,10 @@ app:
           description: "OneCX IAM UI"
           note: "OneCX IAM UI module auto import via MF operator"
           type: MODULE
+        change-password:
+          exposedModule: "./OneCXChangePasswordComponent"
+          description: "Change password"
+          type: COMPONENT
     # Permission
     permission:
       enabled: true
@@ -23,6 +27,7 @@ app:
         permissions:
           USER:
             SEARCH: Search users
+            EDIT: Edit users
           ROLE:
             SEARCH: Search roles
     # Keycloak

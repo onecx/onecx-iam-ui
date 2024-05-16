@@ -5,7 +5,8 @@ const config = withModuleFederationPlugin({
   name: 'onecx-iam-ui',
   filename: 'remoteEntry.js',
   exposes: {
-    './OneCXIamModule': 'src/app/onecx-iam-remote.module.ts'
+    './OneCXIamModule': 'src/app/onecx-iam-remote.module.ts',
+    './OneCXChangePasswordComponent': 'src/app/remotes/change-password/change-password.component.ts'
   },
   shared: share({
     '@angular/core': { singleton: true, requiredVersion: 'auto' },
@@ -33,7 +34,10 @@ const config = withModuleFederationPlugin({
     '@onecx/accelerator': { requiredVersion: 'auto', includeSecondaries: true },
     '@onecx/integration-interface': { requiredVersion: 'auto', includeSecondaries: true },
     '@onecx/keycloak-auth': { requiredVersion: 'auto', includeSecondaries: true },
-    '@onecx/portal-integration-angular': { requiredVersion: 'auto', includeSecondaries: true }
+    '@onecx/portal-integration-angular': { requiredVersion: 'auto', includeSecondaries: true },
+    '@onecx/angular-remote-components': { requiredVersion: 'auto', includeSecondaries: true },
+    '@onecx/angular-testing': { requiredVersion: 'auto', includeSecondaries: true },
+    primeng: { requiredVersion: 'auto', includeSecondaries: true }
   }),
   sharedMappings: ['@onecx/portal-integration-angular']
 })

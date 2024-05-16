@@ -135,5 +135,29 @@
       "PATTERN_ERROR": "Ihre Eingabe entspricht nicht dem benötigten Format.",
       "FILETYPE_PATTERN_ERROR": "Ihre Datei entspricht nicht den erlaubten Formaten: .png, .jpg, .jpeg"
     }
+  },
+  "CHANGE_PASSWORD": {
+    "BUTTON_LABEL": "Passwort ändern",
+    "BUTTON_TOOLTIP": "Passwort für den aktuellen Benutzer ändern",
+    "NO_PERMISSION": "Sie haben keine Berechtigung, das Passwort zu ändern",
+    "DIALOG": {
+      "TITLE": "Passwort ändern",
+      "CHANGE_BUTTON": "Ändern",
+      "CANCEL": "Abbrechen",
+      "NEW_PASSWORD": "Neues Passwort",
+      "CONFIRM_NEW_PASSWORD": "Neues Passwort bestätigen",
+      "PROMPT": "Wählen Sie ein Passwort",
+      "WEAK": "Schwaches Passwort",
+      "MEDIUM": "Durchschnittliche Komplexität des Passworts",
+      "STRONG": "Starkes Passwort"
+    },
+    "CONFIRM_DIALOG": {
+      "TITLE": "Bestätigen Sie die Passwortänderung",
+      "MESSAGE": "Sind Sie sicher, dass Sie Ihr Passwort ändern möchten?",
+      "YES": "Ja, Passwort ändern",
+      "NO": "Nein"
+    },
+    "PASSWORD_CHANGE_ERROR": "Ein Fehler ist aufgetreten, das Passwort wurde nicht geändert",
+    "PASSWORD_CHANGED_SUCCESSFULLY": "Passwort wurde erfolgreich geändert"
   }
 }
