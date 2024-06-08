@@ -102,28 +102,6 @@
       "NAME": "Suche nach Teilstrings im Rollenname"
     }
   },
-  "EXCEPTIONS": {
-    "HTTP_STATUS_0": {
-      "USER": "Unbekanntes Problem beim Abrufen von Benutzer-Daten - Bitte versuchen sie es noch einmal.",
-      "ROLE": "Unbekanntes Problem beim Abrufen von Rollen-Daten - Bitte versuchen sie es noch einmal."
-    },
-    "HTTP_STATUS_403": {
-      "USER": "Sie haben keine Rechte um Benutzer zu sehen.",
-      "ROLE": "Sie haben keine Rechte um Rollen zu sehen."
-    },
-    "HTTP_STATUS_404": {
-      "USER": "Es konnten keine Benutzer gefunden werden.",
-      "ROLE": "Es konnten keine Rollen gefunden werden."
-    },
-    "HTTP_STATUS_500": {
-      "USER": "Unbekanntes Server-Problem beim Abrufen von Benutzer-Daten - Bitte versuchen sie es noch einmal.",
-      "ROLE": "Unbekanntes Server-Problem beim Abrufen von Rollen-Daten - Bitte versuchen sie es noch einmal."
-    },
-    "HTTP_STATUS_504": {
-      "USER": "Timeout beim Abrufen von Benutzer-Daten - Bitte versuchen sie es noch einmal.",
-      "ROLE": "Timeout beim Abrufen von Rollen-Daten - Bitte versuchen sie es noch einmal."
-    }
-  },
   "VALIDATION": {
     "FORM_INVALID": "Die Daten sind nicht bereit zum Speichern.",
     "ERRORS": {
@@ -159,5 +137,31 @@
     },
     "PASSWORD_CHANGE_ERROR": "Ein Fehler ist aufgetreten, das Passwort wurde nicht geändert",
     "PASSWORD_CHANGED_SUCCESSFULLY": "Passwort wurde erfolgreich geändert"
+  },
+  "EXCEPTIONS": {
+    "HTTP_STATUS_0": {
+      "USER": "Unbekanntes Problem beim Abrufen von Benutzer-Daten - Bitte versuchen sie es noch einmal.",
+      "ROLE": "Unbekanntes Problem beim Abrufen von Rollen-Daten - Bitte versuchen sie es noch einmal."
+    },
+    "HTTP_STATUS_401": {
+      "USER": "Sie sind nicht autorisiert um Benutzer zu sehen.",
+      "ROLE": "Sie sind nicht autorisiert um Rollen zu sehen."
+    },
+    "HTTP_STATUS_403": {
+      "USER": "Sie haben keine Rechte um Benutzer zu sehen.",
+      "ROLE": "Sie haben keine Rechte um Rollen zu sehen."
+    },
+    "HTTP_STATUS_404": {
+      "USER": "Es konnten keine Benutzer gefunden werden.",
+      "ROLE": "Es konnten keine Rollen gefunden werden."
+    },
+    "HTTP_STATUS_500": {
+      "USER": "Unbekanntes Server-Problem beim Abrufen von Benutzer-Daten - Bitte versuchen sie es noch einmal.",
+      "ROLE": "Unbekanntes Server-Problem beim Abrufen von Rollen-Daten - Bitte versuchen sie es noch einmal."
+    },
+    "HTTP_STATUS_504": {
+      "USER": "Timeout beim Abrufen von Benutzer-Daten - Bitte versuchen sie es noch einmal.",
+      "ROLE": "Timeout beim Abrufen von Rollen-Daten - Bitte versuchen sie es noch einmal."
+    }
   }
 }
