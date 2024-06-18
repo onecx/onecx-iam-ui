@@ -10,7 +10,10 @@ import { UserSearchComponent, UserSearchCriteria } from './user-search.component
 import { User, UserPageResult, UsersInternalAPIService } from 'src/app/shared/generated'
 
 const form = new FormGroup<UserSearchCriteria>({
-  criteria: new FormControl<string | null>(null)
+  userName: new FormControl<string | null>(null),
+  firstName: new FormControl<string | null>(null),
+  lastName: new FormControl<string | null>(null),
+  email: new FormControl<string | null>(null)
 })
 
 describe('UserSearchComponent', () => {
@@ -95,7 +98,7 @@ describe('UserSearchComponent', () => {
   })
 
   it('should search users result stream list equals 1', (done) => {
-    component.formGroup.controls['criteria'].setValue('testuserName')
+    component.formGroup.controls['userName'].setValue('testuserName')
     apiUserServiceSpy.searchUsersByCriteria.and.returnValue(of(UserPageResult as UserPageResult))
 
     component.searchUsers()
@@ -111,7 +114,7 @@ describe('UserSearchComponent', () => {
   })
 
   it('should search users result empty', (done) => {
-    component.formGroup.controls['criteria'].setValue('testuserName')
+    component.formGroup.controls['userName'].setValue('testuserName')
     apiUserServiceSpy.searchUsersByCriteria.and.returnValue(of({} as UserPageResult))
 
     component.searchUsers()
@@ -126,7 +129,7 @@ describe('UserSearchComponent', () => {
   })
 
   it('should search users result stream list equals 2', (done) => {
-    component.formGroup.controls['criteria'].setValue('testuserName')
+    component.formGroup.controls['userName'].setValue('testuserName')
     apiUserServiceSpy.searchUsersByCriteria.and.returnValue(of(UserPageResult2 as UserPageResult))
 
     component.searchUsers()
@@ -152,7 +155,7 @@ describe('UserSearchComponent', () => {
 
   it('should search user Error response', (done) => {
     const err = { status: 403 }
-    component.formGroup.controls['criteria'].setValue('testcriteria')
+    component.formGroup.controls['userName'].setValue('testcriteria')
     apiUserServiceSpy.searchUsersByCriteria.and.returnValue(throwError(() => err))
 
     component.searchUsers()

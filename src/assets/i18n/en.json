@@ -84,13 +84,15 @@
     "USERNAME": "User name",
     "LASTNAME": "Last name",
     "FIRSTNAME": "First name",
+    "EMAIL": "E-Mail",
     "VERSION": "Version",
     "DESCRIPTION": "Description",
     "TOOLTIPS": {
       "USERNAME": "Search by user name",
       "LASTNAME": "Search by last name",
       "FIRSTNAME": "Search by first name",
-      "CRITERIA": "Substring search by names"
+      "CRITERIA": "Substring search by names",
+      "EMAIL": "E-Mail address"
     }
   },
   "ROLE": {
