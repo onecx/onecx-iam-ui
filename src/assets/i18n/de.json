@@ -84,13 +84,15 @@
     "USERNAME": "Benutzername",
     "LASTNAME": "Nachname",
     "FIRSTNAME": "Vorname",
+    "EMAIL": "E-Mail",
     "VERSION": "Version",
     "DESCRIPTION": "Beschreibung",
     "TOOLTIPS": {
       "USERNAME": "Nach Benutzernamen suchen",
       "LASTNAME": "Nach Nachnamen suchen",
       "FIRSTNAME": "Nach Vornamen suchen",
-      "CRITERIA": "Suche nach Teilstrings in Namensfeldern"
+      "CRITERIA": "Suche nach Teilstrings in Namensfeldern",
+      "EMAIL": "E-Mail Adresse"
     }
   },
   "ROLE": {
