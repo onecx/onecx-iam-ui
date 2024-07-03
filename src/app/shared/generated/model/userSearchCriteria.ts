@@ -12,7 +12,10 @@
 
 
 export interface UserSearchCriteria { 
-    query?: string;
+    userName?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
     /**
      * The number of page.
      */

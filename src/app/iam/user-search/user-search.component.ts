@@ -11,7 +11,10 @@ import { limitText } from 'src/app/shared/utils'
 import { User, UserPageResult, UsersInternalAPIService } from 'src/app/shared/generated'
 
 export interface UserSearchCriteria {
-  criteria: FormControl<string | null>
+  userName: FormControl<string | null>
+  firstName: FormControl<string | null>
+  lastName: FormControl<string | null>
+  email: FormControl<string | null>
 }
 
 @Component({
@@ -53,18 +56,21 @@ export class UserSearchComponent implements OnInit {
     private translate: TranslateService
   ) {
     this.formGroup = new FormGroup<UserSearchCriteria>({
-      criteria: new FormControl<string | null>(null)
+      userName: new FormControl<string | null>(null),
+      firstName: new FormControl<string | null>(null),
+      lastName: new FormControl<string | null>(null),
+      email: new FormControl<string | null>(null)
     })
   }
 
   public searchUsers() {
-    let queryString: string | undefined = this.formGroup.controls['criteria'].value
-      ? this.formGroup.controls['criteria'].value!
-      : undefined
     this.usersPageResult$ = this.userService
       .searchUsersByCriteria({
         userSearchCriteria: {
-          query: queryString
+          userName: this.formGroup.controls['userName'].value || undefined,
+          firstName: this.formGroup.controls['firstName'].value || undefined,
+          lastName: this.formGroup.controls['lastName'].value || undefined,
+          email: this.formGroup.controls['email'].value || undefined
         }
       })
       .pipe(

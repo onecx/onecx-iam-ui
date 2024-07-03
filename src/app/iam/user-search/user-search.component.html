@@ -10,15 +10,51 @@
     <div id="user_search_criteria" [formGroup]="formGroup" class="flex flex-wrap gap-4 row-gap-3">
       <span class="p-float-label">
         <input
-          id="user_search_criteria"
+          id="userName"
           pInputText
           type="text"
-          formControlName="criteria"
+          formControlName="userName"
           class="w-18rem"
           [clear]="true"
-          [title]="'USER.TOOLTIPS.CRITERIA' | translate"
+          [title]="'USER.TOOLTIPS.USERNAME' | translate"
         />
-        <label for="user_search_criteria_">{{ 'USER.CRITERIA' | translate }}</label>
+        <label for="userName">{{ 'USER.USERNAME' | translate }}</label>
+      </span>
+      <span class="p-float-label">
+        <input
+          id="firstName"
+          pInputText
+          type="text"
+          formControlName="firstName"
+          class="w-18rem"
+          [clear]="true"
+          [title]="'USER.TOOLTIPS.FIRSTNAME' | translate"
+        />
+        <label for="firstName">{{ 'USER.FIRSTNAME' | translate }}</label>
+      </span>
+      <span class="p-float-label">
+        <input
+          id="lastName"
+          pInputText
+          type="text"
+          formControlName="lastName"
+          class="w-18rem"
+          [clear]="true"
+          [title]="'USER.TOOLTIPS.LASTNAME' | translate"
+        />
+        <label for="lastName">{{ 'USER.LASTNAME' | translate }}</label>
+      </span>
+      <span class="p-float-label">
+        <input
+          id="email"
+          pInputText
+          type="text"
+          formControlName="email"
+          class="w-18rem"
+          [clear]="true"
+          [title]="'USER.TOOLTIPS.EMAIL' | translate"
+        />
+        <label for="email">{{ 'USER.EMAIL' | translate }}</label>
       </span>
     </div>
   </ocx-search-header>

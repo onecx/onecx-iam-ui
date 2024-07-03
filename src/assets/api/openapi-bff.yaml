@@ -97,7 +97,13 @@ components:
     UserSearchCriteria:
       type: object
       properties:
-        query:
+        userName:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
           type: string
         pageNumber:
           format: int32
@@ -107,7 +113,8 @@ components:
         pageSize:
           format: int32
           description: The size of page
-          default: 10
+          default: 100
+          maximum: 1000
           type: integer
     UserPageResult:
       type: object
@@ -184,6 +191,7 @@ components:
           format: int32
           description: The size of page
           default: 100
+          maximum: 1000
           type: integer
     RolePageResult:
       type: object
