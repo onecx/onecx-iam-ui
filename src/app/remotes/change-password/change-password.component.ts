@@ -1,13 +1,14 @@
 import { CommonModule, Location } from '@angular/common'
 import { HttpClient, HttpClientModule } from '@angular/common/http'
-import { Component, Inject } from '@angular/core'
+import { Component, Inject, Input } from '@angular/core'
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
 import {
   AngularRemoteComponentsModule,
   BASE_URL,
   RemoteComponentConfig,
   ocxRemoteComponent,
-  provideTranslateServiceForRoot
+  provideTranslateServiceForRoot,
+  ocxRemoteWebcomponent
 } from '@onecx/angular-remote-components'
 import {
   DialogState,
@@ -59,7 +60,7 @@ import { ChangePasswordDialogComponent } from './change-password-dialog/change-p
     })
   ]
 })
-export class OneCXChangePasswordComponent implements ocxRemoteComponent {
+export class OneCXChangePasswordComponent implements ocxRemoteComponent, ocxRemoteWebcomponent {
   permissions: string[] = []
 
   constructor(
@@ -71,6 +72,10 @@ export class OneCXChangePasswordComponent implements ocxRemoteComponent {
     private translateService: TranslateService
   ) {
     this.userService.lang$.subscribe((lang) => this.translateService.use(lang))
+  }
+
+  @Input() set ocxRemoteComponentConfig(config: RemoteComponentConfig) {
+    this.ocxInitRemoteComponent(config)
   }
 
   ocxInitRemoteComponent(config: RemoteComponentConfig): void {
