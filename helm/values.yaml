@@ -16,14 +16,14 @@ app:
           description: "OneCX IAM UI"
           note: "OneCX IAM UI module auto import via MF operator"
           type: MODULE
-          technology: WEB_COMPONENT_MODULE
+          technology: WEBCOMPONENTMODULE
           remoteName: onecx-iam
           tagName: ocx-iam-component
         change-password:
           exposedModule: "./OneCXChangePasswordComponent"
           description: "Change password"
           type: COMPONENT
-          technology: WEB_COMPONENT_MODULE
+          technology: WEBCOMPONENTMODULE
           remoteName: onecx-iam
           tagName: ocx-change-password-component
     # Permission
