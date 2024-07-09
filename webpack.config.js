@@ -5,8 +5,8 @@ const config = withModuleFederationPlugin({
   name: 'onecx-iam-ui',
   filename: 'remoteEntry.js',
   exposes: {
-    './OneCXIamModule': 'src/app/onecx-iam-remote.module.ts',
-    './OneCXChangePasswordComponent': 'src/app/remotes/change-password/change-password.component.ts'
+    './OneCXIamModule': 'src/bootstrap.ts',
+    './OneCXChangePasswordComponent': 'src/app/remotes/change-password/change-password.component.bootstrap.ts'
   },
   shared: share({
     '@angular/core': { singleton: true, requiredVersion: 'auto' },
@@ -49,5 +49,17 @@ const plugins = config.plugins.filter((plugin) => !(plugin instanceof ModifyEntr
 
 module.exports = {
   ...config,
-  plugins
+  plugins,
+  output: {
+    uniqueName: 'onecx-iam-ui',
+    publicPath: 'auto'
+  },
+  experiments: {
+    ...config.experiments,
+    topLevelAwait: true
+  },
+  optimization: {
+    runtimeChunk: false,
+    splitChunks: false
+  }
 }

@@ -1,28 +1,44 @@
-import { HttpClient } from '@angular/common/http'
-import { NgModule } from '@angular/core'
-import { RouterModule, Routes } from '@angular/router'
+import { HttpClient, HttpClientModule } from '@angular/common/http'
+import { APP_INITIALIZER, DoBootstrap, Injector, NgModule } from '@angular/core'
+import { createCustomElement } from '@angular/elements'
+import { BrowserModule } from '@angular/platform-browser'
+import { Router, RouterModule, Routes } from '@angular/router'
 import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core'
 
 import {
   AppStateService,
   ConfigurationService,
   createTranslateLoader,
+  PortalApiConfiguration,
   PortalCoreModule,
   PortalMissingTranslationHandler
 } from '@onecx/portal-integration-angular'
 import { addInitializeModuleGuard } from '@onecx/angular-integration-interface'
+import { initializeRouter, startsWith } from '@onecx/angular-webcomponents'
+import { AngularAuthModule } from '@onecx/angular-auth'
+import { AppEntrypointComponent } from './app-entrypoint.component'
+import { environment } from 'src/environments/environment'
+import { Configuration } from './shared/generated'
+
+function apiConfigProvider(configService: ConfigurationService, appStateService: AppStateService) {
+  return new PortalApiConfiguration(Configuration, environment.apiPrefix, configService, appStateService)
+}
 
 const routes: Routes = [
   {
-    path: '',
+    matcher: startsWith(''),
     loadChildren: () => import('./iam/onecx-iam.module').then((m) => m.IamModule)
   }
 ]
 
 @NgModule({
+  declarations: [AppEntrypointComponent],
   imports: [
+    AngularAuthModule,
+    BrowserModule,
+    HttpClientModule,
+    RouterModule.forRoot(addInitializeModuleGuard(routes)),
     PortalCoreModule.forMicroFrontend(),
-    RouterModule.forChild(addInitializeModuleGuard(routes)),
     TranslateModule.forRoot({
       isolate: true,
       loader: {
@@ -34,11 +50,27 @@ const routes: Routes = [
     })
   ],
   exports: [],
-  providers: [ConfigurationService],
+  providers: [
+    ConfigurationService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeRouter,
+      multi: true,
+      deps: [Router, AppStateService]
+    },
+    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] }
+  ],
   schemas: []
 })
-export class OneCXIamModule {
-  constructor() {
+export class OneCXIamModule implements DoBootstrap {
+  constructor(private injector: Injector) {
     console.info('OneCX IAM Module constructor')
+  }
+
+  ngDoBootstrap(): void {
+    const appEntrypoint = createCustomElement(AppEntrypointComponent, {
+      injector: this.injector
+    })
+    customElements.define('ocx-iam-component', appEntrypoint)
   }
 }
