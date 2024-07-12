@@ -36,12 +36,5 @@ app:
             EDIT: Edit users
           ROLE:
             SEARCH: Search roles
-    # Keycloak
-    keycloak:
-      client:
-        enabled: true
-        spec:
-          kcConfig:
-            clientId: "onecx-iam-ui"
 
 # PIPE Config
