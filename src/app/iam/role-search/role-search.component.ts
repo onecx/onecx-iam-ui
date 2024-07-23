@@ -26,7 +26,7 @@ export class RoleSearchComponent implements OnInit {
   public roles$!: Observable<Role[]>
   public rolesPageResult$!: Observable<RolePageResult>
 
-  public viewMode = 'grid'
+  public viewMode: 'list' | 'grid' = 'grid'
   public searchInProgress = false
   public filter: string | undefined
   public sortField = 'name'
@@ -132,7 +132,7 @@ export class RoleSearchComponent implements OnInit {
   /**
    * UI EVENTS
    */
-  public onLayoutChange(viewMode: string): void {
+  public onLayoutChange(viewMode: 'list' | 'grid'): void {
     this.viewMode = viewMode
   }
   public onFilterChange(filter: string): void {

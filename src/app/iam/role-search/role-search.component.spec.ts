@@ -17,8 +17,8 @@ const form = new FormGroup<RoleSearchCriteria>({
 describe('RoleSearchComponent', () => {
   let component: RoleSearchComponent
   let fixture: ComponentFixture<RoleSearchComponent>
-  let routerSpy = jasmine.createSpyObj('router', ['navigate'])
-  let routeMock = { snapshot: { paramMap: new Map() } }
+  const routerSpy = jasmine.createSpyObj('router', ['navigate'])
+  const routeMock = { snapshot: { paramMap: new Map() } }
 
   const role: Role = {
     name: 'name1',
@@ -183,9 +183,9 @@ describe('RoleSearchComponent', () => {
   })
 
   it('should update viewMode onLayoutChange', () => {
-    component.onLayoutChange('EDIT')
+    component.onLayoutChange('list')
 
-    expect(component.viewMode).toBe('EDIT')
+    expect(component.viewMode).toBe('list')
   })
 
   it('should update filter and call dv.filter onFilterChange', () => {
