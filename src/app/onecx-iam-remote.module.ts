@@ -1,4 +1,4 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http'
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { APP_INITIALIZER, DoBootstrap, Injector, NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 import { Router, RouterModule, Routes } from '@angular/router'
@@ -18,6 +18,7 @@ import { AngularAuthModule } from '@onecx/angular-auth'
 import { AppEntrypointComponent } from './app-entrypoint.component'
 import { environment } from 'src/environments/environment'
 import { Configuration } from './shared/generated'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 function apiConfigProvider(configService: ConfigurationService, appStateService: AppStateService) {
   return new PortalApiConfiguration(Configuration, environment.apiPrefix, configService, appStateService)
@@ -35,7 +36,7 @@ const routes: Routes = [
   imports: [
     AngularAuthModule,
     BrowserModule,
-    HttpClientModule,
+    BrowserAnimationsModule,
     RouterModule.forRoot(addInitializeModuleGuard(routes)),
     PortalCoreModule.forMicroFrontend(),
     TranslateModule.forRoot({
@@ -57,7 +58,8 @@ const routes: Routes = [
       multi: true,
       deps: [Router, AppStateService]
     },
-    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] }
+    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] },
+    provideHttpClient(withInterceptorsFromDi())
   ],
   schemas: []
 })

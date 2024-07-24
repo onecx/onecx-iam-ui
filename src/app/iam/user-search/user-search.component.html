@@ -105,50 +105,25 @@
         >
         </ocx-data-view-controls
       ></ng-template>
-      <ng-template let-user let-idx="rowIndex" pTemplate="listItem">
-        <div class="col-12 md:col-5 lg:col-5 xl:col-6 px-3 flex flex-column justify-content-center">
+      <ng-template let-users let-idx="rowIndex" pTemplate="listItem">
+        <div class="p-grid p-nogutter grid grid-nogutter">
           <div
-            [id]="'roles_search_data_list_' + idx"
-            class="flex flex-column justify-content-center gap-1 text-center md:text-left"
+            *ngFor="let user of users"
+            class="col-12 md:col-5 lg:col-5 xl:col-6 px-3 flex flex-column justify-content-center"
           >
             <div
-              [id]="'user_search_data_list_' + idx + '_user_name'"
-              class="font-bold"
-              [title]="'USER.USERNAME' | translate"
+              [id]="'roles_search_data_list_' + idx"
+              class="flex flex-column justify-content-center gap-1 text-center md:text-left"
             >
-              {{ limitText(user.username, 100) }}
-            </div>
-            <div
-              [id]="'user_search_data_list_' + idx + '_name'"
-              [title]="
-                ('USER.FIRSTNAME' | translate) +
-                ': ' +
-                user.firstName +
-                ' ' +
-                ('USER.LASTNAME' | translate) +
-                ': ' +
-                user.lastName
-              "
-            >
-              {{ limitText(user.firstName, 75) }} {{ limitText(user.lastName, 75) }}
-            </div>
-          </div>
-        </div>
-      </ng-template>
-      <ng-template let-user let-idx="rowIndex" pTemplate="gridItem">
-        <div [id]="'user_search_data_grid_' + idx" class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3">
-          <div class="card p-2 flex flex-column justify-content-center">
-            <div class="h-2rem flex flex-column justify-content-between gap-1 mb-1 text-center">
               <div
-                [id]="'user_search_data_grid_' + idx + '_user_name'"
-                class="font-bold text-md"
-                [title]="('USER.USERNAME' | translate) + ': ' + limitText(user.userName, 100)"
+                [id]="'user_search_data_list_' + idx + '_user_name'"
+                class="font-bold"
+                [title]="'USER.USERNAME' | translate"
               >
-                {{ limitText(user.username, 20) }}
+                {{ limitText(user.username, 100) }}
               </div>
               <div
-                [id]="'user_search_data_grid_' + idx + '_name'"
-                class="text-sm"
+                [id]="'user_search_data_list_' + idx + '_name'"
                 [title]="
                   ('USER.FIRSTNAME' | translate) +
                   ': ' +
@@ -159,7 +134,43 @@
                   user.lastName
                 "
               >
-                {{ limitText(user.firstName, 20) }} {{ limitText(user.lastName, 20) }}
+                {{ limitText(user.firstName, 75) }} {{ limitText(user.lastName, 75) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template let-user let-idx="rowIndex" pTemplate="gridItem">
+        <div class="p-grid p-nogutter grid grid-nogutter">
+          <div
+            *ngFor="let user of users"
+            [id]="'user_search_data_grid_' + idx"
+            class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3"
+          >
+            <div class="card p-2 flex flex-column justify-content-center">
+              <div class="h-2rem flex flex-column justify-content-between gap-1 mb-1 text-center">
+                <div
+                  [id]="'user_search_data_grid_' + idx + '_user_name'"
+                  class="font-bold text-md"
+                  [title]="('USER.USERNAME' | translate) + ': ' + limitText(user.userName, 100)"
+                >
+                  {{ limitText(user.username, 20) }}
+                </div>
+                <div
+                  [id]="'user_search_data_grid_' + idx + '_name'"
+                  class="text-sm"
+                  [title]="
+                    ('USER.FIRSTNAME' | translate) +
+                    ': ' +
+                    user.firstName +
+                    ' ' +
+                    ('USER.LASTNAME' | translate) +
+                    ': ' +
+                    user.lastName
+                  "
+                >
+                  {{ limitText(user.firstName, 20) }} {{ limitText(user.lastName, 20) }}
+                </div>
               </div>
             </div>
           </div>
