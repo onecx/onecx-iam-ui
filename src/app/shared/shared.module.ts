@@ -50,28 +50,6 @@ import { LabelResolver } from './label.resolver'
     TabViewModule,
     ToastModule,
     TranslateModule
-    // ErrorTailorModule.forRoot({
-    //   controlErrorsOn: { async: true, blur: true, change: true },
-    //   errors: {
-    //     useFactory: (i18n: TranslateService) => {
-    //       return {
-    //         required: () => i18n.instant('VALIDATION.ERRORS.EMPTY_REQUIRED_FIELD'),
-    //         maxlength: ({ requiredLength }) =>
-    //           i18n.instant('VALIDATION.ERRORS.MAXIMUM_LENGTH').replace('{{chars}}', requiredLength),
-    //         minlength: ({ requiredLength }) =>
-    //           i18n.instant('VALIDATION.ERRORS.MINIMUM_LENGTH').replace('{{chars}}', requiredLength),
-    //         pattern: () => i18n.instant('VALIDATION.ERRORS.PATTERN_ERROR')
-    //       }
-    //     },
-    //     deps: [TranslateService]
-    //   },
-    //   //this is required because primeng calendar wraps things in an ugly way
-    //   blurPredicate: (element: Element) => {
-    //     return ['INPUT', 'TEXTAREA', 'SELECT', 'CUSTOM-DATE', 'P-CALENDAR', 'P-DROPDOWN'].some(
-    //       (selector) => element.tagName === selector
-    //     )
-    //   }
-    // })
   ],
   exports: [
     AutoCompleteModule,
