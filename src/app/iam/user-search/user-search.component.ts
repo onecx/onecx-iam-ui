@@ -32,7 +32,7 @@ export class UserSearchComponent implements OnInit {
   public users$!: Observable<User[]>
   public usersPageResult$!: Observable<UserPageResult>
 
-  public viewMode = 'grid'
+  public viewMode: 'list' | 'grid' = 'grid'
   public searchInProgress = false
   public filter: string | undefined
   public sortField = 'username'
@@ -139,7 +139,7 @@ export class UserSearchComponent implements OnInit {
   /**
    * UI EVENTS
    */
-  public onLayoutChange(viewMode: string): void {
+  public onLayoutChange(viewMode: 'list' | 'grid'): void {
     this.viewMode = viewMode
   }
   public onFilterChange(filter: string): void {

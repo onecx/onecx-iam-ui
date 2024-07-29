@@ -1,7 +1,12 @@
 import { NgModule } from '@angular/core'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
-import { IfPermissionDirective, PortalDialogService, PortalMessageService } from '@onecx/portal-integration-angular'
-
+import {
+  IfPermissionDirective,
+  PortalDialogService,
+  PortalMessageService,
+  HAS_PERMISSION_CHECKER
+} from '@onecx/portal-integration-angular'
+import { MockUserService } from '@onecx/angular-integration-interface/mocks'
 import { OneCXChangePasswordComponent } from './change-password.component'
 import { OneCXChangePasswordHarness } from './change-password.harness'
 import { UsersInternalAPIService } from 'src/app/shared/generated'
@@ -53,7 +58,8 @@ describe('ChangePasswordComponent', () => {
         {
           provide: BASE_URL,
           useValue: baseUrlSubject
-        }
+        },
+        { provide: HAS_PERMISSION_CHECKER, useClass: MockUserService }
       ]
     })
       .overrideComponent(OneCXChangePasswordComponent, {

@@ -19,8 +19,8 @@ const form = new FormGroup<UserSearchCriteria>({
 describe('UserSearchComponent', () => {
   let component: UserSearchComponent
   let fixture: ComponentFixture<UserSearchComponent>
-  let routerSpy = jasmine.createSpyObj('Router', ['navigate'])
-  let routeMock = { snapshot: { paramMap: new Map() } }
+  const routerSpy = jasmine.createSpyObj('Router', ['navigate'])
+  const routeMock = { snapshot: { paramMap: new Map() } }
 
   const user1: User = {
     username: 'username1',
@@ -185,9 +185,9 @@ describe('UserSearchComponent', () => {
   })
 
   it('should update viewMode onLayoutChange', () => {
-    component.onLayoutChange('EDIT')
+    component.onLayoutChange('grid')
 
-    expect(component.viewMode).toBe('EDIT')
+    expect(component.viewMode).toBe('grid')
   })
 
   it('should update filter and call dv.filter onFilterChange', () => {
