@@ -155,19 +155,7 @@
                 <div [id]="'user_search_data_grid_' + idx + '_user_name'" class="font-bold text-md">
                   {{ limitText(user.username, 20) }}
                 </div>
-                <div
-                  [id]="'user_search_data_grid_' + idx + '_name'"
-                  class="text-sm"
-                  [title]="
-                    ('USER.FIRSTNAME' | translate) +
-                    ': ' +
-                    user.firstName +
-                    ' ' +
-                    ('USER.LASTNAME' | translate) +
-                    ': ' +
-                    user.lastName
-                  "
-                >
+                <div [id]="'user_search_data_grid_' + idx + '_name'" class="text-sm">
                   {{ limitText(user.firstName, 20) }} {{ limitText(user.lastName, 20) }}
                 </div>
               </div>

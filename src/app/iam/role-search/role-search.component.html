@@ -80,13 +80,7 @@
               [id]="'roles_search_data_list_' + idx"
               class="flex flex-column justify-content-center gap-1 text-center md:text-left"
             >
-              <div
-                [id]="'roles_search_data_list_' + idx + '_roles_display_name'"
-                class="font-bold"
-                [pTooltip]="('ROLE.NAME' | translate) + ': ' + limitText(role.name, 100)"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              >
+              <div [id]="'roles_search_data_list_' + idx + '_roles_display_name'" class="font-bold">
                 {{ limitText(role.name, 100) }}
               </div>
               <div
@@ -113,13 +107,7 @@
               class="card relative p-3 flex flex-column justify-content-center row-gap-1 md:row-gap-2 hover:bg-gray-200"
             >
               <div class="h-2rem flex flex-column justify-content-between gap-1 mb-1 text-center">
-                <div
-                  [id]="'roles_search_data_grid_' + idx + '_role_name'"
-                  class="font-bold text-md"
-                  [pTooltip]="('ROLE.NAME' | translate) + ': ' + limitText(role.name, 100)"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
+                <div [id]="'roles_search_data_grid_' + idx + '_role_name'" class="font-bold text-md">
                   {{ limitText(role.name, 20) }}
                 </div>
                 <div
