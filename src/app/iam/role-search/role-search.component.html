@@ -74,7 +74,7 @@
         <div class="p-grid p-nogutter grid grid-nogutter">
           <div
             *ngFor="let role of roles"
-            class="col-12 md:col-5 lg:col-5 xl:col-6 px-3 flex flex-column justify-content-center"
+            class="col-12 grid grid-nogutter align-items-center row-gap-1 listview-row p-3 hover:bg-gray-200"
           >
             <div
               [id]="'roles_search_data_list_' + idx"
@@ -83,14 +83,18 @@
               <div
                 [id]="'roles_search_data_list_' + idx + '_roles_display_name'"
                 class="font-bold"
-                [title]="('ROLE.NAME' | translate) + ': ' + limitText(role.name, 100)"
+                [pTooltip]="('ROLE.NAME' | translate) + ': ' + limitText(role.name, 100)"
+                tooltipPosition="top"
+                tooltipEvent="hover"
               >
                 {{ limitText(role.name, 100) }}
               </div>
               <div
                 [id]="'roles_search_data_list_' + idx + '_roles_name'"
                 class="text-sm"
-                [title]="'ROLE.DESCRIPTION' | translate"
+                [pTooltip]="('ROLE.DESCRIPTION' | translate) + ': ' + role.description"
+                tooltipPosition="top"
+                tooltipEvent="hover"
               >
                 {{ limitText(role.description, 100) }}
               </div>
@@ -105,19 +109,25 @@
             [id]="'roles_search_data_grid_' + idx"
             class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3"
           >
-            <div class="card p-2 flex flex-column justify-content-center">
+            <div
+              class="card relative p-3 flex flex-column justify-content-center row-gap-1 md:row-gap-2 hover:bg-gray-200"
+            >
               <div class="h-2rem flex flex-column justify-content-between gap-1 mb-1 text-center">
                 <div
                   [id]="'roles_search_data_grid_' + idx + '_role_name'"
                   class="font-bold text-md"
-                  [title]="('ROLE.NAME' | translate) + ': ' + limitText(role.name, 100)"
+                  [pTooltip]="('ROLE.NAME' | translate) + ': ' + limitText(role.name, 100)"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
                 >
                   {{ limitText(role.name, 20) }}
                 </div>
                 <div
                   [id]="'roles_search_data_grid_' + idx + '_description'"
                   class="text-sm"
-                  [title]="('ROLE.DESCRIPTION' | translate) + ': ' + role.description"
+                  [pTooltip]="('ROLE.DESCRIPTION' | translate) + ': ' + role.description"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
                 >
                   {{ limitText(role.description, 25) }}
                 </div>
