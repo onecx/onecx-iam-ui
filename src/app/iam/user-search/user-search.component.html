@@ -10,51 +10,59 @@
     <div id="user_search_criteria" [formGroup]="formGroup" class="flex flex-wrap gap-4 row-gap-3">
       <span class="p-float-label">
         <input
-          id="userName"
+          id="role_search_user_name"
           pInputText
           type="text"
           formControlName="userName"
           class="w-18rem"
           [clear]="true"
-          [title]="'USER.TOOLTIPS.USERNAME' | translate"
+          [pTooltip]="'USER.TOOLTIPS.USERNAME' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
         />
-        <label for="userName">{{ 'USER.USERNAME' | translate }}</label>
+        <label for="role_search_user_name">{{ 'USER.USERNAME' | translate }}</label>
       </span>
       <span class="p-float-label">
         <input
-          id="firstName"
+          id="role_search_first_name"
           pInputText
           type="text"
           formControlName="firstName"
           class="w-18rem"
           [clear]="true"
-          [title]="'USER.TOOLTIPS.FIRSTNAME' | translate"
+          [pTooltip]="'USER.TOOLTIPS.FIRSTNAME' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
         />
-        <label for="firstName">{{ 'USER.FIRSTNAME' | translate }}</label>
+        <label for="role_search_first_name">{{ 'USER.FIRSTNAME' | translate }}</label>
       </span>
       <span class="p-float-label">
         <input
-          id="lastName"
+          id="role_search_last_name"
           pInputText
           type="text"
           formControlName="lastName"
           class="w-18rem"
           [clear]="true"
-          [title]="'USER.TOOLTIPS.LASTNAME' | translate"
+          [pTooltip]="'USER.TOOLTIPS.LASTNAME' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
         />
-        <label for="lastName">{{ 'USER.LASTNAME' | translate }}</label>
+        <label for="role_search_last_name">{{ 'USER.LASTNAME' | translate }}</label>
       </span>
       <span class="p-float-label">
         <input
-          id="email"
+          id="role_search_email"
           pInputText
           type="text"
           formControlName="email"
           class="w-18rem"
           [clear]="true"
-          [title]="'USER.TOOLTIPS.EMAIL' | translate"
+          [pTooltip]="'USER.TOOLTIPS.EMAIL' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
         />
-        <label for="email">{{ 'USER.EMAIL' | translate }}</label>
+        <label for="role_search_email">{{ 'USER.EMAIL' | translate }}</label>
       </span>
     </div>
   </ocx-search-header>
@@ -109,31 +117,19 @@
         <div class="p-grid p-nogutter grid grid-nogutter">
           <div
             *ngFor="let user of users"
-            class="col-12 md:col-5 lg:col-5 xl:col-6 px-3 flex flex-column justify-content-center"
+            class="col-12 grid grid-nogutter align-items-center row-gap-1 listview-row p-3 hover:bg-gray-200"
           >
             <div
               [id]="'roles_search_data_list_' + idx"
               class="flex flex-column justify-content-center gap-1 text-center md:text-left"
+              [pTooltip]="('USER.USERNAME' | translate) + ': ' + limitText(user.username, 100)"
+              tooltipPosition="top"
+              tooltipEvent="hover"
             >
-              <div
-                [id]="'user_search_data_list_' + idx + '_user_name'"
-                class="font-bold"
-                [title]="'USER.USERNAME' | translate"
-              >
+              <div [id]="'user_search_data_list_' + idx + '_user_name'" class="font-bold">
                 {{ limitText(user.username, 100) }}
               </div>
-              <div
-                [id]="'user_search_data_list_' + idx + '_name'"
-                [title]="
-                  ('USER.FIRSTNAME' | translate) +
-                  ': ' +
-                  user.firstName +
-                  ' ' +
-                  ('USER.LASTNAME' | translate) +
-                  ': ' +
-                  user.lastName
-                "
-              >
+              <div [id]="'user_search_data_list_' + idx + '_name'">
                 {{ limitText(user.firstName, 75) }} {{ limitText(user.lastName, 75) }}
               </div>
             </div>
@@ -147,28 +143,19 @@
             [id]="'user_search_data_grid_' + idx"
             class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3"
           >
-            <div class="card p-2 flex flex-column justify-content-center">
-              <div class="h-2rem flex flex-column justify-content-between gap-1 mb-1 text-center">
-                <div
-                  [id]="'user_search_data_grid_' + idx + '_user_name'"
-                  class="font-bold text-md"
-                  [title]="('USER.USERNAME' | translate) + ': ' + limitText(user.userName, 100)"
-                >
+            <div
+              class="card relative p-3 flex flex-column justify-content-center row-gap-1 md:row-gap-2 hover:bg-gray-200"
+            >
+              <div
+                class="h-2rem flex flex-column justify-content-between gap-1 mb-1 text-center"
+                [pTooltip]="('USER.USERNAME' | translate) + ': ' + limitText(user.username, 100)"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                <div [id]="'user_search_data_grid_' + idx + '_user_name'" class="font-bold text-md">
                   {{ limitText(user.username, 20) }}
                 </div>
-                <div
-                  [id]="'user_search_data_grid_' + idx + '_name'"
-                  class="text-sm"
-                  [title]="
-                    ('USER.FIRSTNAME' | translate) +
-                    ': ' +
-                    user.firstName +
-                    ' ' +
-                    ('USER.LASTNAME' | translate) +
-                    ': ' +
-                    user.lastName
-                  "
-                >
+                <div [id]="'user_search_data_grid_' + idx + '_name'" class="text-sm">
                   {{ limitText(user.firstName, 20) }} {{ limitText(user.lastName, 20) }}
                 </div>
               </div>
