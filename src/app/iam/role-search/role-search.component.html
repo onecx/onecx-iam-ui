@@ -16,7 +16,9 @@
           formControlName="name"
           class="w-18rem"
           [clear]="true"
-          [title]="'ROLE.TOOLTIPS.NAME' | translate"
+          [pTooltip]="'ROLE.TOOLTIPS.NAME' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
         />
         <label for="roles_search_criteria_roles_name">{{ 'ROLE.NAME' | translate }}</label>
       </span>
