@@ -145,15 +145,15 @@
           >
             <div
               class="card h-3rem md:h-3-5rem p-1 md:p-2 flex flex-column justify-content-between text-center row-gap-1 md:row-gap-2"
-              [pTooltip]="user.username.length < 30 ? '' : user.username"
+              [pTooltip]="user.username.length < 24 ? '' : user.username"
               tooltipPosition="top"
               tooltipEvent="hover"
             >
-              <div [id]="'iam_user_search_data_grid_' + idx + '_user_name'" class="font-bold">
-                {{ limitText(user.username, 30) }}
+              <div [id]="'iam_user_search_data_grid_' + idx + '_user_name'" class="font-bold text-responsive">
+                {{ user.username }}
               </div>
-              <div [id]="'iam_user_search_data_grid_' + idx + '_name'" class="text-xs">
-                {{ limitText(user.firstName, 20) }} {{ limitText(user.lastName, 20) }}
+              <div [id]="'iam_user_search_data_grid_' + idx + '_name'" class="text-xs text-responsive">
+                {{ user.lastName }}, {{ user.firstName }}
               </div>
             </div>
           </div>

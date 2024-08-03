@@ -118,11 +118,11 @@ export class RoleSearchComponent implements OnInit {
         map((data) => {
           return [
             {
-              label: data['ACTIONS.NAVIGATION.BACK'],
-              title: data['ACTIONS.NAVIGATION.BACK.TOOLTIP'],
+              label: data['DIALOG.SEARCH.USER.LABEL'],
+              title: data['DIALOG.SEARCH.USER.TOOLTIP'],
               actionCallback: () => this.onBack(),
               permission: 'USER#SEARCH',
-              icon: 'pi pi-arrow-left',
+              icon: 'pi pi-users',
               show: 'always'
             }
           ]

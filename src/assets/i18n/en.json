@@ -64,11 +64,11 @@
   "DIALOG": {
     "SEARCH": {
       "ROLE.HEADER": "IAM Roles",
-      "ROLE.SUBHEADER": "Search Roles in Identity Access Management (IAM)",
+      "ROLE.SUBHEADER": "Roles in Identity Access Management (IAM)",
       "ROLE.LABEL": "Roles",
       "ROLE.TOOLTIP": "Search Roles in Identity Access Management (IAM)",
       "USER.HEADER": "IAM Users",
-      "USER.SUBHEADER": "Search Users in Identity Access Management (IAM)",
+      "USER.SUBHEADER": "Users in Identity Access Management (IAM)",
       "USER.LABEL": "User",
       "USER.TOOLTIP": "Search Users in Identity Access Management (IAM)"
     },
@@ -98,7 +98,7 @@
   "ROLE": {
     "ID": "ID",
     "NAME": "Name",
-    "CRITERIA": "Suchtext",
+    "CRITERIA": "Search text",
     "VERSION": "Version",
     "DESCRIPTION": "Description",
     "TOOLTIPS": {
@@ -143,7 +143,7 @@
   },
   "EXCEPTIONS": {
     "HTTP_STATUS_0": {
-      "USER": "Unknown problem retrieving Users data - please try again.",
+      "USER": "Unknown problem retrieving User data - please try again.",
       "ROLE": "Unknown problem retrieving Role data - please try again."
     },
     "HTTP_STATUS_401": {
@@ -160,7 +160,7 @@
     },
     "HTTP_STATUS_500": {
       "USER": "Unknown server problem retrieving User data - please try again.",
-      "ROLE": "Unknown server problem retrieving Roles data - please try again."
+      "ROLE": "Unknown server problem retrieving Role data - please try again."
     },
     "HTTP_STATUS_504": {
       "USER": "Timeout retrieving User data - please try again.",

@@ -242,6 +242,16 @@
   }
 }
 
+@mixin displaying-text-responsive {
+  :host ::ng-deep {
+    .text-responsive {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
 @mixin media-md-h-3-5 {
   :host ::ng-deep {
     @media screen and (min-width: 768px) {

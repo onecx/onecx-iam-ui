@@ -107,21 +107,21 @@
             >
               <div
                 [id]="'iam_role_search_data_grid_' + idx + '_role_name'"
-                class="font-bold"
-                [pTooltip]="role.name.length < 20 ? '' : role.name"
+                class="font-bold text-responsive"
+                [pTooltip]="role.name.length < 22 ? '' : role.name"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
-                {{ limitText(role.name, 20) }}
+                {{ role.name }}
               </div>
               <div
                 [id]="'iam_role_search_data_grid_' + idx + '_role_description'"
-                class="text-xs"
+                class="text-xs text-responsive"
                 [pTooltip]="role.description?.length < 25 ? '' : role.description"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
-                {{ limitText(role.description, 25) }}
+                {{ role.description }}
               </div>
             </div>
           </div>
