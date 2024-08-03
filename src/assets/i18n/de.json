@@ -66,11 +66,11 @@
       "ROLE.HEADER": "IAM Rollen",
       "ROLE.SUBHEADER": "Rollen im Identity Access Management (IAM)",
       "ROLE.LABEL": "Rollen",
-      "ROLE.TOOLTIP": "Rollen im Identity Access Management (IAM) suchen",
+      "ROLE.TOOLTIP": "Rollen im Identity Access Management (IAM)",
       "USER.HEADER": "IAM Benutzer",
       "USER.SUBHEADER": "Benutzer im Identity Access Management (IAM)",
       "USER.LABEL": "Benutzer",
-      "USER.TOOLTIP": "Benutzer im Identity Access Management (IAM) suchen"
+      "USER.TOOLTIP": "Benutzer im Identity Access Management (IAM)"
     },
     "DETAIL": {
       "ROLE.SUBHEADER": "Rollendetails",
