@@ -4,8 +4,6 @@
 /dist
 /tmp
 /out-tsc
-# Only exists if Bazel was run
-/bazel-out
 
 # dependencies
 /node_modules
@@ -24,15 +22,12 @@ speed-measure-plugin*.json
 *.sublime-workspace
 
 # IDE - VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-.history/*
+.vscode
+.history
 
 # misc
-.angular/cache
+.angular
+.eslintcache
 .sass-cache
 .gitlab*
 .scannerwork
