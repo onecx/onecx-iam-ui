@@ -7,28 +7,28 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div id="roles_search_criteria" [formGroup]="roleSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3">
+    <div id="iam_role_search_criteria" [formGroup]="roleSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3">
       <span class="p-float-label">
         <input
-          id="roles_search_criteria_roles_name"
+          id="iam_role_search_criteria_role_name"
           pInputText
           type="text"
           formControlName="name"
           class="w-18rem"
           [clear]="true"
-          [pTooltip]="'ROLE.TOOLTIPS.NAME' | translate"
+          [pTooltip]="'ROLE.TOOLTIPS.CRITERIA' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="roles_search_criteria_roles_name">{{ 'ROLE.NAME' | translate }}</label>
+        <label for="iam_role_search_criteria_role_name">{{ 'ROLE.CRITERIA' | translate }}</label>
       </span>
     </div>
   </ocx-search-header>
 
   <ocx-page-content>
-    <div *ngIf="exceptionKey" id="roles_search_criteria_error" class="card px-3 align-items-center">
+    <div *ngIf="!loading && exceptionKey" id="iam_role_search_criteria_error" class="card px-3 align-items-center">
       <p-message
-        id="roles_search_criteria_error_message"
+        id="iam_role_search_criteria_error_message"
         severity="error"
         styleClass="p-2"
         [text]="exceptionKey | translate"
@@ -36,29 +36,26 @@
     </div>
     <p-dataView
       *ngIf="!exceptionKey"
-      id="roles_search_dataview"
+      id="iam_role_search_dataview"
       [value]="(rolesPageResult$ | async)?.stream!.sort()"
       [layout]="viewMode"
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
       [paginator]="true"
       [alwaysShowPaginator]="true"
-      [rowsPerPageOptions]="[20, 40, 80]"
-      [rows]="viewMode === 'grid' ? 20 : 10"
+      [rowsPerPageOptions]="[20, 40, 100]"
+      [rows]="20"
       filterBy="name"
       [sortField]="sortField"
       [sortOrder]="sortOrder"
     >
       <ng-template pTemplate="header">
         <ocx-data-view-controls
-          id="roles_search_dataview_controls"
+          id="iam_role_search_dataview_controls"
           [enableFiltering]="true"
           [enableSorting]="true"
           [supportedViews]="['grid', 'list']"
           [initialViewMode]="viewMode"
-          [sortingOptions]="[
-            { label: 'ROLE.NAME' | translate, value: 'name' },
-            { label: 'ROLE.DESCRIPTION' | translate, value: 'description' }
-          ]"
+          [sortingOptions]="[{ label: 'ROLE.NAME' | translate, value: 'name' }]"
           [defaultSortOption]="sortField"
           [defaultSortDirection]="sortOrder === 1"
           (dataViewChange)="onLayoutChange($event)"
@@ -70,55 +67,61 @@
         >
         </ocx-data-view-controls
       ></ng-template>
+      <!-- LIST -->
       <ng-template let-roles let-idx="rowIndex" pTemplate="listItem">
         <div class="p-grid p-nogutter grid grid-nogutter">
           <div
             *ngFor="let role of roles"
-            class="col-12 grid grid-nogutter align-items-center row-gap-1 listview-row p-3 hover:bg-gray-200"
+            [id]="'iam_role_search_data_list_' + idx"
+            class="col-12 md:col-6 h-3-5rem px-3 py-2 flex flex-column justify-content-between row-gap-2"
+            [pTooltip]="role.name?.length < 30 ? '' : role.name"
+            tooltipPosition="top"
+            tooltipEvent="hover"
           >
+            <div [id]="'iam_role_search_data_list_' + idx + '_roles_display_name'" class="font-bold">
+              {{ limitText(role.name, 30) }}
+            </div>
             <div
-              [id]="'roles_search_data_list_' + idx"
-              class="flex flex-column justify-content-center gap-1 text-center md:text-left"
+              [id]="'iam_role_search_data_list_' + idx + '_roles_name'"
+              class="text-xs"
+              [pTooltip]="role.description?.length < 50 ? '' : role.description"
+              tooltipPosition="top"
+              tooltipEvent="hover"
             >
-              <div [id]="'roles_search_data_list_' + idx + '_roles_display_name'" class="font-bold">
-                {{ limitText(role.name, 100) }}
-              </div>
-              <div
-                [id]="'roles_search_data_list_' + idx + '_roles_name'"
-                class="text-sm"
-                [pTooltip]="('ROLE.DESCRIPTION' | translate) + ': ' + role.description"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              >
-                {{ limitText(role.description, 100) }}
-              </div>
+              {{ limitText(role.description, 50) }}
             </div>
           </div>
         </div>
       </ng-template>
+
+      <!-- GRID -->
       <ng-template let-roles let-idx="rowIndex" pTemplate="gridItem">
         <div class="p-grid p-nogutter grid grid-nogutter">
           <div
             *ngFor="let role of roles"
-            [id]="'roles_search_data_grid_' + idx"
-            class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3"
+            [id]="'role_search_data_grid_' + idx"
+            class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-1 sm:p-2 md:p-3"
           >
             <div
-              class="card relative p-3 flex flex-column justify-content-center row-gap-1 md:row-gap-2 hover:bg-gray-200"
+              class="card h-3rem md:h-3-5rem p-1 md:p-2 flex flex-column justify-content-between text-center row-gap-1 md:row-gap-2"
             >
-              <div class="h-2rem flex flex-column justify-content-between gap-1 mb-1 text-center">
-                <div [id]="'roles_search_data_grid_' + idx + '_role_name'" class="font-bold text-md">
-                  {{ limitText(role.name, 20) }}
-                </div>
-                <div
-                  [id]="'roles_search_data_grid_' + idx + '_description'"
-                  class="text-sm"
-                  [pTooltip]="('ROLE.DESCRIPTION' | translate) + ': ' + role.description"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  {{ limitText(role.description, 25) }}
-                </div>
+              <div
+                [id]="'iam_role_search_data_grid_' + idx + '_role_name'"
+                class="font-bold"
+                [pTooltip]="role.name.length < 20 ? '' : role.name"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                {{ limitText(role.name, 20) }}
+              </div>
+              <div
+                [id]="'iam_role_search_data_grid_' + idx + '_role_description'"
+                class="text-xs"
+                [pTooltip]="role.description?.length < 25 ? '' : role.description"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                {{ limitText(role.description, 25) }}
               </div>
             </div>
           </div>

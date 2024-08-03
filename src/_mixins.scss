@@ -99,14 +99,21 @@
   }
 }
 
-@mixin dataview-zebra-rows {
+@mixin dataview-list-zebra-rows {
   :host ::ng-deep {
-    .p-dataview-content .p-grid > div {
-      min-height: 50px;
-      &.listview-row {
-        &:nth-child(odd) {
-          background-color: #f8f9fa;
-        }
+    .p-dataview-list .p-dataview-content .p-grid > div {
+      &:nth-child(odd) {
+        background-color: #f8f9fa;
+      }
+    }
+  }
+}
+@mixin dataview-list-zebra-rows-4 {
+  :host ::ng-deep {
+    .p-dataview-list .p-dataview-content .p-grid > div {
+      &:nth-child(4n + 1),
+      &:nth-child(4n + 2) {
+        background-color: #f8f9fa;
       }
     }
   }
@@ -118,13 +125,34 @@
       display: flex;
       flex-wrap: wrap;
       align-content: center;
-      row-gap: 0.5rem;
+      row-gap: 1rem;
       column-gap: 3rem;
       .search-criteria-buttons {
         flex-wrap: wrap;
         align-content: center;
-        margin-left: 0.5rem;
         margin-top: unset;
+      }
+    }
+  }
+}
+
+@mixin correct-select-button {
+  :host ::ng-deep {
+    .p-selectbutton.p-buttonset {
+      .p-button:first-of-type:not(:only-of-type) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      .p-button:not(:last-child),
+      .p-button:not(:last-child):hover {
+        border-right: 0 none;
+      }
+      .p-button:last-of-type:not(:only-of-type) {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+      .p-button:not(:first-of-type):not(:last-of-type) {
+        border-radius: 0;
       }
     }
   }
@@ -195,6 +223,7 @@
     }
   }
 }
+
 @mixin table-inline-buttons {
   :host ::ng-deep {
     // reduce the size of buttons used inside a table row
@@ -208,6 +237,16 @@
       }
       &:disabled {
         opacity: 0.38 !important;
+      }
+    }
+  }
+}
+
+@mixin media-md-h-3-5 {
+  :host ::ng-deep {
+    @media screen and (min-width: 768px) {
+      .md\:h-3-5rem {
+        height: 3.5rem !important;
       }
     }
   }

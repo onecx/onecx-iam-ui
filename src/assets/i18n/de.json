@@ -64,11 +64,11 @@
   "DIALOG": {
     "SEARCH": {
       "ROLE.HEADER": "IAM Rollen",
-      "ROLE.SUBHEADER": "Rollen im Identity Access Management (IAM) suchen",
+      "ROLE.SUBHEADER": "Rollen im Identity Access Management (IAM)",
       "ROLE.LABEL": "Rollen",
       "ROLE.TOOLTIP": "Rollen im Identity Access Management (IAM) suchen",
       "USER.HEADER": "IAM Benutzer",
-      "USER.SUBHEADER": "Benutzer im Identity Access Management (IAM) suchen",
+      "USER.SUBHEADER": "Benutzer im Identity Access Management (IAM)",
       "USER.LABEL": "Benutzer",
       "USER.TOOLTIP": "Benutzer im Identity Access Management (IAM) suchen"
     },
@@ -91,17 +91,18 @@
       "USERNAME": "Nach Benutzernamen suchen",
       "LASTNAME": "Nach Nachnamen suchen",
       "FIRSTNAME": "Nach Vornamen suchen",
-      "CRITERIA": "Suche nach Teilstrings in Namensfeldern",
+      "CRITERIA": "Namensbestandteile in Namensfeldern (Vor/Nachname...)",
       "EMAIL": "E-Mail Adresse"
     }
   },
   "ROLE": {
     "ID": "ID",
     "NAME": "Name",
+    "CRITERIA": "Suchtext",
     "VERSION": "Version",
     "DESCRIPTION": "Beschreibung",
     "TOOLTIPS": {
-      "NAME": "Suche nach Teilstrings im Rollenname"
+      "CRITERIA": "Textsuche in Rollenname und Beschreibung"
     }
   },
   "VALIDATION": {
