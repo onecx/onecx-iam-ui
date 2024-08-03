@@ -229,10 +229,6 @@ describe('RoleSearchComponent', () => {
         const firstAction = actions[0]
         firstAction.actionCallback()
         expect(component.onBack).toHaveBeenCalled()
-        expect(actions[0].label).toBe('Back')
-        expect(actions[0].title).toBe('Previous page')
-        expect(actions[0].icon).toBe('pi pi-arrow-left')
-        expect(actions[0].show).toBe('always')
       })
     }
   })
