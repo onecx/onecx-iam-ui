@@ -20,14 +20,13 @@ export interface RoleSearchCriteria {
 })
 export class RoleSearchComponent implements OnInit {
   public exceptionKey: string | undefined
-  public loading = true
+  public loading = false
 
   public actions$: Observable<Action[]> | undefined
   public roles$!: Observable<Role[]>
   public rolesPageResult$!: Observable<RolePageResult>
 
   public viewMode: 'list' | 'grid' = 'grid'
-  public searchInProgress = false
   public filter: string | undefined
   public sortField = 'name'
   public sortOrder = 1
@@ -61,6 +60,8 @@ export class RoleSearchComponent implements OnInit {
 
   public searchRoles() {
     let name: string = ''
+    this.loading = true
+    this.exceptionKey = undefined
     if (this.roleSearchCriteriaGroup.controls['name'] && this.roleSearchCriteriaGroup.controls['name'].value != '') {
       name = this.roleSearchCriteriaGroup.controls['name'].value!
     }
@@ -76,7 +77,7 @@ export class RoleSearchComponent implements OnInit {
           console.error('searchRoles():', err)
           return of({} as RolePageResult)
         }),
-        finalize(() => (this.searchInProgress = false))
+        finalize(() => (this.loading = false))
       )
 
     this.roles$ = this.rolesPageResult$.pipe(

@@ -98,10 +98,11 @@
   "ROLE": {
     "ID": "ID",
     "NAME": "Name",
+    "CRITERIA": "Suchtext",
     "VERSION": "Version",
     "DESCRIPTION": "Description",
     "TOOLTIPS": {
-      "NAME": "Substring search by role name"
+      "CRITERIA": "Searching text in role name and description"
     }
   },
   "VALIDATION": {
