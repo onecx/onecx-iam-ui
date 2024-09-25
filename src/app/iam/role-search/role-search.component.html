@@ -68,21 +68,21 @@
         </ocx-data-view-controls
       ></ng-template>
       <!-- LIST -->
-      <ng-template let-roles let-idx="rowIndex" pTemplate="listItem">
+      <ng-template let-roles pTemplate="listItem">
         <div class="p-grid p-nogutter grid grid-nogutter">
           <div
-            *ngFor="let role of roles"
-            [id]="'iam_role_search_data_list_' + idx"
+            *ngFor="let role of roles; index as i"
+            [id]="'iam_role_search_data_list_row_' + i"
             class="col-12 md:col-6 h-3-5rem px-3 py-2 flex flex-column justify-content-between row-gap-2"
             [pTooltip]="role.name?.length < 30 ? '' : role.name"
             tooltipPosition="top"
             tooltipEvent="hover"
           >
-            <div [id]="'iam_role_search_data_list_' + idx + '_roles_display_name'" class="font-bold">
+            <div [id]="'iam_role_search_data_list_row_' + i + '_roles_display_name'" class="font-bold">
               {{ limitText(role.name, 30) }}
             </div>
             <div
-              [id]="'iam_role_search_data_list_' + idx + '_roles_name'"
+              [id]="'iam_role_search_data_list_row_' + i + '_roles_name'"
               class="text-xs"
               [pTooltip]="role.description?.length < 50 ? '' : role.description"
               tooltipPosition="top"
@@ -95,18 +95,18 @@
       </ng-template>
 
       <!-- GRID -->
-      <ng-template let-roles let-idx="rowIndex" pTemplate="gridItem">
+      <ng-template let-roles pTemplate="gridItem">
         <div class="p-grid p-nogutter grid grid-nogutter">
           <div
-            *ngFor="let role of roles"
-            [id]="'role_search_data_grid_' + idx"
+            *ngFor="let role of roles; index as i"
+            [id]="'iam_role_search_data_grid_row_' + i"
             class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-1 sm:p-2 md:p-3"
           >
             <div
               class="card h-3rem md:h-3-5rem p-1 md:p-2 flex flex-column justify-content-between text-center row-gap-1 md:row-gap-2"
             >
               <div
-                [id]="'iam_role_search_data_grid_' + idx + '_role_name'"
+                [id]="'iam_role_search_data_grid_row_' + i + '_role_name'"
                 class="font-bold text-responsive"
                 [pTooltip]="role.name.length < 22 ? '' : role.name"
                 tooltipPosition="top"
@@ -115,7 +115,7 @@
                 {{ role.name }}
               </div>
               <div
-                [id]="'iam_role_search_data_grid_' + idx + '_role_description'"
+                [id]="'iam_role_search_data_grid_row_' + i + '_role_description'"
                 class="text-xs text-responsive"
                 [pTooltip]="role.description?.length < 25 ? '' : role.description"
                 tooltipPosition="top"
