@@ -6,7 +6,6 @@ import { finalize, map, of, Observable, catchError } from 'rxjs'
 import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 import { DataView } from 'primeng/dataview'
 
-import { limitText } from 'src/app/shared/utils'
 import { Role, RolePageResult, RolesInternalAPIService } from 'src/app/shared/generated'
 
 export interface RoleSearchCriteria {
@@ -36,7 +35,6 @@ export class RoleSearchComponent implements OnInit {
   public hasEditPermission = false
   public hasDeletePermission = false
   roleSearchCriteriaGroup: FormGroup<RoleSearchCriteria>
-  public limitText = limitText
 
   ngOnInit(): void {
     this.prepareDialogTranslations()

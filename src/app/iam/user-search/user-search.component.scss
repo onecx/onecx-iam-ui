@@ -1,8 +1,31 @@
 @import 'src/app/_iam_mixins.scss';
 
 @include correct-data-view-control;
-@include dataview-list-zebra-rows-4;
 @include correct-search-criteria;
 @include correct-select-button;
 @include media-md-h-3-5;
 @include displaying-text-responsive;
+
+@media screen and (min-width: 768px) {
+  :host ::ng-deep {
+    .p-dataview-list .p-dataview-content .p-grid > div {
+      &:nth-child(4n + 1),
+      &:nth-child(4n + 2) {
+        background-color: #f8f9fa;
+      }
+      &:nth-child(4n + 1),
+      &:nth-child(4n + 3) {
+        border-right: var(--data-view-list-item-border);
+      }
+    }
+  }
+}
+@media screen and (max-width: 768px) {
+  :host ::ng-deep {
+    .p-dataview-list .p-dataview-content .p-grid > div {
+      &:nth-child(odd) {
+        background-color: #f8f9fa;
+      }
+    }
+  }
+}
