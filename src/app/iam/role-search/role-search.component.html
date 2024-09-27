@@ -73,22 +73,22 @@
           <div
             *ngFor="let role of roles; index as i"
             [id]="'iam_role_search_data_list_row_' + i"
-            class="col-12 md:col-6 h-3-5rem px-3 py-2 flex flex-column justify-content-between row-gap-2"
+            class="col-12 sm:col-6 h-3rem px-3 py-1 sm:py-2 flex flex-column justify-content-between row-gap-1"
             [pTooltip]="role.name?.length < 30 ? '' : role.name"
             tooltipPosition="top"
             tooltipEvent="hover"
           >
-            <div [id]="'iam_role_search_data_list_row_' + i + '_roles_display_name'" class="font-bold">
-              {{ limitText(role.name, 30) }}
+            <div [id]="'iam_role_search_data_list_row_' + i + '_roles_display_name'" class="font-bold text-responsive">
+              {{ role.name }}
             </div>
             <div
               [id]="'iam_role_search_data_list_row_' + i + '_roles_name'"
-              class="text-xs"
+              class="text-xs text-responsive"
               [pTooltip]="role.description?.length < 50 ? '' : role.description"
               tooltipPosition="top"
               tooltipEvent="hover"
             >
-              {{ limitText(role.description, 50) }}
+              {{ role.description }}
             </div>
           </div>
         </div>
@@ -100,7 +100,7 @@
           <div
             *ngFor="let role of roles; index as i"
             [id]="'iam_role_search_data_grid_row_' + i"
-            class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-1 sm:p-2 md:p-3"
+            class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 px-3 py-2"
           >
             <div
               class="card h-3rem md:h-3-5rem p-1 md:p-2 flex flex-column justify-content-between text-center row-gap-1 md:row-gap-2"
