@@ -50,10 +50,10 @@ export class UserSearchComponent implements OnInit {
   @ViewChild(DataView) dv: DataView | undefined
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private userService: UsersInternalAPIService,
-    private translate: TranslateService
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly userService: UsersInternalAPIService,
+    private readonly translate: TranslateService
   ) {
     this.formGroup = new FormGroup<UserSearchCriteria>({
       userName: new FormControl<string | null>(null),

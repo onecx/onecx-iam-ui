@@ -57,6 +57,9 @@
       "SAVE": "Save changes"
     }
   },
+  "GENERAL": {
+    "OF": "of"
+  },
   "BREADCRUMBS": {
     "ROLES": "Roles",
     "USERS": "Users"

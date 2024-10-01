@@ -46,10 +46,10 @@ export class RoleSearchComponent implements OnInit {
   @ViewChild(DataView) dv: DataView | undefined
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private rolesService: RolesInternalAPIService,
-    private translate: TranslateService
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly rolesService: RolesInternalAPIService,
+    private readonly translate: TranslateService
   ) {
     this.roleSearchCriteriaGroup = new FormGroup<RoleSearchCriteria>({
       name: new FormControl<string | null>(null)

@@ -64,12 +64,12 @@ export class OneCXChangePasswordComponent implements ocxRemoteComponent, ocxRemo
   permissions: string[] = []
 
   constructor(
-    @Inject(BASE_URL) private baseUrl: ReplaySubject<string>,
-    private usersInternalService: UsersInternalAPIService,
-    private userService: UserService,
-    private portalDialogService: PortalDialogService,
-    private msgService: PortalMessageService,
-    private translateService: TranslateService
+    @Inject(BASE_URL) private readonly baseUrl: ReplaySubject<string>,
+    private readonly usersInternalService: UsersInternalAPIService,
+    private readonly userService: UserService,
+    private readonly portalDialogService: PortalDialogService,
+    private readonly msgService: PortalMessageService,
+    private readonly translateService: TranslateService
   ) {
     this.userService.lang$.subscribe((lang) => this.translateService.use(lang))
   }
