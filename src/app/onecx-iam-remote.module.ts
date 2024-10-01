@@ -64,7 +64,7 @@ const routes: Routes = [
   schemas: []
 })
 export class OneCXIamModule implements DoBootstrap {
-  constructor(private injector: Injector) {
+  constructor(private readonly injector: Injector) {
     console.info('OneCX IAM Module constructor')
   }
 

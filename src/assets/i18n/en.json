@@ -43,7 +43,8 @@
       "VIEW_MODE_TABLE": "Table view"
     },
     "SEARCH": {
-      "NOT_FOUND": "No data found"
+      "NOT_FOUND": "No data found",
+      "OF": "of"
     },
     "VIEW": {
       "LABEL": "View"

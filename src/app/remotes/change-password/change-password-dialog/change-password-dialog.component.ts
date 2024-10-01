@@ -18,7 +18,7 @@ export class ChangePasswordDialogComponent implements DialogPrimaryButtonDisable
   dialogResult: string = ''
   @Output() primaryButtonEnabled: EventEmitter<boolean> = new EventEmitter()
 
-  constructor(private fb: FormBuilder) {
+  constructor(private readonly fb: FormBuilder) {
     this.formGroup = this.fb.group(
       {
         password: new FormControl<string>('', [Validators.required]),
