@@ -43,7 +43,8 @@
       "VIEW_MODE_TABLE": "Tabellenansicht"
     },
     "SEARCH": {
-      "NOT_FOUND": "Keine Daten gefunden"
+      "NOT_FOUND": "Keine Daten gefunden",
+      "OF": "von"
     },
     "VIEW": {
       "LABEL": "Ansehen"
@@ -56,9 +57,6 @@
       "CANCEL": "Aktion abbrechen ",
       "SAVE": "Änderungen speichern"
     }
-  },
-  "GENERAL": {
-    "OF": "von"
   },
   "BREADCRUMBS": {
     "ROLES": "Rollen",
