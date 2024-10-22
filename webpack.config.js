@@ -14,8 +14,10 @@ const config = withModuleFederationPlugin({
     '@angular/common': { requiredVersion: 'auto', includeSecondaries: { skip: ['@angular/common/http/testing'] } },
     '@angular/common/http': { requiredVersion: 'auto', includeSecondaries: true },
     '@angular/router': { requiredVersion: 'auto', includeSecondaries: true },
-    rxjs: { requiredVersion: 'auto', includeSecondaries: true },
+    '@angular/platform-browser': { requiredVersion: 'auto', includeSecondaries: true },
     '@ngx-translate/core': { requiredVersion: 'auto' },
+    rxjs: { requiredVersion: 'auto', includeSecondaries: true },
+    primeng: { requiredVersion: 'auto', includeSecondaries: true },
     '@onecx/accelerator': { requiredVersion: 'auto', includeSecondaries: true },
     '@onecx/angular-accelerator': { requiredVersion: 'auto', includeSecondaries: true },
     '@onecx/angular-auth': { requiredVersion: 'auto', includeSecondaries: true },
@@ -26,8 +28,7 @@ const config = withModuleFederationPlugin({
     '@onecx/integration-interface': { requiredVersion: 'auto', includeSecondaries: true },
     '@onecx/keycloak-auth': { requiredVersion: 'auto', includeSecondaries: true },
     '@onecx/portal-integration-angular': { requiredVersion: 'auto', includeSecondaries: true },
-    '@onecx/portal-layout-styles': { requiredVersion: 'auto', includeSecondaries: true },
-    primeng: { requiredVersion: 'auto', includeSecondaries: true }
+    '@onecx/portal-layout-styles': { requiredVersion: 'auto', includeSecondaries: true }
   }),
   sharedMappings: ['@onecx/portal-integration-angular']
 })
