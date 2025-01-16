@@ -72,7 +72,7 @@ export class RoleSearchComponent implements OnInit {
       .pipe(
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.ROLE'
-          console.error('searchRoles():', err)
+          console.error('searchRolesByCriteria', err)
           return of({} as RolePageResult)
         }),
         finalize(() => (this.loading = false))

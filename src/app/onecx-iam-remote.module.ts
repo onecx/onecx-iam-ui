@@ -1,20 +1,19 @@
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { APP_INITIALIZER, DoBootstrap, Injector, NgModule } from '@angular/core'
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { BrowserModule } from '@angular/platform-browser'
 import { Router, RouterModule, Routes } from '@angular/router'
 import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core'
 
 import {
-  AppStateService,
-  ConfigurationService,
   createTranslateLoader,
   PortalApiConfiguration,
   PortalCoreModule,
   PortalMissingTranslationHandler
 } from '@onecx/portal-integration-angular'
-import { addInitializeModuleGuard } from '@onecx/angular-integration-interface'
+import { addInitializeModuleGuard, AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
 import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
 import { AngularAuthModule } from '@onecx/angular-auth'
+
 import { AppEntrypointComponent } from './app-entrypoint.component'
 import { environment } from 'src/environments/environment'
 import { Configuration } from './shared/generated'

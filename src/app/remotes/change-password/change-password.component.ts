@@ -1,7 +1,11 @@
 import { CommonModule, Location } from '@angular/common'
-import { HttpClient, HttpClientModule } from '@angular/common/http'
+import { HttpClient } from '@angular/common/http'
 import { Component, Inject, Input } from '@angular/core'
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
+import { Observable, ReplaySubject, catchError, mergeMap, of } from 'rxjs'
+import { RippleModule } from 'primeng/ripple'
+import { TooltipModule } from 'primeng/tooltip'
+
 import {
   AngularRemoteComponentsModule,
   BASE_URL,
@@ -10,21 +14,20 @@ import {
   provideTranslateServiceForRoot,
   ocxRemoteWebcomponent
 } from '@onecx/angular-remote-components'
+import { UserService } from '@onecx/angular-integration-interface'
 import {
   DialogState,
   PortalCoreModule,
   PortalDialogService,
   PortalMessageService,
-  UserService,
   createRemoteComponentTranslateLoader,
   providePortalDialogService
 } from '@onecx/portal-integration-angular'
-import { Observable, ReplaySubject, catchError, mergeMap, of } from 'rxjs'
-import { RippleModule } from 'primeng/ripple'
-import { TooltipModule } from 'primeng/tooltip'
+
 import { SharedModule } from 'src/app/shared/shared.module'
 import { Configuration, UsersInternalAPIService } from 'src/app/shared/generated'
 import { environment } from 'src/environments/environment'
+
 import { ChangePasswordDialogComponent } from './change-password-dialog/change-password-dialog.component'
 
 @Component({
@@ -33,10 +36,8 @@ import { ChangePasswordDialogComponent } from './change-password-dialog/change-p
   standalone: true,
   imports: [
     CommonModule,
-    HttpClientModule,
     RippleModule,
     TooltipModule,
-    ChangePasswordDialogComponent,
     TranslateModule,
     SharedModule,
     PortalCoreModule,

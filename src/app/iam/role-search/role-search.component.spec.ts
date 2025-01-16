@@ -1,11 +1,11 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { NO_ERRORS_SCHEMA } from '@angular/core'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
-import { RouterTestingModule } from '@angular/router/testing'
-import { Router, ActivatedRoute } from '@angular/router'
-import { of, throwError } from 'rxjs'
-import { TranslateTestingModule } from 'ngx-translate-testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { provideHttpClient } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
+import { provideRouter, Router, ActivatedRoute } from '@angular/router'
+import { TranslateTestingModule } from 'ngx-translate-testing'
+import { of, throwError } from 'rxjs'
 
 import { Role, RolesInternalAPIService, RolePageResult } from 'src/app/shared/generated'
 import { RoleSearchComponent, RoleSearchCriteria } from './role-search.component'
@@ -55,14 +55,15 @@ describe('RoleSearchComponent', () => {
     TestBed.configureTestingModule({
       declarations: [RoleSearchComponent],
       imports: [
-        RouterTestingModule,
-        HttpClientTestingModule,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([{ path: '', component: RoleSearchComponent }]),
         { provide: RolesInternalAPIService, useValue: apiRoleServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock }
@@ -152,9 +153,10 @@ describe('RoleSearchComponent', () => {
   })
 
   it('should search roles Error response', (done) => {
-    const err = { status: 403 }
+    const errorResponse = { status: 404, statusText: 'Not Found' }
     component.roleSearchCriteriaGroup.controls['name'].setValue('testname')
-    apiRoleServiceSpy.searchRolesByCriteria.and.returnValue(throwError(() => err))
+    apiRoleServiceSpy.searchRolesByCriteria.and.returnValue(throwError(() => errorResponse))
+    spyOn(console, 'error')
 
     component.searchRoles()
 
@@ -162,7 +164,8 @@ describe('RoleSearchComponent', () => {
       next: (roles) => {
         if (roles.stream) {
           expect(roles.stream.length).toBe(0)
-          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_403.ROLE')
+          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.USER')
+          expect(console.error).toHaveBeenCalledWith('searchRolesByCriteria', errorResponse)
         }
         done()
       },

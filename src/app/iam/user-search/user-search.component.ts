@@ -76,7 +76,7 @@ export class UserSearchComponent implements OnInit {
       .pipe(
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.USER'
-          console.error('searchUsers():', err)
+          console.error('searchUsersByCriteria', err)
           return of({} as UserPageResult)
         }),
         finalize(() => (this.searchInProgress = false))
