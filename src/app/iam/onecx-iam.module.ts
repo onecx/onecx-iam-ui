@@ -1,13 +1,14 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from '@angular/core'
+import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { RouterModule, Routes } from '@angular/router'
-import { FieldsetModule } from 'primeng/fieldset'
-import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { ConfirmationService } from 'primeng/api'
+import { ConfirmDialogModule } from 'primeng/confirmdialog'
+import { FieldsetModule } from 'primeng/fieldset'
 
 import { addInitializeModuleGuard, InitializeModuleGuard } from '@onecx/angular-integration-interface'
 import { PortalCoreModule } from '@onecx/portal-integration-angular'
+
 import { SharedModule } from 'src/app/shared/shared.module'
 import { LabelResolver } from 'src/app/shared/label.resolver'
 
@@ -52,8 +53,7 @@ const routes: Routes = [
     [RouterModule.forChild(addInitializeModuleGuard(routes))],
     SharedModule
   ],
-  providers: [ConfirmationService, InitializeModuleGuard],
-  schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA]
+  providers: [ConfirmationService, InitializeModuleGuard]
 })
 export class IamModule {
   constructor() {

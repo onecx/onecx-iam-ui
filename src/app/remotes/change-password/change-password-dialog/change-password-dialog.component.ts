@@ -1,9 +1,18 @@
 import { Component, EventEmitter, Output } from '@angular/core'
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
+import {
+  AbstractControl,
+  AbstractControlOptions,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms'
 import { TranslateModule } from '@ngx-translate/core'
-import { DialogPrimaryButtonDisabled, DialogResult } from '@onecx/portal-integration-angular'
 import { InputTextModule } from 'primeng/inputtext'
 import { PasswordModule } from 'primeng/password'
+
+import { DialogPrimaryButtonDisabled, DialogResult } from '@onecx/portal-integration-angular'
 
 @Component({
   selector: 'app-ocx-change-password-dialog',
@@ -25,8 +34,8 @@ export class ChangePasswordDialogComponent implements DialogPrimaryButtonDisable
         repeatPassword: new FormControl<string>('', [Validators.required])
       },
       {
-        validator: this.matchPasswords('password', 'repeatPassword')
-      }
+        validators: this.matchPasswords('password', 'repeatPassword')
+      } as AbstractControlOptions
     )
   }
 

@@ -1,5 +1,17 @@
+/* eslint-disable deprecation/deprecation */
 import { NgModule } from '@angular/core'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed'
+import { provideHttpClient } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
+import { ReplaySubject, of, throwError } from 'rxjs'
+import { TranslateTestingModule } from 'ngx-translate-testing'
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog'
+import { TooltipModule } from 'primeng/tooltip'
+import { RippleModule } from 'primeng/ripple'
+import { ButtonModule } from 'primeng/button'
+
+import { BASE_URL, RemoteComponentConfig } from '@onecx/angular-remote-components'
 import {
   IfPermissionDirective,
   PortalDialogService,
@@ -7,19 +19,10 @@ import {
   HAS_PERMISSION_CHECKER
 } from '@onecx/portal-integration-angular'
 import { MockUserService } from '@onecx/angular-integration-interface/mocks'
+
+import { UsersInternalAPIService } from 'src/app/shared/generated'
 import { OneCXChangePasswordComponent } from './change-password.component'
 import { OneCXChangePasswordHarness } from './change-password.harness'
-import { UsersInternalAPIService } from 'src/app/shared/generated'
-import { ReplaySubject, of, throwError } from 'rxjs'
-import { TranslateTestingModule } from 'ngx-translate-testing'
-import { provideHttpClient } from '@angular/common/http'
-import { provideHttpClientTesting } from '@angular/common/http/testing'
-import { BASE_URL, RemoteComponentConfig } from '@onecx/angular-remote-components'
-import { TooltipModule } from 'primeng/tooltip'
-import { RippleModule } from 'primeng/ripple'
-import { ButtonModule } from 'primeng/button'
-import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog'
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed'
 import { ChangePasswordDialogComponent } from './change-password-dialog/change-password-dialog.component'
 
 @NgModule({

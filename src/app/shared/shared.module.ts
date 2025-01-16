@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from '@angular/core'
+import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule } from '@ngx-translate/core'
@@ -47,8 +47,6 @@ import { LabelResolver } from './label.resolver'
     ToastModule,
     TranslateModule
   ],
-  //this is not elegant, for some reason the injection token from primeng does not work across federated module
-  providers: [LabelResolver],
-  schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA]
+  providers: [LabelResolver]
 })
 export class SharedModule {}

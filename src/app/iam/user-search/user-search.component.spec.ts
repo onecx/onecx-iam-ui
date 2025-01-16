@@ -1,13 +1,14 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { NO_ERRORS_SCHEMA } from '@angular/core'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
-import { RouterTestingModule } from '@angular/router/testing'
-import { Router, ActivatedRoute } from '@angular/router'
-import { of, throwError } from 'rxjs'
-import { TranslateTestingModule } from 'ngx-translate-testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { provideHttpClient } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
-import { UserSearchComponent, UserSearchCriteria } from './user-search.component'
+import { provideRouter, Router, ActivatedRoute } from '@angular/router'
+import { TranslateTestingModule } from 'ngx-translate-testing'
+import { of, throwError } from 'rxjs'
+
 import { User, UserPageResult, UsersInternalAPIService } from 'src/app/shared/generated'
+import { UserSearchComponent, UserSearchCriteria } from './user-search.component'
 
 const form = new FormGroup<UserSearchCriteria>({
   userName: new FormControl<string | null>(null),
@@ -57,14 +58,15 @@ describe('UserSearchComponent', () => {
     TestBed.configureTestingModule({
       declarations: [UserSearchComponent],
       imports: [
-        RouterTestingModule,
-        HttpClientTestingModule,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([{ path: '', component: UserSearchComponent }]),
         { provide: UsersInternalAPIService, useValue: apiUserServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock }
@@ -154,9 +156,10 @@ describe('UserSearchComponent', () => {
   })
 
   it('should search user Error response', (done) => {
-    const err = { status: 403 }
+    const errorResponse = { status: 404, statusText: 'Not Found' }
     component.formGroup.controls['userName'].setValue('testcriteria')
-    apiUserServiceSpy.searchUsersByCriteria.and.returnValue(throwError(() => err))
+    apiUserServiceSpy.searchUsersByCriteria.and.returnValue(throwError(() => errorResponse))
+    spyOn(console, 'error')
 
     component.searchUsers()
 
@@ -164,7 +167,8 @@ describe('UserSearchComponent', () => {
       next: (users) => {
         if (users.stream) {
           expect(users.stream.length).toBe(0)
-          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_403.USER')
+          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.USER')
+          expect(console.error).toHaveBeenCalledWith('searchUsersByCriteria', errorResponse)
         }
         done()
       },
