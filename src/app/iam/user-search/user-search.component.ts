@@ -70,7 +70,8 @@ export class UserSearchComponent implements OnInit {
           userName: this.formGroup.controls['userName'].value || undefined,
           firstName: this.formGroup.controls['firstName'].value || undefined,
           lastName: this.formGroup.controls['lastName'].value || undefined,
-          email: this.formGroup.controls['email'].value || undefined
+          email: this.formGroup.controls['email'].value || undefined,
+          pageSize: 1000
         }
       })
       .pipe(
