@@ -54,16 +54,17 @@ export class RoleSearchComponent implements OnInit {
   }
 
   public searchRoles() {
-    let name: string = ''
+    let name: string | undefined = undefined
     this.loading = true
     this.exceptionKey = undefined
     if (this.roleSearchCriteriaGroup.controls['name'] && this.roleSearchCriteriaGroup.controls['name'].value != '') {
-      name = this.roleSearchCriteriaGroup.controls['name'].value!
+      name = this.roleSearchCriteriaGroup.controls['name'].value ?? undefined
     }
     this.rolesPageResult$ = this.rolesService
       .searchRolesByCriteria({
         roleSearchCriteria: {
-          name: name
+          name: name,
+          pageSize: 1000
         }
       })
       .pipe(
