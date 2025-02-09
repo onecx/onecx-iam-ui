@@ -31,10 +31,7 @@ export class RoleSearchComponent implements OnInit {
   public sortOrder = 1
   public displayDetailDialog = false
   public displayDeleteDialog = false
-  public hasCreatePermission = false
-  public hasEditPermission = false
-  public hasDeletePermission = false
-  roleSearchCriteriaGroup: FormGroup<RoleSearchCriteria>
+  public roleSearchCriteriaGroup: FormGroup<RoleSearchCriteria>
 
   ngOnInit(): void {
     this.prepareDialogTranslations()

@@ -1,6 +1,6 @@
+import { Component, Inject, Input } from '@angular/core'
 import { CommonModule, Location } from '@angular/common'
 import { HttpClient } from '@angular/common/http'
-import { Component, Inject, Input } from '@angular/core'
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
 import { Observable, ReplaySubject, catchError, mergeMap, of } from 'rxjs'
 import { RippleModule } from 'primeng/ripple'

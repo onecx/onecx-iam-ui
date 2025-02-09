@@ -1,4 +1,5 @@
 import { ComponentHarness } from '@angular/cdk/testing'
+
 import { PButtonDirectiveHarness } from '@onecx/angular-testing'
 
 export class OneCXChangePasswordHarness extends ComponentHarness {
