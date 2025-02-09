@@ -17,37 +17,34 @@ const form = new FormGroup<UserSearchCriteria>({
   email: new FormControl<string | null>(null)
 })
 
+const user1: User = {
+  username: 'username1',
+  firstName: 'firstname1'
+}
+const user2: User = {
+  username: 'username2',
+  firstName: 'firstname2'
+}
+const UserPageResult: UserPageResult = {
+  totalElements: 1,
+  number: 10,
+  size: 10,
+  totalPages: 2,
+  stream: [user1]
+}
+const UserPageResult2: UserPageResult = {
+  totalElements: 2,
+  number: 10,
+  size: 10,
+  totalPages: 2,
+  stream: [user1, user2]
+}
+
 describe('UserSearchComponent', () => {
   let component: UserSearchComponent
   let fixture: ComponentFixture<UserSearchComponent>
   const routerSpy = jasmine.createSpyObj('Router', ['navigate'])
   const routeMock = { snapshot: { paramMap: new Map() } }
-
-  const user1: User = {
-    username: 'username1',
-    firstName: 'firstname1'
-  }
-
-  const user2: User = {
-    username: 'username2',
-    firstName: 'firstname2'
-  }
-
-  const UserPageResult: UserPageResult = {
-    totalElements: 1,
-    number: 10,
-    size: 10,
-    totalPages: 2,
-    stream: [user1]
-  }
-
-  const UserPageResult2: UserPageResult = {
-    totalElements: 2,
-    number: 10,
-    size: 10,
-    totalPages: 2,
-    stream: [user1, user2]
-  }
 
   const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
   const apiUserServiceSpy = {

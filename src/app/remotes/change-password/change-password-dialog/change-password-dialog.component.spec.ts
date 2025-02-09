@@ -24,7 +24,7 @@ describe('ChangePasswordDialog', () => {
         TranslateTestingModule.withTranslations({
           en: require('../../../../assets/i18n/en.json'),
           de: require('../../../../assets/i18n/de.json')
-        })
+        }).withDefaultLanguage('en')
       ],
       providers: [DynamicDialogConfig, DynamicDialogRef]
     }).compileComponents()

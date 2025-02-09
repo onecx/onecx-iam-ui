@@ -7,12 +7,36 @@ import { provideRouter, Router, ActivatedRoute } from '@angular/router'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
+import { UserService } from '@onecx/angular-integration-interface'
+
 import { Role, RolesInternalAPIService, RolePageResult } from 'src/app/shared/generated'
 import { RoleSearchComponent, RoleSearchCriteria } from './role-search.component'
 
 const form = new FormGroup<RoleSearchCriteria>({
   name: new FormControl<string | null>(null)
 })
+const role: Role = {
+  name: 'name1',
+  description: 'descr1'
+}
+const role2: Role = {
+  name: 'name2',
+  description: 'descr2'
+}
+const rolePageResult: RolePageResult = {
+  totalElements: 1,
+  number: 10,
+  size: 10,
+  totalPages: 2,
+  stream: [role]
+}
+const rolePageResult2: RolePageResult = {
+  totalElements: 2,
+  number: 10,
+  size: 10,
+  totalPages: 2,
+  stream: [role, role2]
+}
 
 describe('RoleSearchComponent', () => {
   let component: RoleSearchComponent
@@ -20,36 +44,11 @@ describe('RoleSearchComponent', () => {
   const routerSpy = jasmine.createSpyObj('router', ['navigate'])
   const routeMock = { snapshot: { paramMap: new Map() } }
 
-  const role: Role = {
-    name: 'name1',
-    description: 'descr1'
-  }
-
-  const role2: Role = {
-    name: 'name2',
-    description: 'descr2'
-  }
-
-  const rolePageResult: RolePageResult = {
-    totalElements: 1,
-    number: 10,
-    size: 10,
-    totalPages: 2,
-    stream: [role]
-  }
-
-  const rolePageResult2: RolePageResult = {
-    totalElements: 2,
-    number: 10,
-    size: 10,
-    totalPages: 2,
-    stream: [role, role2]
-  }
-
   const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
   const apiRoleServiceSpy = {
     searchRolesByCriteria: jasmine.createSpy('searchRolesByCriteria').and.returnValue(of({}))
   }
+  const userServiceSpy = { hasPermission: jasmine.createSpy('hasPermission').and.returnValue(of()) }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -65,11 +64,13 @@ describe('RoleSearchComponent', () => {
         provideHttpClientTesting(),
         provideRouter([{ path: '', component: RoleSearchComponent }]),
         { provide: RolesInternalAPIService, useValue: apiRoleServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents()
+    userServiceSpy.hasPermission.and.returnValue(false)
   }))
 
   beforeEach(() => {
