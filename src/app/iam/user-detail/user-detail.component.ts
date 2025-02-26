@@ -44,7 +44,7 @@ export class UserDetailComponent implements OnChanges {
     this.userRoles$ = this.roleApi.getUserRoles({ userId: this.iamUser.id }).pipe(
       map((response: UserRolesResponse) => {
         const roles: Role[] = response.roles ?? []
-        return (roles?.map((r) => r.name) as string[]).sort() ?? []
+        return (roles?.map((r) => r.name) as string[]).sort()
       }),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.ROLES'
