@@ -88,10 +88,18 @@
       "ROLE.SUBHEADER": "Rollen im Identity Access Management (IAM)",
       "ROLE.LABEL": "Rollen",
       "ROLE.TOOLTIP": "Rollen im Identity Access Management (IAM)",
-      "USER.HEADER": "IAM Benutzer",
-      "USER.SUBHEADER": "Benutzer im Identity Access Management (IAM)",
-      "USER.LABEL": "Benutzer",
-      "USER.TOOLTIP": "Benutzer im Identity Access Management (IAM)"
+      "USER": {
+        "HEADER": "IAM Benutzer",
+        "SUBHEADER": "Benutzer im Identity Access Management (IAM)",
+        "LABEL": "Benutzer",
+        "TOOLTIP": "Benutzer im Identity Access Management (IAM)",
+        "CRITERIA": {
+          "USERNAME": "IAM Benutzernamen, Suche nach Namensteil unterstützt",
+          "LASTNAME": "IAM Nachname, Suche nach Namensteil unterstützt",
+          "FIRSTNAME": "IAM Vorname, Suche nach Namensteil unterstützt",
+          "EMAIL": "IAM E-Mail Adresse, Suche nach Adressteil unterstützt"
+        }
+      }
     },
     "DETAIL": {
       "HEADER": "IAM Benutzer Details",
@@ -105,20 +113,15 @@
   },
   "USER": {
     "ID": "ID",
-    "NAME": "Name",
-    "CRITERIA": "Suchkriterien",
     "USERNAME": "Benutzername",
     "LASTNAME": "Nachname",
     "FIRSTNAME": "Vorname",
     "EMAIL": "E-Mail",
-    "VERSION": "Version",
-    "DESCRIPTION": "Beschreibung",
     "TOOLTIPS": {
-      "USERNAME": "Nach Benutzernamen suchen",
-      "LASTNAME": "Nach Nachnamen suchen",
-      "FIRSTNAME": "Nach Vornamen suchen",
-      "CRITERIA": "Namensbestandteile in Namensfeldern (Vor/Nachname...)",
-      "EMAIL": "E-Mail Adresse"
+      "USERNAME": "IAM Benutzernamen",
+      "LASTNAME": "IAM Nachname",
+      "FIRSTNAME": "IAM Vorname",
+      "EMAIL": "IAM E-Mail Adresse"
     }
   },
   "ROLE": {
