@@ -1,0 +1,9 @@
+@import 'src/app/_iam-mixins.scss';
+
+@include displaying-text-responsive;
+@include readable-disabled-components;
+@include tabview-fix-color-selected-tab;
+@include tabview-reduce-padding;
+@include listbox-zebra-rows;
+@include compact-list-items;
+@include dialog-footer-buttons;

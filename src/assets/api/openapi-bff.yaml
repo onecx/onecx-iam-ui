@@ -4,7 +4,7 @@ info:
   title: OneCx IAM Bff
   version: 1.0.0
 servers:
-  - url: 'http://onecx-iam-bff:8080'
+  - url: "http://onecx-iam-bff:8080"
 tags:
   - name: UsersInternal
     description: Keycloak user internal service
@@ -29,9 +29,9 @@ paths:
         200:
           description: OK
           content:
-            'application/json':
+            "application/json":
               schema:
-                $ref: '#/components/schemas/UserPageResult'
+                $ref: "#/components/schemas/UserPageResult"
         400:
           description: Bad request
           content:
@@ -83,9 +83,39 @@ paths:
         200:
           description: OK
           content:
-            'application/json':
+            "application/json":
               schema:
-                $ref: '#/components/schemas/RolePageResult'
+                $ref: "#/components/schemas/RolePageResult"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /roles/{userId}:
+    get:
+      x-onecx:
+        permissions:
+          role:
+            - read
+      tags:
+        - RolesInternal
+      summary: Get roles of user by id
+      operationId: getUserRoles
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Keycloak userId
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: '#/components/schemas/UserRolesResponse'
         400:
           description: Bad request
           content:
@@ -94,6 +124,13 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
 components:
   schemas:
+    UserRolesResponse:
+      type: object
+      properties:
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
     UserSearchCriteria:
       type: object
       properties:

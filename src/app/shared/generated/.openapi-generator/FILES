@@ -19,6 +19,7 @@ model/roleSearchCriteria.ts
 model/user.ts
 model/userPageResult.ts
 model/userResetPasswordRequest.ts
+model/userRolesResponse.ts
 model/userSearchCriteria.ts
 param.ts
 variables.ts

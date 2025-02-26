@@ -5,11 +5,9 @@ import { TranslateModule } from '@ngx-translate/core'
 
 import { DataViewModule } from 'primeng/dataview'
 import { DialogModule } from 'primeng/dialog'
-import { DropdownModule } from 'primeng/dropdown'
 import { InputTextModule } from 'primeng/inputtext'
 import { ListboxModule } from 'primeng/listbox'
-import { SelectButtonModule } from 'primeng/selectbutton'
-import { TableModule } from 'primeng/table'
+import { TabViewModule } from 'primeng/tabview'
 import { ToastModule } from 'primeng/toast'
 
 import { PortalCoreModule } from '@onecx/portal-integration-angular'
@@ -23,13 +21,11 @@ import { LabelResolver } from './label.resolver'
     CommonModule,
     DataViewModule,
     DialogModule,
-    DropdownModule,
     FormsModule,
     InputTextModule,
     ListboxModule,
     ReactiveFormsModule,
-    SelectButtonModule,
-    TableModule,
+    TabViewModule,
     ToastModule,
     TranslateModule
   ],
@@ -37,13 +33,11 @@ import { LabelResolver } from './label.resolver'
     CommonModule,
     DataViewModule,
     DialogModule,
-    DropdownModule,
     FormsModule,
     InputTextModule,
     ListboxModule,
     ReactiveFormsModule,
-    SelectButtonModule,
-    TableModule,
+    TabViewModule,
     ToastModule,
     TranslateModule
   ],

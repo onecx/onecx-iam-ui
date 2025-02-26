@@ -43,6 +43,7 @@
       "VIEW_MODE_TABLE": "Tabellenansicht"
     },
     "SEARCH": {
+      "NO_DATA": "Keine Daten",
       "NOT_FOUND": "Keine Daten gefunden",
       "OF": "von"
     },
@@ -62,6 +63,25 @@
     "ROLES": "Rollen",
     "USERS": "Benutzer"
   },
+  "INTERNAL": {
+    "HEADER": "Intern",
+    "TOOLTIP": "Interne Eigenschaften",
+    "CREATION_DATE": "Erstellt am",
+    "CREATION_USER": "Erstellt von",
+    "MODIFICATION_DATE": "Geändert am",
+    "MODIFICATION_USER": "Geändert von",
+    "MANDATORY": "Notwendig",
+    "OPERATOR": "Automatisiert erstellt",
+    "OPERATOR_MESSAGE": "Dieser Workspace wurde automatisiert erstellt. Alle Änderungen gehen beim nächsten Deployment verloren.",
+    "TOOLTIPS": {
+      "CREATION_DATE": "Zeitpunkt der Erstellung",
+      "CREATION_USER": "ID des Benutzers der Erstellung",
+      "MODIFICATION_DATE": "Zeitpunkt der letzten Änderung",
+      "MODIFICATION_USER": "ID des Benutzers der letzten Änderung",
+      "MANDATORY": "Wenn gesetzt, dann ist dieser Workspace notwendig für den Betrieb. Der Workspace kann nicht somit nicht gelöscht werden.",
+      "OPERATOR": "Wenn gesetzt, dann wird der Workspace automatisiert erstellt. Alle Änderungen gehen beim beim nächsten Deployment verloren."
+    }
+  },
   "DIALOG": {
     "SEARCH": {
       "ROLE.HEADER": "IAM Rollen",
@@ -74,8 +94,13 @@
       "USER.TOOLTIP": "Benutzer im Identity Access Management (IAM)"
     },
     "DETAIL": {
-      "ROLE.SUBHEADER": "Rollendetails",
-      "USER.SUBHEADER": "Benutzer Details"
+      "HEADER": "IAM Benutzer Details",
+      "TABS": {
+        "PROPS": "Eigenschaften",
+        "PROPS.TOOLTIP": "Liste der IAM Benutzereigenschaften",
+        "ROLES": "Rollen",
+        "ROLES.TOOLTIP": "Liste der IAM Benutzerrollen"
+      }
     }
   },
   "USER": {
@@ -106,18 +131,6 @@
       "CRITERIA": "Textsuche in Rollenname und Beschreibung"
     }
   },
-  "VALIDATION": {
-    "FORM_INVALID": "Die Daten sind nicht bereit zum Speichern.",
-    "ERRORS": {
-      "PARSE_ERROR": "Parserfehler: Die enthaltene Struktur entspricht nicht dem erwarteten Format.",
-      "INTERNAL_ERROR": "Interner Fehler",
-      "EMPTY_REQUIRED_FIELD": "Dieses Feld ist ein Pflichtfeld.",
-      "MAXIMUM_LENGTH": "Es sind nur {{chars}} Zeichen erlaubt.",
-      "MINIMUM_LENGTH": "Es sind mindestens {{chars}} Zeichen erforderlich.",
-      "PATTERN_ERROR": "Ihre Eingabe entspricht nicht dem benötigten Format.",
-      "FILETYPE_PATTERN_ERROR": "Ihre Datei entspricht nicht den erlaubten Formaten: .png, .jpg, .jpeg"
-    }
-  },
   "CHANGE_PASSWORD": {
     "BUTTON_LABEL": "Passwort ändern",
     "BUTTON_TOOLTIP": "Passwort für den aktuellen Benutzer ändern",
@@ -142,30 +155,42 @@
     "PASSWORD_CHANGE_ERROR": "Ein Fehler ist aufgetreten, das Passwort wurde nicht geändert",
     "PASSWORD_CHANGED_SUCCESSFULLY": "Passwort wurde erfolgreich geändert"
   },
+  "VALIDATION": {
+    "FORM_INVALID": "Die Daten sind nicht bereit zum Speichern.",
+    "ERRORS": {
+      "PARSE_ERROR": "Parserfehler: Die enthaltene Struktur entspricht nicht dem erwarteten Format.",
+      "INTERNAL_ERROR": "Interner Fehler",
+      "EMPTY_REQUIRED_FIELD": "Dieses Feld ist ein Pflichtfeld.",
+      "MAXIMUM_LENGTH": "Es sind nur {{chars}} Zeichen erlaubt.",
+      "MINIMUM_LENGTH": "Es sind mindestens {{chars}} Zeichen erforderlich.",
+      "PATTERN_ERROR": "Ihre Eingabe entspricht nicht dem benötigten Format.",
+      "FILETYPE_PATTERN_ERROR": "Ihre Datei entspricht nicht den erlaubten Formaten: .png, .jpg, .jpeg"
+    }
+  },
   "EXCEPTIONS": {
     "HTTP_STATUS_0": {
       "USER": "Unbekanntes Problem beim Abrufen von Benutzer-Daten - Bitte versuchen sie es noch einmal.",
-      "ROLE": "Unbekanntes Problem beim Abrufen von Rollen-Daten - Bitte versuchen sie es noch einmal."
+      "ROLES": "Unbekanntes Problem beim Abrufen von Rollen-Daten - Bitte versuchen sie es noch einmal."
     },
     "HTTP_STATUS_401": {
       "USER": "Sie sind nicht autorisiert um Benutzer zu sehen.",
-      "ROLE": "Sie sind nicht autorisiert um Rollen zu sehen."
+      "ROLES": "Sie sind nicht autorisiert um Rollen zu sehen."
     },
     "HTTP_STATUS_403": {
       "USER": "Sie haben keine Rechte um Benutzer zu sehen.",
-      "ROLE": "Sie haben keine Rechte um Rollen zu sehen."
+      "ROLES": "Sie haben keine Rechte um Rollen zu sehen."
     },
     "HTTP_STATUS_404": {
       "USER": "Es konnten keine Benutzer gefunden werden.",
-      "ROLE": "Es konnten keine Rollen gefunden werden."
+      "ROLES": "Es konnten keine Rollen gefunden werden."
     },
     "HTTP_STATUS_500": {
       "USER": "Unbekanntes Server-Problem beim Abrufen von Benutzer-Daten - Bitte versuchen sie es noch einmal.",
-      "ROLE": "Unbekanntes Server-Problem beim Abrufen von Rollen-Daten - Bitte versuchen sie es noch einmal."
+      "ROLES": "Unbekanntes Server-Problem beim Abrufen von Rollen-Daten - Bitte versuchen sie es noch einmal."
     },
     "HTTP_STATUS_504": {
       "USER": "Timeout beim Abrufen von Benutzer-Daten - Bitte versuchen sie es noch einmal.",
-      "ROLE": "Timeout beim Abrufen von Rollen-Daten - Bitte versuchen sie es noch einmal."
+      "ROLES": "Timeout beim Abrufen von Rollen-Daten - Bitte versuchen sie es noch einmal."
     }
   }
 }

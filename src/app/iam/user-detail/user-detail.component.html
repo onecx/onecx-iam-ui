@@ -1,0 +1,138 @@
+<p-dialog
+  [header]="'DIALOG.DETAIL.HEADER' | translate"
+  [(visible)]="displayDialog"
+  (onHide)="onDialogHide()"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="true"
+  [resizable]="true"
+  [style]="{ width: '400px' }"
+>
+  <p-message
+    *ngIf="exceptionKey"
+    id="iam_user_roles_message_error"
+    severity="error"
+    [text]="exceptionKey | translate"
+  ></p-message>
+
+  <p-tabView *ngIf="!exceptionKey">
+    <p-tabPanel
+      id="iam_detail_props"
+      [header]="'DIALOG.DETAIL.TABS.PROPS' | translate"
+      [attr.aria-label]="'DIALOG.DETAIL.TABS.PROPS' | translate"
+      [tooltip]="'DIALOG.DETAIL.TABS.PROPS.TOOLTIP' | translate"
+      tooltipPosition="top"
+      tooltipEvent="hover"
+    >
+      <div class="mt-1 mb-2 flex flex-column row-gap-4">
+        <!-- row 1 -->
+        <div class="flex flex-row flex-wrap gap-4">
+          <span class="flex-grow-1 p-float-label">
+            <input
+              pInputText
+              type="text"
+              id="iam_detail_field_creation_date"
+              class="w-full pt-3 pb-2 text-responsive"
+              [disabled]="true"
+              [value]="iamUser?.createdTimestamp | date: datetimeFormat : ''"
+              [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label for="bm_detail_form_field_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
+          </span>
+        </div>
+        <span class="flex-grow-1 p-float-label">
+          <input
+            pInputText
+            type="text"
+            id="iam_detail_field_user_name"
+            class="w-full pt-3 pb-2 text-responsive"
+            [disabled]="true"
+            [value]="iamUser?.username"
+            [pTooltip]="'USER.TOOLTIPS.NAME' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          />
+          <label for="iam_detail_field_user_name"> {{ 'USER.NAME' | translate }} </label>
+        </span>
+        <span class="flex-grow-1 p-float-label">
+          <input
+            pInputText
+            type="text"
+            id="iam_detail_field_user_email"
+            class="w-full pt-3 pb-2 text-responsive"
+            [disabled]="true"
+            [value]="iamUser?.email"
+            [pTooltip]="'USER.TOOLTIPS.EMAIL' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          />
+          <label for="iam_detail_field_user_email"> {{ 'USER.EMAIL' | translate }} </label>
+        </span>
+        <span class="flex-grow-1 p-float-label">
+          <input
+            pInputText
+            type="text"
+            id="iam_detail_field_first_name"
+            class="w-full pt-3 pb-2 text-responsive"
+            [disabled]="true"
+            [value]="iamUser?.firstName"
+            [pTooltip]="'USER.TOOLTIPS.FIRSTNAME' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          />
+          <label for="iam_detail_field_first_name"> {{ 'USER.FIRSTNAME' | translate }} </label>
+        </span>
+        <span class="flex-grow-1 p-float-label">
+          <input
+            pInputText
+            type="text"
+            id="iam_detail_field_last_name"
+            class="w-full pt-3 pb-2 text-responsive"
+            [disabled]="true"
+            [value]="iamUser?.lastName"
+            [pTooltip]="'USER.TOOLTIPS.LASTNAME' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          />
+          <label for="iam_detail_field_last_name"> {{ 'USER.LASTNAME' | translate }} </label>
+        </span>
+      </div>
+    </p-tabPanel>
+
+    <p-tabPanel
+      id="iam_detail_props"
+      [header]="'DIALOG.DETAIL.TABS.ROLES' | translate"
+      [attr.aria-label]="'DIALOG.DETAIL.TABS.ROLES' | translate"
+      [tooltip]="'DIALOG.DETAIL.TABS.ROLES.TOOLTIP' | translate"
+      tooltipPosition="top"
+      tooltipEvent="hover"
+    >
+      <div *ngIf="userRoles$ | async as roles" class="flex flex-column row-gap-1">
+        <p-listbox
+          id="apm_export_product_list"
+          [options]="roles"
+          [filter]="true"
+          [emptyMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
+          [listStyle]="{ 'max-height': '250px' }"
+        />
+      </div>
+    </p-tabPanel>
+  </p-tabView>
+
+  <ng-template pTemplate="footer">
+    <div class="flex flex-wrap justify-content-end gap-2 mb-1">
+      <p-button
+        id="iam_user_roles_action_close"
+        icon="pi pi-times"
+        (onClick)="onDialogHide()"
+        [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"
+        [ariaLabel]="'ACTIONS.NAVIGATION.CLOSE' | translate"
+        [pTooltip]="'ACTIONS.NAVIGATION.CLOSE.TOOLTIP' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></p-button>
+    </div>
+  </ng-template>
+</p-dialog>
