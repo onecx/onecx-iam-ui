@@ -120,7 +120,7 @@ describe('UserSearchComponent', () => {
 
     component.users$.subscribe({
       next: (users) => {
-        expect(users.length).toBeUndefined()
+        expect(users.length).toBe(0)
         done()
       },
       error: done.fail
@@ -238,5 +238,24 @@ describe('UserSearchComponent', () => {
         expect(actions[0].show).toBe('always')
       })
     }
+  })
+
+  describe('UI actions', () => {
+    it('should call detail dialog', () => {
+      const mockEvent = new MouseEvent('click')
+
+      component.onDetail(mockEvent, user1)
+
+      expect(component.user).toEqual(user1)
+      expect(component.displayDetailDialog).toBeTrue()
+    })
+
+    it('should hide detail dialog', () => {
+      component.displayDetailDialog = true
+
+      component.onHideDetailDialog()
+
+      expect(component.displayDetailDialog).toBeFalse()
+    })
   })
 })

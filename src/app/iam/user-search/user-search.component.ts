@@ -77,7 +77,6 @@ export class UserSearchComponent implements OnInit {
       })
       .pipe(
         map((response: UserPageResult) => {
-          console.log(response.stream)
           return response.stream ?? []
         }),
         catchError((err) => {
