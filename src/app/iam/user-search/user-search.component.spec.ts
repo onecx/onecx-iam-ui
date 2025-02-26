@@ -102,10 +102,10 @@ describe('UserSearchComponent', () => {
 
     component.searchUsers()
 
-    component.usersPageResult$.subscribe({
+    component.users$.subscribe({
       next: (users) => {
-        expect(users.stream?.length).toBe(1)
-        expect(users.stream?.at(0)).toBe(user1)
+        expect(users.length).toBe(1)
+        expect(users.at(0)).toBe(user1)
         done()
       },
       error: done.fail
@@ -118,9 +118,9 @@ describe('UserSearchComponent', () => {
 
     component.searchUsers()
 
-    component.usersPageResult$.subscribe({
+    component.users$.subscribe({
       next: (users) => {
-        expect(users.stream?.length).toBeUndefined()
+        expect(users.length).toBe(0)
         done()
       },
       error: done.fail
@@ -133,11 +133,11 @@ describe('UserSearchComponent', () => {
 
     component.searchUsers()
 
-    component.usersPageResult$.subscribe({
+    component.users$.subscribe({
       next: (users) => {
-        expect(users.stream?.length).toBe(2)
-        expect(users.stream?.at(0)).toBe(user1)
-        expect(users.stream?.at(1)).toBe(user2)
+        expect(users.length).toBe(2)
+        expect(users.at(0)).toBe(user1)
+        expect(users.at(1)).toBe(user2)
         done()
       },
       error: done.fail
@@ -160,10 +160,10 @@ describe('UserSearchComponent', () => {
 
     component.searchUsers()
 
-    component.usersPageResult$.subscribe({
+    component.users$.subscribe({
       next: (users) => {
-        if (users.stream) {
-          expect(users.stream.length).toBe(0)
+        if (users) {
+          expect(users.length).toBe(0)
           expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.USER')
           expect(console.error).toHaveBeenCalledWith('searchUsersByCriteria', errorResponse)
         }
@@ -238,5 +238,24 @@ describe('UserSearchComponent', () => {
         expect(actions[0].show).toBe('always')
       })
     }
+  })
+
+  describe('UI actions', () => {
+    it('should call detail dialog', () => {
+      const mockEvent = new MouseEvent('click')
+
+      component.onDetail(mockEvent, user1)
+
+      expect(component.user).toEqual(user1)
+      expect(component.displayDetailDialog).toBeTrue()
+    })
+
+    it('should hide detail dialog', () => {
+      component.displayDetailDialog = true
+
+      component.onHideDetailDialog()
+
+      expect(component.displayDetailDialog).toBeFalse()
+    })
   })
 })

@@ -25,10 +25,11 @@ import { OneCXChangePasswordComponent } from './change-password.component'
 import { OneCXChangePasswordHarness } from './change-password.harness'
 import { ChangePasswordDialogComponent } from './change-password-dialog/change-password-dialog.component'
 
+const pwdChangePermission = 'USER#EDIT'
 const mockConfigWithPermission: RemoteComponentConfig = {
   appId: 'appId',
   productName: 'prodName',
-  permissions: ['USER#EDIT'],
+  permissions: [pwdChangePermission],
   baseUrl: 'base_url'
 }
 
@@ -117,7 +118,7 @@ describe('ChangePasswordComponent', () => {
     })
 
     it('should init remote component', (done: DoneFn) => {
-      expect(component.permissions).toEqual(['USER#EDIT'])
+      expect(component.permissions).toEqual([pwdChangePermission])
       expect(usersInternalApiServiceSpy.configuration.basePath).toEqual('base_url/bff')
       baseUrlSubject.asObservable().subscribe((item) => {
         expect(item).toEqual('base_url')

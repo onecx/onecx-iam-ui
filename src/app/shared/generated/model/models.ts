@@ -7,4 +7,5 @@ export * from './roleSearchCriteria';
 export * from './user';
 export * from './userPageResult';
 export * from './userResetPasswordRequest';
+export * from './userRolesResponse';
 export * from './userSearchCriteria';

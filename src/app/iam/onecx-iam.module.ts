@@ -1,10 +1,7 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { FormsModule } from '@angular/forms'
 import { RouterModule, Routes } from '@angular/router'
 import { ConfirmationService } from 'primeng/api'
-import { ConfirmDialogModule } from 'primeng/confirmdialog'
-import { FieldsetModule } from 'primeng/fieldset'
 
 import { addInitializeModuleGuard, InitializeModuleGuard } from '@onecx/angular-integration-interface'
 import { PortalCoreModule } from '@onecx/portal-integration-angular'
@@ -14,6 +11,7 @@ import { LabelResolver } from 'src/app/shared/label.resolver'
 
 import { UserSearchComponent } from './user-search/user-search.component'
 import { RoleSearchComponent } from './role-search/role-search.component'
+import { UserDetailComponent } from './user-detail/user-detail.component'
 
 const routes: Routes = [
   {
@@ -43,12 +41,9 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [UserSearchComponent, RoleSearchComponent],
+  declarations: [RoleSearchComponent, UserSearchComponent, UserDetailComponent],
   imports: [
     CommonModule,
-    ConfirmDialogModule,
-    FieldsetModule,
-    FormsModule,
     PortalCoreModule.forMicroFrontend(),
     [RouterModule.forChild(addInitializeModuleGuard(routes))],
     SharedModule

@@ -16,7 +16,7 @@
           formControlName="userName"
           class="w-11rem sm:w-13rem"
           [attr.aria-label]="'USER.USERNAME' | translate"
-          [pTooltip]="'USER.TOOLTIPS.USERNAME' | translate"
+          [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.USERNAME' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
@@ -30,7 +30,7 @@
           formControlName="firstName"
           class="w-11rem sm:w-13rem"
           [attr.aria-label]="'USER.FIRSTNAME' | translate"
-          [pTooltip]="'USER.TOOLTIPS.FIRSTNAME' | translate"
+          [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.FIRSTNAME' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
@@ -44,7 +44,7 @@
           formControlName="lastName"
           class="w-11rem sm:w-13rem"
           [attr.aria-label]="'USER.LASTNAME' | translate"
-          [pTooltip]="'USER.TOOLTIPS.LASTNAME' | translate"
+          [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.LASTNAME' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
@@ -58,7 +58,7 @@
           formControlName="email"
           class="w-11rem sm:w-13rem"
           [attr.aria-label]="'USER.EMAIL' | translate"
-          [pTooltip]="'USER.TOOLTIPS.EMAIL' | translate"
+          [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.EMAIL' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
@@ -79,7 +79,7 @@
     <p-dataView
       *ngIf="!exceptionKey"
       id="iam_user_search_dataview"
-      [value]="(usersPageResult$ | async)?.stream!.sort()"
+      [value]="(users$ | async)?.sort()"
       [layout]="viewMode"
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
       [paginator]="true"
@@ -142,11 +142,15 @@
         <div class="p-grid p-nogutter grid grid-nogutter">
           <div
             *ngFor="let user of users; index as i"
-            [id]="'user_search_data_grid_' + i"
-            class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 px-3 py-1 md:py-2"
+            [id]="'iam_user_search_data_grid_' + i"
+            class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 px-2 sm:px-3 py-1 md:py-2"
           >
-            <div
-              class="card h-3rem md:h-3-5rem p-1 md:p-2 flex flex-column justify-content-between text-center row-gap-1 md:row-gap-2"
+            <a
+              [id]="'iam_user_search_data_grid_anchor_' + i"
+              class="card block py-2 px-4 text-center hover:bg-gray-200 cursor-pointer flex flex-column row-gap-1"
+              (click)="onDetail($event, user)"
+              [tabIndex]="0"
+              [attr.aria-label]="user.username"
               [pTooltip]="user.username.length < 24 ? '' : user.username"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -155,12 +159,15 @@
                 {{ user.username }}
               </div>
               <div [id]="'iam_user_search_data_grid_' + i + '_name'" class="text-xs text-responsive">
-                {{ user.lastName }}, {{ user.firstName }}
+                {{ user.firstName + (user.firstName && user.lastName ? ' ' : '') + user.lastName }}
               </div>
-            </div>
+            </a>
           </div>
         </div>
       </ng-template>
     </p-dataView>
   </ocx-page-content>
 </ocx-portal-page>
+
+<app-user-detail [iamUser]="user" [displayDialog]="displayDetailDialog" (hideDialog)="onHideDetailDialog()">
+</app-user-detail>

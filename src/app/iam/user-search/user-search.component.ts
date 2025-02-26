@@ -27,10 +27,11 @@ export class UserSearchComponent implements OnInit {
   private readonly debug = true // to be removed after finalization
   public exceptionKey: string | undefined
   public loading = true
+  public displayDetailDialog = false
 
   public actions$: Observable<Action[]> | undefined
   public users$!: Observable<User[]>
-  public usersPageResult$!: Observable<UserPageResult>
+  public user: User | undefined = undefined
 
   public viewMode: 'list' | 'grid' = 'grid'
   public searchInProgress = false
@@ -64,7 +65,7 @@ export class UserSearchComponent implements OnInit {
   }
 
   public searchUsers() {
-    this.usersPageResult$ = this.userService
+    this.users$ = this.userService
       .searchUsersByCriteria({
         userSearchCriteria: {
           userName: this.formGroup.controls['userName'].value ?? undefined,
@@ -75,19 +76,16 @@ export class UserSearchComponent implements OnInit {
         }
       })
       .pipe(
+        map((response: UserPageResult) => {
+          return response.stream ?? []
+        }),
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.USER'
           console.error('searchUsersByCriteria', err)
-          return of({} as UserPageResult)
+          return of([] as User[])
         }),
         finalize(() => (this.searchInProgress = false))
       )
-
-    this.users$ = this.usersPageResult$.pipe(
-      map((data) => {
-        return data.stream as User[]
-      })
-    )
   }
 
   /**
@@ -162,5 +160,13 @@ export class UserSearchComponent implements OnInit {
   }
   public onSearchReset() {
     this.formGroup.reset()
+  }
+  public onDetail(ev: Event, user: User) {
+    ev.stopPropagation()
+    this.user = user
+    this.displayDetailDialog = true
+  }
+  public onHideDetailDialog() {
+    this.displayDetailDialog = false
   }
 }
