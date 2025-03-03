@@ -163,7 +163,7 @@
                   tabindex="0"
                   [id]="'iam_user_search_data_grid_' + i + '_action_permissions'"
                   class="card-badge-right badge-1 pi pi-lock"
-                  (click)="onUserPermissions($event, iamUser)"
+                  (click)="onUserPermissions(iamUser, $event)"
                   [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
                   [pTooltip]="'DIALOG.PERMISSIONS.TOOLTIP' | translate"
                   tooltipPosition="top"

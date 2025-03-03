@@ -50,12 +50,6 @@ export class UserSearchComponent implements OnInit {
   @ViewChild(DataView) dv: DataView | undefined
   public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
 
-  ngOnInit(): void {
-    this.prepareDialogTranslations()
-    this.prepareActionButtons()
-    this.searchUsers()
-  }
-
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
@@ -73,6 +67,12 @@ export class UserSearchComponent implements OnInit {
       lastName: new FormControl<string | null>(null),
       email: new FormControl<string | null>(null)
     })
+  }
+
+  ngOnInit(): void {
+    this.prepareDialogTranslations()
+    this.prepareActionButtons()
+    this.searchUsers()
   }
 
   public searchUsers(): void {
@@ -183,8 +183,8 @@ export class UserSearchComponent implements OnInit {
     this.displayDetailDialog = false
   }
 
-  public onUserPermissions(ev: Event, user: User): void {
-    ev.stopPropagation()
+  public onUserPermissions(user: User, ev?: Event): void {
+    ev?.stopPropagation()
     this.portalDialogService
       .openDialog(
         'DIALOG.PERMISSIONS.HEADER',

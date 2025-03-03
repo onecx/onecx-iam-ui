@@ -4,8 +4,12 @@ import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
 import { provideRouter, Router, ActivatedRoute } from '@angular/router'
+import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
+
+import { UserService } from '@onecx/angular-integration-interface'
+import { PortalDialogService } from '@onecx/portal-integration-angular'
 
 import { User, UserPageResult, UsersInternalAPIService } from 'src/app/shared/generated'
 import { UserSearchComponent, UserSearchCriteria } from './user-search.component'
@@ -46,10 +50,15 @@ describe('UserSearchComponent', () => {
   const routerSpy = jasmine.createSpyObj('Router', ['navigate'])
   const routeMock = { snapshot: { paramMap: new Map() } }
 
-  const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
+  //const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
   const apiUserServiceSpy = {
     searchUsersByCriteria: jasmine.createSpy('searchUsersByCriteria').and.returnValue(of({}))
   }
+  const mockUserService = {
+    lang$: { getValue: jasmine.createSpy('getValue') },
+    hasPermission: jasmine.createSpy('hasPermission').and.returnValue(of())
+  }
+  const mockDialogService = { openDialog: jasmine.createSpy('openDialog').and.returnValue(of({})) }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -66,26 +75,79 @@ describe('UserSearchComponent', () => {
         provideRouter([{ path: '', component: UserSearchComponent }]),
         { provide: UsersInternalAPIService, useValue: apiUserServiceSpy },
         { provide: Router, useValue: routerSpy },
-        { provide: ActivatedRoute, useValue: routeMock }
+        { provide: ActivatedRoute, useValue: routeMock },
+        { provide: UserService, useValue: mockUserService },
+        { provide: PortalDialogService, useValue: mockDialogService }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents()
+    // to spy data: reset
+    //translateServiceSpy.get.calls.reset()
+    apiUserServiceSpy.searchUsersByCriteria.calls.reset()
+    // to spy data: refill with neutral data
+    apiUserServiceSpy.searchUsersByCriteria.and.returnValue(of({}))
   }))
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UserSearchComponent)
     component = fixture.componentInstance
-    // fixture.detectChanges()
-    fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
+    fixture.detectChanges()
+    //fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
   })
 
   afterEach(() => {
-    apiUserServiceSpy.searchUsersByCriteria.calls.reset()
-    translateServiceSpy.get.calls.reset()
+    //apiUserServiceSpy.searchUsersByCriteria.calls.reset()
   })
 
-  it('should create', () => {
-    expect(component).toBeTruthy()
+  describe('init', () => {
+    it('should create', () => {
+      expect(component).toBeTruthy()
+    })
+
+    it('action translations', (done) => {
+      const actionData = {
+        'DIALOG.SEARCH.ROLE.LABEL': 'roleLabel',
+        'DIALOG.SEARCH.ROLE.TOOLTIP': 'roleTooltip'
+      }
+      const translateService = TestBed.inject(TranslateService)
+      spyOn(translateService, 'get').and.returnValue(of(actionData))
+
+      component.ngOnInit()
+
+      component.actions$?.subscribe({
+        next: (actions) => {
+          if (actions) {
+            expect(actions[0].label).toEqual('roleLabel')
+          }
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('dataview translations', (done) => {
+      const translationData = {
+        'USER.USERNAME': 'userName',
+        'USER.LASTNAME': 'lastName',
+        'USER.FIRSTNAME': 'firstName',
+        'ACTIONS.DATAVIEW.FILTER_OF': 'filterOf',
+        'ACTIONS.DATAVIEW.SORT_BY': 'sortBy'
+      }
+      const translateService = TestBed.inject(TranslateService)
+      spyOn(translateService, 'get').and.returnValue(of(translationData))
+
+      component.ngOnInit()
+
+      component.dataViewControlsTranslations$?.subscribe({
+        next: (data) => {
+          if (data) {
+            expect(data.sortDropdownTooltip).toEqual('sortBy')
+          }
+          done()
+        },
+        error: done.fail
+      })
+    })
   })
 
   it('should call searchApps onSearch', () => {
@@ -246,7 +308,7 @@ describe('UserSearchComponent', () => {
 
       component.onDetail(mockEvent, user1)
 
-      expect(component.user).toEqual(user1)
+      expect(component.iamUser).toEqual(user1)
       expect(component.displayDetailDialog).toBeTrue()
     })
 
@@ -256,6 +318,16 @@ describe('UserSearchComponent', () => {
       component.onHideDetailDialog()
 
       expect(component.displayDetailDialog).toBeFalse()
+    })
+  })
+
+  describe('onUserPermission', () => {
+    it('should display permission dialog', () => {
+      mockDialogService.openDialog.and.returnValue(of({}))
+
+      component.onUserPermissions(user1)
+
+      expect(mockDialogService.openDialog).toHaveBeenCalled()
     })
   })
 })
