@@ -1,5 +1,6 @@
 @import 'src/app/_iam-mixins.scss';
 
+@include card-badges;
 @include correct-data-view-control;
 @include correct-search-criteria;
 @include correct-select-button;

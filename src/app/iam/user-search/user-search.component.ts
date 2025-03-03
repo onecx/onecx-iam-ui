@@ -3,12 +3,16 @@ import { FormControl, FormGroup } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { finalize, map, of, Observable, Subject, catchError } from 'rxjs'
+import { PrimeIcons } from 'primeng/api'
 import { DataView } from 'primeng/dataview'
 
-import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import { SlotService } from '@onecx/angular-remote-components'
+import { UserService } from '@onecx/angular-integration-interface'
+import { Action, DataViewControlTranslations, PortalDialogService } from '@onecx/portal-integration-angular'
 
 import { limitText } from 'src/app/shared/utils'
 import { User, UserPageResult, UsersInternalAPIService } from 'src/app/shared/generated'
+import { UserPermissionsComponent } from '../user-permissions/user-permissions.component'
 
 export interface UserSearchCriteria {
   userName: FormControl<string | null>
@@ -24,15 +28,10 @@ export interface UserSearchCriteria {
 })
 export class UserSearchComponent implements OnInit {
   private readonly destroy$ = new Subject()
-  private readonly debug = true // to be removed after finalization
-  public exceptionKey: string | undefined
+  // dialog
   public loading = true
+  public exceptionKey: string | undefined
   public displayDetailDialog = false
-
-  public actions$: Observable<Action[]> | undefined
-  public users$!: Observable<User[]>
-  public user: User | undefined = undefined
-
   public viewMode: 'list' | 'grid' = 'grid'
   public searchInProgress = false
   public filter: string | undefined
@@ -40,6 +39,16 @@ export class UserSearchComponent implements OnInit {
   public sortOrder = 1
   public formGroup: FormGroup<UserSearchCriteria>
   public limitText = limitText
+  public userViewDetail = false // view permission?
+  // data
+  public actions$: Observable<Action[]> | undefined
+  public users$!: Observable<User[]>
+  public iamUser: User | undefined = undefined
+  public permissionsSlotName = 'onecx-iam-user-permissions'
+  public isComponentDefined$: Observable<boolean>
+
+  @ViewChild(DataView) dv: DataView | undefined
+  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
 
   ngOnInit(): void {
     this.prepareDialogTranslations()
@@ -47,15 +56,17 @@ export class UserSearchComponent implements OnInit {
     this.searchUsers()
   }
 
-  public dataViewControlsTranslations: DataViewControlTranslations = {}
-  @ViewChild(DataView) dv: DataView | undefined
-
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly userService: UsersInternalAPIService,
-    private readonly translate: TranslateService
+    private readonly user: UserService,
+    private readonly slotService: SlotService,
+    private readonly portalDialogService: PortalDialogService,
+    private readonly translate: TranslateService,
+    private readonly userApi: UsersInternalAPIService
   ) {
+    this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.permissionsSlotName)
+    this.userViewDetail = user.hasPermission('USER#VIEW')
     this.formGroup = new FormGroup<UserSearchCriteria>({
       userName: new FormControl<string | null>(null),
       firstName: new FormControl<string | null>(null),
@@ -64,8 +75,9 @@ export class UserSearchComponent implements OnInit {
     })
   }
 
-  public searchUsers() {
-    this.users$ = this.userService
+  public searchUsers(): void {
+    this.searchInProgress = true
+    this.users$ = this.userApi
       .searchUsersByCriteria({
         userSearchCriteria: {
           userName: this.formGroup.controls['userName'].value ?? undefined,
@@ -91,8 +103,8 @@ export class UserSearchComponent implements OnInit {
   /**
    * DIALOG
    */
-  private prepareDialogTranslations() {
-    this.translate
+  private prepareDialogTranslations(): void {
+    this.dataViewControlsTranslations$ = this.translate
       .get([
         'USER.USERNAME',
         'USER.LASTNAME',
@@ -102,7 +114,7 @@ export class UserSearchComponent implements OnInit {
       ])
       .pipe(
         map((data) => {
-          this.dataViewControlsTranslations = {
+          return {
             filterInputTooltip:
               data['ACTIONS.DATAVIEW.FILTER_OF'] +
               data['USER.USERNAME'] +
@@ -112,10 +124,9 @@ export class UserSearchComponent implements OnInit {
               data['USER.FIRSTNAME'],
             sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY'],
             sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY']
-          }
+          } as DataViewControlTranslations
         })
       )
-      .subscribe()
   }
 
   private prepareActionButtons(): void {
@@ -152,21 +163,52 @@ export class UserSearchComponent implements OnInit {
     this.sortOrder = asc ? -1 : 1
   }
 
-  public onGoToRoleSearch() {
+  public onGoToRoleSearch(): void {
     this.router.navigate(['./roles'], { relativeTo: this.route })
   }
-  public onSearch() {
+  public onSearch(): void {
     this.searchUsers()
   }
-  public onSearchReset() {
+  public onSearchReset(): void {
     this.formGroup.reset()
   }
-  public onDetail(ev: Event, user: User) {
+  public onDetail(ev: Event, user: User): void {
     ev.stopPropagation()
-    this.user = user
-    this.displayDetailDialog = true
+    if (this.userViewDetail) {
+      this.iamUser = user
+      this.displayDetailDialog = true
+    }
   }
-  public onHideDetailDialog() {
+  public onHideDetailDialog(): void {
     this.displayDetailDialog = false
+  }
+
+  public onUserPermissions(ev: Event, user: User): void {
+    ev.stopPropagation()
+    this.portalDialogService
+      .openDialog(
+        'DIALOG.PERMISSIONS.HEADER',
+        {
+          type: UserPermissionsComponent,
+          inputs: { id: user.id, userId: user.id, displayName: user.username }
+        },
+        {
+          id: 'iam_user_permissions_action_close',
+          key: 'ACTIONS.CLOSE',
+          icon: PrimeIcons.TIMES,
+          tooltipKey: 'ACTIONS.CLOSE.TOOLTIP',
+          tooltipPosition: 'top'
+        },
+        undefined,
+        {
+          modal: true,
+          draggable: true,
+          resizable: true,
+          dismissableMask: true,
+          maximizable: true,
+          width: '900px'
+        }
+      )
+      .subscribe(() => {})
   }
 }

@@ -111,7 +111,7 @@
           [filterColumns]="['USER.USERNAME' | translate, 'USER.FIRSTNAME' | translate, 'USER.LASTNAME' | translate]"
           (sortChange)="onSortChange($event)"
           (sortDirectionChange)="onSortDirChange($event)"
-          [translations]="dataViewControlsTranslations"
+          [translations]="(dataViewControlsTranslations$ | async) ?? {}"
         >
         </ocx-data-view-controls
       ></ng-template>
@@ -141,25 +141,40 @@
       <ng-template let-users pTemplate="gridItem">
         <div class="p-grid p-nogutter grid grid-nogutter">
           <div
-            *ngFor="let user of users; index as i"
+            *ngFor="let iamUser of users; index as i"
             [id]="'iam_user_search_data_grid_' + i"
             class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 px-2 sm:px-3 py-1 md:py-2"
           >
             <a
-              [id]="'iam_user_search_data_grid_anchor_' + i"
-              class="card block py-2 px-4 text-center hover:bg-gray-200 cursor-pointer flex flex-column row-gap-1"
-              (click)="onDetail($event, user)"
               [tabIndex]="0"
-              [attr.aria-label]="user.username"
-              [pTooltip]="user.username.length < 24 ? '' : user.username"
+              [id]="'iam_user_search_data_grid_anchor_' + i"
+              class="card block relative py-2 px-4 text-center flex flex-column row-gap-1"
+              [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewDetail }"
+              (click)="onDetail($event, iamUser)"
+              [attr.aria-label]="iamUser.username"
+              [pTooltip]="iamUser.username.length < 24 ? '' : iamUser.username"
               tooltipPosition="top"
               tooltipEvent="hover"
             >
+              <!-- BADGES -->
+              <ng-container *ngIf="isComponentDefined$ | async">
+                <a
+                  *ocxIfPermission="'USER#VIEW_PERMISSIONS'"
+                  tabindex="0"
+                  [id]="'iam_user_search_data_grid_' + i + '_action_permissions'"
+                  class="card-badge-right badge-1 pi pi-lock"
+                  (click)="onUserPermissions($event, iamUser)"
+                  [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
+                  [pTooltip]="'DIALOG.PERMISSIONS.TOOLTIP' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                ></a>
+              </ng-container>
               <div [id]="'iam_user_search_data_grid_' + i + '_user_name'" class="font-bold text-responsive">
-                {{ user.username }}
+                {{ iamUser.username }}
               </div>
               <div [id]="'iam_user_search_data_grid_' + i + '_name'" class="text-xs text-responsive">
-                {{ user.firstName + (user.firstName && user.lastName ? ' ' : '') + user.lastName }}
+                {{ iamUser.firstName + (iamUser.firstName && iamUser.lastName ? ' ' : '') + iamUser.lastName }}
               </div>
             </a>
           </div>
@@ -169,5 +184,5 @@
   </ocx-page-content>
 </ocx-portal-page>
 
-<app-user-detail [iamUser]="user" [displayDialog]="displayDetailDialog" (hideDialog)="onHideDetailDialog()">
+<app-user-detail [iamUser]="iamUser" [displayDialog]="displayDetailDialog" (hideDialog)="onHideDetailDialog()">
 </app-user-detail>

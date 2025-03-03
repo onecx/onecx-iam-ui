@@ -52,6 +52,9 @@
     },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
+    "CLOSE": "Close",
+    "CLOSE.TOOLTIP": "Close",
+    "LOADING": "Loading...",
     "SAVE": "Save",
     "UPLOAD": "Upload",
     "TOOLTIPS": {
@@ -109,6 +112,11 @@
         "ROLES": "Roles",
         "ROLES.TOOLTIP": "List of IAM User Roles"
       }
+    },
+    "PERMISSIONS": {
+      "HEADER": "User Permissions",
+      "TOOLTIP": "Display User Permissions",
+      "SLOT_NOT_DEFINED": "No component is defined for this slot."
     }
   },
   "USER": {

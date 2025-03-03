@@ -1,23 +1,25 @@
 import { APP_INITIALIZER, DoBootstrap, Injector, NgModule } from '@angular/core'
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { BrowserModule } from '@angular/platform-browser'
-import { Router, RouterModule, Routes } from '@angular/router'
-import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { RouterModule, Routes, Router } from '@angular/router'
+import { TranslateLoader, TranslateModule, MissingTranslationHandler } from '@ngx-translate/core'
 
+import { AngularAuthModule } from '@onecx/angular-auth'
+import { createTranslateLoader, TRANSLATION_PATH, translationPathFactory } from '@onecx/angular-utils'
+import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
+import { addInitializeModuleGuard, AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
 import {
-  createTranslateLoader,
   PortalApiConfiguration,
   PortalCoreModule,
-  PortalMissingTranslationHandler
+  PortalMissingTranslationHandler,
+  providePortalDialogService
 } from '@onecx/portal-integration-angular'
-import { addInitializeModuleGuard, AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
-import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
-import { AngularAuthModule } from '@onecx/angular-auth'
+import { SLOT_SERVICE, SlotService } from '@onecx/angular-remote-components'
 
-import { AppEntrypointComponent } from './app-entrypoint.component'
-import { environment } from 'src/environments/environment'
 import { Configuration } from './shared/generated'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { environment } from 'src/environments/environment'
+import { AppEntrypointComponent } from './app-entrypoint.component'
 
 function apiConfigProvider(configService: ConfigurationService, appStateService: AppStateService) {
   return new PortalApiConfiguration(Configuration, environment.apiPrefix, configService, appStateService)
@@ -36,31 +38,33 @@ const routes: Routes = [
     AngularAuthModule,
     BrowserModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot(addInitializeModuleGuard(routes)),
     PortalCoreModule.forMicroFrontend(),
+    RouterModule.forRoot(addInitializeModuleGuard(routes)),
     TranslateModule.forRoot({
       isolate: true,
-      loader: {
-        provide: TranslateLoader,
-        useFactory: createTranslateLoader,
-        deps: [HttpClient, AppStateService]
-      },
+      loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] },
       missingTranslationHandler: { provide: MissingTranslationHandler, useClass: PortalMissingTranslationHandler }
     })
   ],
-  exports: [],
   providers: [
     ConfigurationService,
+    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] },
+    { provide: SLOT_SERVICE, useExisting: SlotService },
     {
       provide: APP_INITIALIZER,
       useFactory: initializeRouter,
       multi: true,
       deps: [Router, AppStateService]
     },
-    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] },
-    provideHttpClient(withInterceptorsFromDi())
-  ],
-  schemas: []
+    {
+      provide: TRANSLATION_PATH,
+      useFactory: (appStateService: AppStateService) => translationPathFactory('assets/i18n/')(appStateService),
+      multi: true,
+      deps: [AppStateService]
+    },
+    provideHttpClient(withInterceptorsFromDi()),
+    providePortalDialogService()
+  ]
 })
 export class OneCXIamModule implements DoBootstrap {
   constructor(private readonly injector: Injector) {

@@ -33,8 +33,15 @@ app:
         permissions:
           USER:
             SEARCH: Search users
-            EDIT: Edit users
+            VIEW: View user details
+            VIEW_PERMISSIONS: View user permissions
           ROLE:
             SEARCH: Search roles
+    slot:
+      enabled: true
+      specs:
+        onecx-iam-user-permissions:
+          name: 'onecx-iam-user-permissions'
+          description: 'Display user permissions'
 
 # PIPE Config
