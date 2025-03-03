@@ -12,9 +12,9 @@ import { UserService } from '@onecx/angular-integration-interface'
 import { PortalDialogService } from '@onecx/portal-integration-angular'
 
 import { User, UserPageResult, UsersInternalAPIService } from 'src/app/shared/generated'
-import { UserSearchComponent, UserSearchCriteria } from './user-search.component'
+import { UserSearchComponent, UserSearchCriteriaForm } from './user-search.component'
 
-const form = new FormGroup<UserSearchCriteria>({
+const form = new FormGroup<UserSearchCriteriaForm>({
   userName: new FormControl<string | null>(null),
   firstName: new FormControl<string | null>(null),
   lastName: new FormControl<string | null>(null),

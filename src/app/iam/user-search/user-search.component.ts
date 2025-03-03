@@ -11,10 +11,10 @@ import { UserService } from '@onecx/angular-integration-interface'
 import { Action, DataViewControlTranslations, PortalDialogService } from '@onecx/portal-integration-angular'
 
 import { limitText } from 'src/app/shared/utils'
-import { User, UserPageResult, UsersInternalAPIService } from 'src/app/shared/generated'
+import { User, UserPageResult, UsersInternalAPIService, UserSearchCriteria } from 'src/app/shared/generated'
 import { UserPermissionsComponent } from '../user-permissions/user-permissions.component'
 
-export interface UserSearchCriteria {
+export interface UserSearchCriteriaForm {
   userName: FormControl<string | null>
   firstName: FormControl<string | null>
   lastName: FormControl<string | null>
@@ -37,7 +37,7 @@ export class UserSearchComponent implements OnInit {
   public filter: string | undefined
   public sortField = 'username'
   public sortOrder = 1
-  public formGroup: FormGroup<UserSearchCriteria>
+  public formGroup: FormGroup<UserSearchCriteriaForm>
   public limitText = limitText
   public userViewDetail = false // view permission?
   // data
@@ -61,7 +61,7 @@ export class UserSearchComponent implements OnInit {
   ) {
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.permissionsSlotName)
     this.userViewDetail = user.hasPermission('USER#VIEW')
-    this.formGroup = new FormGroup<UserSearchCriteria>({
+    this.formGroup = new FormGroup<UserSearchCriteriaForm>({
       userName: new FormControl<string | null>(null),
       firstName: new FormControl<string | null>(null),
       lastName: new FormControl<string | null>(null),
@@ -77,27 +77,30 @@ export class UserSearchComponent implements OnInit {
 
   public searchUsers(): void {
     this.searchInProgress = true
-    this.users$ = this.userApi
-      .searchUsersByCriteria({
-        userSearchCriteria: {
-          userName: this.formGroup.controls['userName'].value ?? undefined,
-          firstName: this.formGroup.controls['firstName'].value ?? undefined,
-          lastName: this.formGroup.controls['lastName'].value ?? undefined,
-          email: this.formGroup.controls['email'].value ?? undefined,
-          pageSize: 1000
-        }
-      })
-      .pipe(
-        map((response: UserPageResult) => {
-          return response.stream ?? []
-        }),
-        catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.USER'
-          console.error('searchUsersByCriteria', err)
-          return of([] as User[])
-        }),
-        finalize(() => (this.searchInProgress = false))
-      )
+    // cleanup forma data to usable search criteria: prevent empty strings
+    const usc: UserSearchCriteria = {
+      userName: this.formGroup.controls['userName'].value,
+      firstName: this.formGroup.controls['firstName'].value,
+      lastName: this.formGroup.controls['lastName'].value,
+      email: this.formGroup.controls['email'].value,
+      pageSize: 100
+    } as UserSearchCriteria
+    usc.userName = usc.userName === '' || usc.userName === null ? undefined : usc.userName
+    usc.firstName = usc.firstName === '' || usc.firstName === null ? undefined : usc.firstName
+    usc.lastName = usc.lastName === '' || usc.lastName === null ? undefined : usc.lastName
+    usc.email = usc.email === '' || usc.email === null ? undefined : usc.email
+    // execute search
+    this.users$ = this.userApi.searchUsersByCriteria({ userSearchCriteria: usc }).pipe(
+      map((response: UserPageResult) => {
+        return response.stream ?? []
+      }),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.USER'
+        console.error('searchUsersByCriteria', err)
+        return of([] as User[])
+      }),
+      finalize(() => (this.searchInProgress = false))
+    )
   }
 
   /**
