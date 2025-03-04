@@ -149,6 +149,14 @@ export class UserSearchComponent implements OnInit {
     )
   }
 
+  public prepareDisplayName(usr: User, l1: number, l2: number): string {
+    let name = ''
+    if (usr.firstName && !usr.lastName) name = usr.firstName
+    if (!usr.firstName && usr.lastName) name = usr.lastName
+    if (usr.firstName && usr.lastName) name = limitText(usr.firstName, l1) + ' ' + usr.lastName
+    return limitText(name, l2)
+  }
+
   /**
    * UI EVENTS
    */

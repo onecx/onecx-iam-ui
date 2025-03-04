@@ -115,7 +115,7 @@
     },
     "PERMISSIONS": {
       "HEADER": "User Permissions",
-      "TOOLTIP": "Display User Permissions",
+      "TOOLTIP": "Display Permissions",
       "SLOT_NOT_DEFINED": "No component is defined for this slot."
     }
   },

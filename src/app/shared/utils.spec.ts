@@ -4,19 +4,28 @@ import { limitText, dropDownSortItemsByLabel, dropDownGetLabelByValue, sortByLoc
 
 describe('utils', () => {
   describe('limitText', () => {
-    it('should limit text if text too long', () => {
-      const result = limitText('textData', 4)
-      expect(result).toBe('text...')
+    it('should truncate text that exceeds the specified limit', () => {
+      const result = limitText('hello', 4)
+
+      expect(result).toEqual('hell...')
     })
 
-    it('should limit text if text too long', () => {
-      const result = limitText('textData', 10)
-      expect(result).toBe('textData')
+    it('should return the original text if it does not exceed the limit', () => {
+      const result = limitText('hello', 6)
+
+      expect(result).toEqual('hello')
     })
 
-    it('return empty string if no text', () => {
-      const result = limitText('', 4)
-      expect(result).toBe('')
+    it('should return an empty string for undefined input', () => {
+      const str: any = undefined
+      const result = limitText(str, 5)
+
+      expect(result).toEqual('')
+    })
+
+    it('should handle zero length text', () => {
+      const result = limitText(null, 4)
+      expect(result).toEqual('')
     })
   })
 

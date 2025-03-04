@@ -120,18 +120,32 @@
       <ng-template let-users pTemplate="listItem">
         <div class="p-grid p-nogutter grid grid-nogutter">
           <div
-            *ngFor="let user of users; index as i"
+            *ngFor="let iamUser of users; index as i"
             [id]="'iam_user_search_data_list_' + i"
-            class="col-12 sm:col-6 h-3rem px-3 py-1 sm:py-2 flex flex-column justify-content-between row-gap-1"
-            [pTooltip]="user.username.length < 50 ? '' : user.username"
+            class="relative col-12 sm:col-6 h-3rem md:h-3-5rem py-1 md:py-2 pl-5 pr-3 flex flex-column justify-content-between"
+            [pTooltip]="iamUser.username.length < 50 ? '' : iamUser.username"
             tooltipPosition="top"
             tooltipEvent="hover"
           >
+            <!-- BADGES -->
+            <ng-container *ngIf="isComponentDefined$ | async">
+              <a
+                *ocxIfPermission="'USER#VIEW_PERMISSIONS'"
+                tabindex="0"
+                [id]="'iam_user_search_data_grid_' + i + '_action_permissions'"
+                class="card-badge-left badge-position pi pi-lock"
+                (click)="onUserPermissions(iamUser, $event)"
+                [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
+                [pTooltip]="'DIALOG.PERMISSIONS.TOOLTIP' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              ></a>
+            </ng-container>
             <div [id]="'iam_user_search_data_list_' + i + '_user_name'" class="font-bold text-responsive">
-              {{ user.username }}
+              {{ iamUser.username }}
             </div>
             <div [id]="'iam_user_search_data_list_' + i + '_name'" class="text-xs text-responsive">
-              {{ limitText(user.firstName, 30) }} {{ limitText(user.lastName, 30) }}
+              {{ prepareDisplayName(iamUser, 30, 150) }}
             </div>
           </div>
         </div>
@@ -148,7 +162,7 @@
             <a
               [tabIndex]="0"
               [id]="'iam_user_search_data_grid_anchor_' + i"
-              class="card block relative py-2 px-4 text-center flex flex-column row-gap-1"
+              class="card block relative h-3rem md:h-3-5rem py-1 md:py-2 px-4 text-center flex flex-column justify-content-between"
               [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewDetail }"
               (click)="onDetail($event, iamUser)"
               [attr.aria-label]="iamUser.username"
@@ -174,7 +188,7 @@
                 {{ iamUser.username }}
               </div>
               <div [id]="'iam_user_search_data_grid_' + i + '_name'" class="text-xs text-responsive">
-                {{ iamUser.firstName + (iamUser.firstName && iamUser.lastName ? ' ' : '') + iamUser.lastName }}
+                {{ prepareDisplayName(iamUser, 20, 42) }}
               </div>
             </a>
           </div>

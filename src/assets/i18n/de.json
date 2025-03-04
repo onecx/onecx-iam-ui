@@ -115,7 +115,7 @@
     },
     "PERMISSIONS": {
       "HEADER": "Benutzerberechtigungen",
-      "TOOLTIP": "Berechtigungen des Benutzers anzeigen",
+      "TOOLTIP": "Berechtigungen anzeigen",
       "SLOT_NOT_DEFINED": "Für diesen Slot ist keine Komponente definiert."
     }
   },

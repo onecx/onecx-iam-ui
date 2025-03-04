@@ -23,20 +23,24 @@ const form = new FormGroup<UserSearchCriteriaForm>({
 
 const user1: User = {
   username: 'username1',
-  firstName: 'firstname1'
+  firstName: 'first1',
+  lastName: 'last1',
+  email: 'em@ail1'
 }
 const user2: User = {
   username: 'username2',
-  firstName: 'firstname2'
+  firstName: 'first2',
+  lastName: 'last2',
+  email: 'em@ail2'
 }
-const UserPageResult: UserPageResult = {
+const userPageResult1: UserPageResult = {
   totalElements: 1,
   number: 10,
   size: 10,
-  totalPages: 2,
+  totalPages: 1,
   stream: [user1]
 }
-const UserPageResult2: UserPageResult = {
+const userPageResult2: UserPageResult = {
   totalElements: 2,
   number: 10,
   size: 10,
@@ -158,80 +162,85 @@ describe('UserSearchComponent', () => {
     expect(component.searchUsers).toHaveBeenCalled()
   })
 
-  it('should search users result stream list equals 1', (done) => {
-    component.formGroup.controls['userName'].setValue('testuserName')
-    apiUserServiceSpy.searchUsersByCriteria.and.returnValue(of(UserPageResult as UserPageResult))
+  describe('search users', () => {
+    it('should search user and found', (done) => {
+      component.formGroup.controls['userName'].setValue(user1.username!)
+      component.formGroup.controls['firstName'].setValue(user1.firstName!)
+      component.formGroup.controls['lastName'].setValue(user1.lastName!)
+      component.formGroup.controls['email'].setValue(user1.email!)
+      apiUserServiceSpy.searchUsersByCriteria.and.returnValue(of(userPageResult1 as UserPageResult))
 
-    component.searchUsers()
+      component.searchUsers()
 
-    component.users$.subscribe({
-      next: (users) => {
-        expect(users.length).toBe(1)
-        expect(users.at(0)).toBe(user1)
-        done()
-      },
-      error: done.fail
-    })
-  })
-
-  it('should search users result empty', (done) => {
-    component.formGroup.controls['userName'].setValue('testuserName')
-    apiUserServiceSpy.searchUsersByCriteria.and.returnValue(of({} as UserPageResult))
-
-    component.searchUsers()
-
-    component.users$.subscribe({
-      next: (users) => {
-        expect(users.length).toBe(0)
-        done()
-      },
-      error: done.fail
-    })
-  })
-
-  it('should search users result stream list equals 2', (done) => {
-    component.formGroup.controls['userName'].setValue('testuserName')
-    apiUserServiceSpy.searchUsersByCriteria.and.returnValue(of(UserPageResult2 as UserPageResult))
-
-    component.searchUsers()
-
-    component.users$.subscribe({
-      next: (users) => {
-        expect(users.length).toBe(2)
-        expect(users.at(0)).toBe(user1)
-        expect(users.at(1)).toBe(user2)
-        done()
-      },
-      error: done.fail
+      component.users$.subscribe({
+        next: (users) => {
+          expect(users.length).toBe(1)
+          expect(users[0]).toBe(user1)
+          done()
+        },
+        error: done.fail
+      })
     })
 
-    component.users$.subscribe({
-      next: (users) => {
-        expect(users.length).toBe(2)
-        expect(users[0].username).toBe('username1')
-      },
-      error: done.fail
-    })
-  })
+    it('should search users result empty', (done) => {
+      component.formGroup.controls['userName'].setValue('testuserName')
+      apiUserServiceSpy.searchUsersByCriteria.and.returnValue(of({} as UserPageResult))
 
-  it('should search user Error response', (done) => {
-    const errorResponse = { status: 404, statusText: 'Not Found' }
-    component.formGroup.controls['userName'].setValue('testcriteria')
-    apiUserServiceSpy.searchUsersByCriteria.and.returnValue(throwError(() => errorResponse))
-    spyOn(console, 'error')
+      component.searchUsers()
 
-    component.searchUsers()
-
-    component.users$.subscribe({
-      next: (users) => {
-        if (users) {
+      component.users$.subscribe({
+        next: (users) => {
           expect(users.length).toBe(0)
-          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.USER')
-          expect(console.error).toHaveBeenCalledWith('searchUsersByCriteria', errorResponse)
-        }
-        done()
-      },
-      error: done.fail
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should search users result stream list equals 2', (done) => {
+      component.formGroup.controls['userName'].setValue('testuserName')
+      apiUserServiceSpy.searchUsersByCriteria.and.returnValue(of(userPageResult2 as UserPageResult))
+
+      component.searchUsers()
+
+      component.users$.subscribe({
+        next: (users) => {
+          expect(users.length).toBe(2)
+          expect(users.at(0)).toBe(user1)
+          expect(users.at(1)).toBe(user2)
+          done()
+        },
+        error: done.fail
+      })
+
+      component.users$.subscribe({
+        next: (users) => {
+          expect(users.length).toBe(2)
+          expect(users[0].username).toBe('username1')
+        },
+        error: done.fail
+      })
+    })
+
+    it('should search user Error response', (done) => {
+      const errorResponse = { status: 404, statusText: 'Not Found' }
+      component.formGroup.controls['userName'].setValue('testcriteria')
+      apiUserServiceSpy.searchUsersByCriteria.and.returnValue(throwError(() => errorResponse))
+      spyOn(console, 'error')
+
+      component.searchUsers()
+
+      component.users$.subscribe({
+        next: (users) => {
+          if (users) {
+            expect(users.length).toBe(0)
+            expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.USER')
+            expect(console.error).toHaveBeenCalledWith('searchUsersByCriteria', errorResponse)
+          }
+          done()
+        },
+        error: done.fail
+      })
     })
   })
 
@@ -328,6 +337,40 @@ describe('UserSearchComponent', () => {
       component.onUserPermissions(user1)
 
       expect(mockDialogService.openDialog).toHaveBeenCalled()
+    })
+  })
+
+  describe('display name', () => {
+    it('should display firstname', () => {
+      const usr: User = { firstName: 'first', lastName: undefined }
+
+      const text = component.prepareDisplayName(usr, 10, 20)
+
+      expect(text).toEqual(usr.firstName!)
+    })
+
+    it('should display lastname', () => {
+      const usr: User = { firstName: undefined, lastName: 'last' }
+
+      const text = component.prepareDisplayName(usr, 10, 20)
+
+      expect(text).toEqual(usr.lastName!)
+    })
+
+    it('should display both names', () => {
+      const usr: User = { firstName: 'first', lastName: 'last' }
+
+      const text = component.prepareDisplayName(usr, 10, 20)
+
+      expect(text).toEqual(usr.firstName! + ' ' + usr.lastName)
+    })
+
+    it('should display both names limited', () => {
+      const usr: User = { firstName: 'first longer to be limited', lastName: 'last a bit longer than allowed' }
+
+      const text = component.prepareDisplayName(usr, 10, 20)
+
+      expect(text).toEqual('first long... last a...')
     })
   })
 })
