@@ -1,11 +1,12 @@
 /* eslint-disable deprecation/deprecation */
 import { NgModule } from '@angular/core'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed'
 import { ReplaySubject, of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
+
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog'
 import { TooltipModule } from 'primeng/tooltip'
 import { RippleModule } from 'primeng/ripple'

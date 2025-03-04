@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core'
-import { CommonModule } from '@angular/common'
 import { RouterModule, Routes } from '@angular/router'
-import { ConfirmationService } from 'primeng/api'
 
 import { addInitializeModuleGuard, InitializeModuleGuard } from '@onecx/angular-integration-interface'
 import { PortalCoreModule } from '@onecx/portal-integration-angular'
@@ -12,10 +10,23 @@ import { LabelResolver } from 'src/app/shared/label.resolver'
 import { UserSearchComponent } from './user-search/user-search.component'
 import { RoleSearchComponent } from './role-search/role-search.component'
 import { UserDetailComponent } from './user-detail/user-detail.component'
+import { UserPermissionsComponent } from './user-permissions/user-permissions.component'
 
 const routes: Routes = [
   {
     path: '',
+    component: UserSearchComponent,
+    pathMatch: 'full',
+    data: {
+      breadcrumb: 'BREADCRUMBS.USERS',
+      breadcrumbFn: (data: any) => `${data.labeli18n}`
+    },
+    resolve: {
+      labeli18n: LabelResolver
+    }
+  },
+  {
+    path: 'users',
     component: UserSearchComponent,
     pathMatch: 'full',
     data: {
@@ -41,14 +52,13 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [RoleSearchComponent, UserSearchComponent, UserDetailComponent],
+  declarations: [RoleSearchComponent, UserSearchComponent, UserDetailComponent, UserPermissionsComponent],
   imports: [
-    CommonModule,
     PortalCoreModule.forMicroFrontend(),
     [RouterModule.forChild(addInitializeModuleGuard(routes))],
     SharedModule
   ],
-  providers: [ConfirmationService, InitializeModuleGuard]
+  providers: [InitializeModuleGuard]
 })
 export class IamModule {
   constructor() {

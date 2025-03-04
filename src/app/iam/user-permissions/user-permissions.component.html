@@ -1,0 +1,23 @@
+<ocx-slot
+  *ngIf="isRemoteComponentDefined$ | async; else dialogPlaceholder"
+  [name]="slotName"
+  [inputs]="{ userId: userId, displayName: displayName, active: true }"
+>
+  <ng-template #skeleton>
+    <p-message
+      id="iam_user_permissions_loading"
+      severity="info"
+      styleClass="w-full flex flex-row justify-content-start"
+      [text]="'ACTIONS.LOADING' | translate"
+    ></p-message>
+  </ng-template>
+</ocx-slot>
+
+<ng-template #dialogPlaceholder>
+  <p-message
+    id="iam_user_permissions_error_message"
+    severity="info"
+    styleClass="p-2"
+    [text]="'DIALOG.PERMISSIONS.SLOT_NOT_DEFINED' | translate"
+  ></p-message>
+</ng-template>

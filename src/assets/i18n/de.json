@@ -52,6 +52,9 @@
     },
     "CANCEL": "Abbrechen",
     "CHOOSE": "Auswählen",
+    "CLOSE": "Schließen",
+    "CLOSE.TOOLTIP": "Dialog Schließen",
+    "LOADING": "Laden...",
     "SAVE": "Speichern",
     "UPLOAD": "Hochladen",
     "TOOLTIPS": {
@@ -109,6 +112,11 @@
         "ROLES": "Rollen",
         "ROLES.TOOLTIP": "Liste der IAM Benutzerrollen"
       }
+    },
+    "PERMISSIONS": {
+      "HEADER": "Benutzerberechtigungen",
+      "TOOLTIP": "Berechtigungen anzeigen",
+      "SLOT_NOT_DEFINED": "Für diesen Slot ist keine Komponente definiert."
     }
   },
   "USER": {

@@ -75,7 +75,7 @@
           <div
             *ngFor="let role of roles; index as i"
             [id]="'iam_role_search_data_list_row_' + i"
-            class="col-12 sm:col-6 h-3rem px-3 py-1 sm:py-2 flex flex-column justify-content-between row-gap-1"
+            class="col-12 sm:col-6 h-3rem md:h-3-5rem py-1 md:py-2 px-3 flex flex-column justify-content-between"
             [pTooltip]="role.name?.length < 30 ? '' : role.name"
             tooltipPosition="top"
             tooltipEvent="hover"
@@ -102,7 +102,7 @@
           <div
             *ngFor="let role of roles; index as i"
             [id]="'iam_role_search_data_grid_row_' + i"
-            class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 px-3 py-1 md:py-2"
+            class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 py-1 md:py-2 px-3"
           >
             <div
               class="card h-3rem md:h-3-5rem p-1 md:p-2 flex flex-column justify-content-between text-center row-gap-1 md:row-gap-2"

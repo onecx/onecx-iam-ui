@@ -10,9 +10,17 @@ import { ListboxModule } from 'primeng/listbox'
 import { TabViewModule } from 'primeng/tabview'
 import { ToastModule } from 'primeng/toast'
 
-import { PortalCoreModule } from '@onecx/portal-integration-angular'
+import { AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
+import { PortalApiConfiguration, PortalCoreModule } from '@onecx/portal-integration-angular'
+import { AngularRemoteComponentsModule } from '@onecx/angular-remote-components'
 
+import { Configuration } from 'src/app/shared/generated'
+import { environment } from 'src/environments/environment'
 import { LabelResolver } from './label.resolver'
+
+export function apiConfigProvider(configService: ConfigurationService, appStateService: AppStateService) {
+  return new PortalApiConfiguration(Configuration, environment.apiPrefix, configService, appStateService)
+}
 
 @NgModule({
   declarations: [],
@@ -27,7 +35,8 @@ import { LabelResolver } from './label.resolver'
     ReactiveFormsModule,
     TabViewModule,
     ToastModule,
-    TranslateModule
+    TranslateModule,
+    AngularRemoteComponentsModule
   ],
   exports: [
     CommonModule,
@@ -39,8 +48,12 @@ import { LabelResolver } from './label.resolver'
     ReactiveFormsModule,
     TabViewModule,
     ToastModule,
-    TranslateModule
+    TranslateModule,
+    AngularRemoteComponentsModule
   ],
-  providers: [LabelResolver]
+  providers: [
+    LabelResolver,
+    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] }
+  ]
 })
 export class SharedModule {}
