@@ -107,6 +107,8 @@
     "DETAIL": {
       "HEADER": "IAM User Details",
       "TABS": {
+        "ATTRIBUTES": "Attributes",
+        "ATTRIBUTES.TOOLTIP": "Within IAM defined Attributes",
         "PROPS": "Properties",
         "PROPS.TOOLTIP": "List of IAM User Properties",
         "ROLES": "Roles",
@@ -125,11 +127,14 @@
     "LASTNAME": "Last name",
     "FIRSTNAME": "First name",
     "EMAIL": "E-Mail",
+    "ATTRIBUTES": "Attributes",
     "TOOLTIPS": {
+      "ID": "IAM User ID, used as reference within Permission Mgmt and User Profile Mgmt",
       "USERNAME": "IAM user name",
       "LASTNAME": "IAM last name",
       "FIRSTNAME": "IAM first name",
-      "EMAIL": "IAM E-Mail address"
+      "EMAIL": "IAM E-Mail address",
+      "ATTRIBUTES": "Within IAM defined Attributes"
     }
   },
   "ROLE": {

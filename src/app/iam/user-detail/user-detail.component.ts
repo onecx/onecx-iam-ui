@@ -20,6 +20,7 @@ export class UserDetailComponent implements OnChanges {
   public exceptionKey: string | undefined = undefined
   public datetimeFormat = 'medium'
   public userRoles$: Observable<string[]> = of()
+  public userAttributes: any | undefined = undefined
 
   constructor(
     private readonly roleApi: RolesInternalAPIService,
@@ -39,6 +40,7 @@ export class UserDetailComponent implements OnChanges {
    */
   private prepareQuery(): void {
     if (!this.iamUser?.id) return
+    this.userAttributes = JSON.stringify(this.iamUser.attributes, undefined, 2)
     this.loading = true
     this.exceptionKey = undefined
     this.userRoles$ = this.roleApi.getUserRoles({ userId: this.iamUser.id }).pipe(

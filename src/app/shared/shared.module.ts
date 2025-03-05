@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core'
 import { DataViewModule } from 'primeng/dataview'
 import { DialogModule } from 'primeng/dialog'
 import { InputTextModule } from 'primeng/inputtext'
+import { InputTextareaModule } from 'primeng/inputtextarea'
 import { ListboxModule } from 'primeng/listbox'
 import { TabViewModule } from 'primeng/tabview'
 import { ToastModule } from 'primeng/toast'
@@ -31,6 +32,7 @@ export function apiConfigProvider(configService: ConfigurationService, appStateS
     DialogModule,
     FormsModule,
     InputTextModule,
+    InputTextareaModule,
     ListboxModule,
     ReactiveFormsModule,
     TabViewModule,
@@ -44,6 +46,7 @@ export function apiConfigProvider(configService: ConfigurationService, appStateS
     DialogModule,
     FormsModule,
     InputTextModule,
+    InputTextareaModule,
     ListboxModule,
     ReactiveFormsModule,
     TabViewModule,

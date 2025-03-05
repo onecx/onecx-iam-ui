@@ -19,5 +19,6 @@ export interface User {
     firstName?: string;
     lastName?: string;
     email?: string;
+    attributes?: { [key: string]: Array<string>; };
 }
 
