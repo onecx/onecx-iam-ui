@@ -10,19 +10,18 @@ import { PanelMenuModule } from 'primeng/panelmenu'
 
 import { BASE_URL, RemoteComponentConfig } from '@onecx/angular-remote-components'
 
-import { SearchWorkspacesResponse, WorkspaceAPIService } from 'src/app/shared/generated'
-import { OneCXListWorkspacesUsingThemeComponent } from './list-workspaces-using-theme.component'
+import { RolesInternalAPIService } from 'src/app/shared/generated'
+import { OneCXIamUserRolesComponent } from './iam-user-roles.component'
 
-describe('OneCXListWorkspacesUsingThemeComponent', () => {
-  const wsApiSpy = {
-    searchWorkspaces: jasmine.createSpy('searchWorkspaces').and.returnValue(of({}))
+describe('OneCXIamUserRolesComponent', () => {
+  const roleApiSpy = {
+    getUserRoles: jasmine.createSpy('getUserRoles').and.returnValue(of({}))
   }
 
   function setUp() {
-    const fixture = TestBed.createComponent(OneCXListWorkspacesUsingThemeComponent)
+    const fixture = TestBed.createComponent(OneCXIamUserRolesComponent)
     const component = fixture.componentInstance
     fixture.detectChanges()
-
     return { fixture, component }
   }
 
@@ -44,20 +43,19 @@ describe('OneCXListWorkspacesUsingThemeComponent', () => {
           provide: BASE_URL,
           useValue: baseUrlSubject
         },
-        provideRouter([{ path: 'admin/theme', component: OneCXListWorkspacesUsingThemeComponent }])
+        provideRouter([{ path: 'admin/theme', component: OneCXIamUserRolesComponent }])
       ]
     })
-      .overrideComponent(OneCXListWorkspacesUsingThemeComponent, {
+      .overrideComponent(OneCXIamUserRolesComponent, {
         set: {
           imports: [TranslateTestingModule, CommonModule, RouterModule, PanelMenuModule],
-          providers: [{ provide: WorkspaceAPIService, useValue: wsApiSpy }]
+          providers: [{ provide: RolesInternalAPIService, useValue: roleApiSpy }]
         }
       })
       .compileComponents()
 
     baseUrlSubject.next('base_url_mock')
-
-    wsApiSpy.searchWorkspaces.calls.reset()
+    roleApiSpy.getUserRoles.calls.reset()
   })
 
   it('should create', () => {
@@ -94,62 +92,50 @@ describe('OneCXListWorkspacesUsingThemeComponent', () => {
     })
   })
 
-  it('should call findWorkspacesUsingTheme with the current themeName', () => {
+  it('should call getUserRoles with the current user', () => {
     const { component } = setUp()
-    spyOn(component as any, 'findWorkspacesUsingTheme')
-    component.themeName = 'testTheme'
+    component.userId = 'user'
 
     component.ngOnChanges()
-
-    expect(component['findWorkspacesUsingTheme']).toHaveBeenCalled()
   })
 
-  describe('findWorkspacesUsingTheme', () => {
-    it('should filter workspaces by theme and return display names', (done) => {
+  describe('getting roles', () => {
+    it('should get roles - successful with data', () => {
       const { component } = setUp()
-      const mockResponse: SearchWorkspacesResponse = {
-        stream: [
-          { name: 'ws1', theme: 'theme1', displayName: 'Workspace 1' },
-          { name: 'ws2', theme: 'theme2', displayName: 'Workspace 2' },
-          { name: 'ws3', theme: 'theme1', displayName: 'Workspace 3' }
-        ]
-      }
-      wsApiSpy.searchWorkspaces.and.returnValue(of(mockResponse))
+      component.userId = 'user'
+      const mockResponse: string[] = ['role1', 'role2']
+      roleApiSpy.getUserRoles.and.returnValue(of(mockResponse))
+      spyOn(component.roleList, 'emit')
 
-      component['findWorkspacesUsingTheme']()
+      component.ngOnChanges()
 
-      component.workspacesUsingTheme?.subscribe((result) => {
-        expect(result).toEqual(['Workspace 1', 'Workspace 2', 'Workspace 3'])
-        done()
-      })
+      expect(component.roleList.emit).toHaveBeenCalled()
     })
 
-    it('should handle empty response', (done) => {
+    it('should get roles - successful without data', () => {
       const { component } = setUp()
-      const mockResponse: SearchWorkspacesResponse = { stream: [] }
-      wsApiSpy.searchWorkspaces.and.returnValue(of(mockResponse))
+      component.userId = 'user'
+      const mockResponse: string[] = []
+      roleApiSpy.getUserRoles.and.returnValue(of(mockResponse))
+      spyOn(component.roleList, 'emit')
 
-      component['findWorkspacesUsingTheme']()
+      component.ngOnChanges()
 
-      component.workspacesUsingTheme?.subscribe((result) => {
-        expect(result).toEqual([])
-        done()
-      })
+      expect(component.roleList.emit).toHaveBeenCalledWith([])
     })
 
-    it('should handle error and return empty array', (done) => {
-      const errorResponse = { status: 400, statusText: 'Error on searching workspaces' }
+    it('should get roles - failed', () => {
       const { component } = setUp()
-      wsApiSpy.searchWorkspaces.and.returnValue(throwError(() => errorResponse))
+      component.userId = 'user'
+      const errorResponse = { status: 400, statusText: 'Error on getting roles' }
+      roleApiSpy.getUserRoles.and.returnValue(throwError(() => errorResponse))
+      spyOn(component.roleList, 'emit')
       spyOn(console, 'error')
 
-      component.findWorkspacesUsingTheme()
+      component.ngOnChanges()
 
-      component.workspacesUsingTheme?.subscribe((result) => {
-        expect(result).toEqual([])
-        done()
-      })
-      expect(console.error).toHaveBeenCalledWith('searchWorkspaces', errorResponse)
+      expect(component.roleList.emit).toHaveBeenCalledWith([])
+      expect(console.error).toHaveBeenCalledWith('iam.getUserRoles', errorResponse)
     })
   })
 })
