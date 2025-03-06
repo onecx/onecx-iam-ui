@@ -10,7 +10,7 @@ import { PanelMenuModule } from 'primeng/panelmenu'
 
 import { BASE_URL, RemoteComponentConfig } from '@onecx/angular-remote-components'
 
-import { RolesInternalAPIService } from 'src/app/shared/generated'
+import { RolesInternalAPIService, UserRolesResponse } from 'src/app/shared/generated'
 import { OneCXIamUserRolesComponent } from './iam-user-roles.component'
 
 describe('OneCXIamUserRolesComponent', () => {
@@ -103,7 +103,7 @@ describe('OneCXIamUserRolesComponent', () => {
     it('should get roles - successful with data', () => {
       const { component } = setUp()
       component.userId = 'user'
-      const mockResponse: string[] = ['role1', 'role2']
+      const mockResponse: UserRolesResponse = { roles: [{ name: 'role1' }, { name: 'role2' }] }
       roleApiSpy.getUserRoles.and.returnValue(of(mockResponse))
       spyOn(component.roleList, 'emit')
 
