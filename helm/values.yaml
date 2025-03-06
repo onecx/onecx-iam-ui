@@ -34,7 +34,8 @@ app:
           USER:
             SEARCH: Search users
             VIEW: View user details
-            VIEW_PERMISSIONS: View user permissions
+          PERMISSION:
+            VIEW: View user permissions
           ROLE:
             SEARCH: Search roles
     slot:

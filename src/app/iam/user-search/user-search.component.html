@@ -130,7 +130,7 @@
             <!-- BADGES -->
             <ng-container *ngIf="isComponentDefined$ | async">
               <a
-                *ocxIfPermission="'USER#VIEW_PERMISSIONS'"
+                *ocxIfPermission="'PERMISSION#VIEW'"
                 tabindex="0"
                 [id]="'iam_user_search_data_grid_' + i + '_action_permissions'"
                 class="card-badge-left badge-position pi pi-lock"
@@ -173,7 +173,7 @@
               <!-- BADGES -->
               <ng-container *ngIf="isComponentDefined$ | async">
                 <a
-                  *ocxIfPermission="'USER#VIEW_PERMISSIONS'"
+                  *ocxIfPermission="'PERMISSION#VIEW'"
                   tabindex="0"
                   [id]="'iam_user_search_data_grid_' + i + '_action_permissions'"
                   class="card-badge-right badge-1 pi pi-lock"
