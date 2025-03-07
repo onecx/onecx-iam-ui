@@ -191,6 +191,11 @@
       "REALMS": "Unbekanntes Problem beim Abrufen von Realm-Daten - Bitte versuchen sie es noch einmal.",
       "ROLES": "Unbekanntes Problem beim Abrufen von Rollen-Daten - Bitte versuchen sie es noch einmal."
     },
+    "HTTP_STATUS_400": {
+      "USER": "Ihre Anfrage konnte nicht bearbeitet werden.",
+      "REALMS": "Ihre Anfrage konnte nicht bearbeitet werden.",
+      "ROLES": "Ihre Anfrage konnte nicht bearbeitet werden."
+    },
     "HTTP_STATUS_401": {
       "USER": "Sie sind nicht autorisiert um Benutzer zu sehen.",
       "REALMS": "Sie sind nicht autorisiert um Realms zu sehen.",

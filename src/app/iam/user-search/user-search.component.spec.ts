@@ -11,27 +11,39 @@ import { of, throwError } from 'rxjs'
 import { UserService } from '@onecx/angular-integration-interface'
 import { PortalDialogService } from '@onecx/portal-integration-angular'
 
-import { User, UserPageResult, UsersInternalAPIService } from 'src/app/shared/generated'
+import {
+  RealmsInternalAPIService,
+  RealmResponse,
+  User,
+  UserPageResult,
+  UsersInternalAPIService
+} from 'src/app/shared/generated'
 import { UserSearchComponent, UserSearchCriteriaForm } from './user-search.component'
 
 const form = new FormGroup<UserSearchCriteriaForm>({
+  userId: new FormControl<string | null>(null),
   userName: new FormControl<string | null>(null),
   firstName: new FormControl<string | null>(null),
   lastName: new FormControl<string | null>(null),
-  email: new FormControl<string | null>(null)
+  email: new FormControl<string | null>(null),
+  realm: new FormControl<string | null>(null)
 })
 
 const user1: User = {
+  id: 'userid1',
   username: 'username1',
   firstName: 'first1',
   lastName: 'last1',
-  email: 'em@ail1'
+  email: 'em@ail1',
+  realm: 'realm1'
 }
 const user2: User = {
+  id: 'userid2',
   username: 'username2',
   firstName: 'first2',
   lastName: 'last2',
-  email: 'em@ail2'
+  email: 'em@ail2',
+  realm: 'realm2'
 }
 const userPageResult1: UserPageResult = {
   totalElements: 1,
@@ -55,8 +67,11 @@ describe('UserSearchComponent', () => {
   const routeMock = { snapshot: { paramMap: new Map() } }
 
   //const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
-  const apiUserServiceSpy = {
+  const userApiServiceSpy = {
     searchUsersByCriteria: jasmine.createSpy('searchUsersByCriteria').and.returnValue(of({}))
+  }
+  const roleApiServiceSpy = {
+    getAllRealms: jasmine.createSpy('getAllRealms').and.returnValue(of({}))
   }
   const mockUserService = {
     lang$: { getValue: jasmine.createSpy('getValue') },
@@ -77,7 +92,8 @@ describe('UserSearchComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([{ path: '', component: UserSearchComponent }]),
-        { provide: UsersInternalAPIService, useValue: apiUserServiceSpy },
+        { provide: RealmsInternalAPIService, useValue: roleApiServiceSpy },
+        { provide: UsersInternalAPIService, useValue: userApiServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock },
         { provide: UserService, useValue: mockUserService },
@@ -86,10 +102,11 @@ describe('UserSearchComponent', () => {
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents()
     // to spy data: reset
-    //translateServiceSpy.get.calls.reset()
-    apiUserServiceSpy.searchUsersByCriteria.calls.reset()
+    userApiServiceSpy.searchUsersByCriteria.calls.reset()
+    roleApiServiceSpy.getAllRealms.calls.reset()
     // to spy data: refill with neutral data
-    apiUserServiceSpy.searchUsersByCriteria.and.returnValue(of({}))
+    userApiServiceSpy.searchUsersByCriteria.and.returnValue(of({}))
+    roleApiServiceSpy.getAllRealms.and.returnValue(of({}))
   }))
 
   beforeEach(() => {
@@ -97,10 +114,6 @@ describe('UserSearchComponent', () => {
     component = fixture.componentInstance
     fixture.detectChanges()
     //fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
-  })
-
-  afterEach(() => {
-    //apiUserServiceSpy.searchUsersByCriteria.calls.reset()
   })
 
   describe('init', () => {
@@ -154,7 +167,7 @@ describe('UserSearchComponent', () => {
     })
   })
 
-  it('should call searchApps onSearch', () => {
+  it('should call initial search', () => {
     spyOn(component, 'searchUsers')
 
     component.onSearch()
@@ -168,7 +181,25 @@ describe('UserSearchComponent', () => {
       component.formGroup.controls['firstName'].setValue(user1.firstName!)
       component.formGroup.controls['lastName'].setValue(user1.lastName!)
       component.formGroup.controls['email'].setValue(user1.email!)
-      apiUserServiceSpy.searchUsersByCriteria.and.returnValue(of(userPageResult1 as UserPageResult))
+      userApiServiceSpy.searchUsersByCriteria.and.returnValue(of(userPageResult1 as UserPageResult))
+
+      component.searchUsers()
+
+      component.users$.subscribe({
+        next: (users) => {
+          expect(users.length).toBe(1)
+          expect(users[0]).toBe(user1)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should search by userId and realms - ignore other criteria', (done) => {
+      component.formGroup.controls['userId'].setValue(user1.id!)
+      component.formGroup.controls['userName'].setValue('unknown')
+      component.formGroup.controls['realm'].setValue(user1.realm!)
+      userApiServiceSpy.searchUsersByCriteria.and.returnValue(of(userPageResult1 as UserPageResult))
 
       component.searchUsers()
 
@@ -184,7 +215,7 @@ describe('UserSearchComponent', () => {
 
     it('should search users result empty', (done) => {
       component.formGroup.controls['userName'].setValue('testuserName')
-      apiUserServiceSpy.searchUsersByCriteria.and.returnValue(of({} as UserPageResult))
+      userApiServiceSpy.searchUsersByCriteria.and.returnValue(of({} as UserPageResult))
 
       component.searchUsers()
 
@@ -199,7 +230,7 @@ describe('UserSearchComponent', () => {
 
     it('should search users result stream list equals 2', (done) => {
       component.formGroup.controls['userName'].setValue('testuserName')
-      apiUserServiceSpy.searchUsersByCriteria.and.returnValue(of(userPageResult2 as UserPageResult))
+      userApiServiceSpy.searchUsersByCriteria.and.returnValue(of(userPageResult2 as UserPageResult))
 
       component.searchUsers()
 
@@ -225,7 +256,7 @@ describe('UserSearchComponent', () => {
     it('should search user Error response', (done) => {
       const errorResponse = { status: 404, statusText: 'Not Found' }
       component.formGroup.controls['userName'].setValue('testcriteria')
-      apiUserServiceSpy.searchUsersByCriteria.and.returnValue(throwError(() => errorResponse))
+      userApiServiceSpy.searchUsersByCriteria.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 
       component.searchUsers()
@@ -242,73 +273,138 @@ describe('UserSearchComponent', () => {
         error: done.fail
       })
     })
+
+    it('should manage form on search criteria user id', () => {
+      expect(component.formGroup.controls['userName'].enable).toBeTruthy()
+
+      component.searchOnlyById('id')
+
+      expect(component.formGroup.controls['userName'].disable).toBeTruthy()
+    })
   })
 
-  it('should update filter and and sort Field', () => {
-    const filter = 'testFilter'
+  describe('search realms', () => {
+    it('should search & found realms - successful', (done) => {
+      const realmResponse: RealmResponse = { realms: ['realm1', 'realm2'] }
+      roleApiServiceSpy.getAllRealms.and.returnValue(of(realmResponse))
 
-    component.onFilterChange(filter)
+      component.searchRealms()
 
-    expect(component.filter).toBe(filter)
-
-    component.onSortChange('field')
-
-    expect(component.sortField).toBe('field')
-  })
-
-  it('should update viewMode onLayoutChange', () => {
-    component.onLayoutChange('grid')
-
-    expect(component.viewMode).toBe('grid')
-  })
-
-  it('should update filter and call dv.filter onFilterChange', () => {
-    const filter = 'testFilter'
-
-    component.onFilterChange(filter)
-
-    expect(component.filter).toBe(filter)
-  })
-
-  it('should update sortOrder based on asc boolean onSortDirChange', () => {
-    component.onSortDirChange(true)
-    expect(component.sortOrder).toBe(-1)
-
-    component.onSortDirChange(false)
-    expect(component.sortOrder).toBe(1)
-  })
-
-  it('should navigate back onRoleSeartcjh', () => {
-    component.onGoToRoleSearch()
-
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['./roles'], { relativeTo: routeMock })
-  })
-
-  it('should reset roleSearchCriteriaGroup onSearchReset is called', () => {
-    component.formGroup = form
-    spyOn(form, 'reset').and.callThrough()
-
-    component.onSearchReset()
-
-    expect(component.formGroup.reset).toHaveBeenCalled()
-  })
-
-  it('should prepare action buttons with translated labels and tooltips', () => {
-    spyOn(component, 'onGoToRoleSearch')
-
-    component.ngOnInit()
-
-    if (component.actions$) {
-      component.actions$.subscribe((actions) => {
-        const firstAction = actions[0]
-        firstAction.actionCallback()
-        expect(component.onGoToRoleSearch).toHaveBeenCalled()
-        expect(actions[0].label).toBe('Roles')
-        expect(actions[0].title).toBe('Search Roles in Identity Access Management (IAM)')
-        expect(actions[0].icon).toBe('pi pi-bars')
-        expect(actions[0].show).toBe('always')
+      component.realms$.subscribe({
+        next: (realms) => {
+          expect(realms.length).toBe(2)
+          expect(realms[0]).toBe('realm1')
+          done()
+        },
+        error: done.fail
       })
-    }
+    })
+
+    it('should search realms - successful without data', (done) => {
+      const realmResponse: RealmResponse = {}
+      roleApiServiceSpy.getAllRealms.and.returnValue(of(realmResponse))
+
+      component.searchRealms()
+
+      component.realms$.subscribe({
+        next: (realms) => {
+          expect(realms.length).toBe(0)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should search realms - successful without data', (done) => {
+      const errorResponse = { status: 404, statusText: 'Not Found' }
+      roleApiServiceSpy.getAllRealms.and.returnValue(throwError(() => errorResponse))
+      spyOn(console, 'error')
+
+      component.searchRealms()
+
+      component.realms$.subscribe({
+        next: (realms) => {
+          expect(realms.length).toBe(0)
+          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.REALMS')
+          expect(console.error).toHaveBeenCalledWith('getAllRealms', errorResponse)
+          done()
+        },
+        error: done.fail
+      })
+    })
+  })
+
+  describe('filter', () => {
+    it('should update filter and and sort Field', () => {
+      const filter = 'testFilter'
+
+      component.onFilterChange(filter)
+
+      expect(component.filter).toBe(filter)
+
+      component.onSortChange('field')
+
+      expect(component.sortField).toBe('field')
+    })
+
+    it('should update viewMode onLayoutChange', () => {
+      component.onLayoutChange('grid')
+
+      expect(component.viewMode).toBe('grid')
+    })
+
+    it('should update filter and call dv.filter onFilterChange', () => {
+      const filter = 'testFilter'
+
+      component.onFilterChange(filter)
+
+      expect(component.filter).toBe(filter)
+    })
+  })
+
+  describe('sort', () => {
+    it('should update sortOrder based on asc boolean onSortDirChange', () => {
+      component.onSortDirChange(true)
+      expect(component.sortOrder).toBe(-1)
+
+      component.onSortDirChange(false)
+      expect(component.sortOrder).toBe(1)
+    })
+  })
+
+  describe('page navigation', () => {
+    it('should navigate to role search', () => {
+      component.onGoToRoleSearch()
+
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['./roles'], { relativeTo: routeMock })
+    })
+
+    it('should reset roleSearchCriteriaGroup onSearchReset is called', () => {
+      component.formGroup = form
+      spyOn(form, 'reset').and.callThrough()
+
+      component.onSearchReset()
+
+      expect(component.formGroup.reset).toHaveBeenCalled()
+    })
+
+    it('should prepare action buttons with translated labels and tooltips', () => {
+      spyOn(component, 'onGoToRoleSearch')
+
+      component.ngOnInit()
+
+      if (component.actions$) {
+        component.actions$.subscribe((actions) => {
+          const firstAction = actions[0]
+          firstAction.actionCallback()
+          expect(component.onGoToRoleSearch).toHaveBeenCalled()
+          expect(actions[0].label).toBe('Roles')
+          expect(actions[0].title).toBe('Search Roles in Identity Access Management (IAM)')
+          expect(actions[0].icon).toBe('pi pi-bars')
+          expect(actions[0].show).toBe('always')
+        })
+      }
+    })
   })
 
   describe('UI actions', () => {

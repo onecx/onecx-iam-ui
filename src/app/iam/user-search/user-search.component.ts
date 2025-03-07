@@ -119,7 +119,8 @@ export class UserSearchComponent implements OnInit {
     usc.lastName = usc.lastName === '' || usc.lastName === null ? undefined : usc.lastName
     usc.email = usc.email === '' || usc.email === null ? undefined : usc.email
     usc.realm = usc.realm === '' || usc.realm === null ? undefined : usc.realm
-    if (usc.userId) usc = { userId: usc.userId } // special case on search by id: ignore all other criteria
+    // special case on search by id: ignore all other criteria
+    if (usc.userId) usc = { userId: usc.userId, realm: usc.realm }
     // execute search
     this.users$ = this.userApi.searchUsersByCriteria({ userSearchCriteria: usc }).pipe(
       map((response: UserPageResult) => {
@@ -212,7 +213,6 @@ export class UserSearchComponent implements OnInit {
     this.searchUsers()
   }
   public searchOnlyById(val: string) {
-    console.log('searchOnlyById', val)
     if (val) {
       this.formGroup.disable()
       this.formGroup.controls['userId'].enable()

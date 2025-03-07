@@ -191,6 +191,11 @@
       "REALMS": "Unknown problem retrieving Realm data - please try again.",
       "ROLES": "Unknown problem retrieving Role data - please try again."
     },
+    "HTTP_STATUS_400": {
+      "USER": "Your request could not be processed.",
+      "REALMS": "Your request could not be processed.",
+      "ROLES": "Your request could not be processed."
+    },
     "HTTP_STATUS_401": {
       "USER": "You are not authorized to see Users.",
       "REALMS": "You are not authorized to see Realms.",
