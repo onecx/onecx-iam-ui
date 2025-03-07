@@ -38,6 +38,22 @@
         />
         <label for="iam_user_search_criteria_user_name">{{ 'USER.USERNAME' | translate }}</label>
       </span>
+      <span class="p-float-label">
+        <p-dropdown
+          id="iam_user_search_criteria_realm"
+          styleClass="w-full input-field-correction"
+          formControlName="realm"
+          appendTo="body"
+          [options]="(realms$ | async) ?? []"
+          [showClear]="true"
+          [attr.aria-label]="'USER.REALM' | translate"
+          [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.REALM' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        >
+        </p-dropdown>
+        <label for="iam_user_search_criteria_realm">{{ 'USER.REALM' | translate }}</label>
+      </span>
       <span *ocxAdvanced class="p-float-label">
         <input
           id="iam_user_search_criteria_first_name"
@@ -79,35 +95,6 @@
           tooltipEvent="hover"
         />
         <label for="iam_user_search_criteria_email">{{ 'USER.EMAIL' | translate }}</label>
-      </span>
-      <span *ocxAdvanced class="p-float-label">
-        <input
-          id="iam_user_search_criteria_realm"
-          pInputText
-          type="text"
-          formControlName="realm"
-          class="w-11rem sm:w-13rem"
-          [attr.aria-label]="'USER.REALM' | translate"
-          [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.REALM' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        />
-        <label for="iam_user_search_criteria_realm">{{ 'USER.REALM' | translate }}</label>
-      </span>
-      <span *ocxAdvanced class="p-float-label">
-        <p-dropdown
-          id="iam_user_search_criteria_realm"
-          styleClass="w-full input-field-correction"
-          formControlName="realm"
-          [options]="(realms$ | async) ?? []"
-          [showClear]="true"
-          [attr.aria-label]="'USER.REALM' | translate"
-          [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.REALM' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        >
-        </p-dropdown>
-        <label for="iam_user_search_criteria_realm">{{ 'USER.REALM' | translate }}</label>
       </span>
     </div>
   </ocx-search-header>

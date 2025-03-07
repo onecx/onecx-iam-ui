@@ -216,6 +216,7 @@ export class UserSearchComponent implements OnInit {
     if (val) {
       this.formGroup.disable()
       this.formGroup.controls['userId'].enable()
+      this.formGroup.controls['realm'].enable()
     }
   }
   public onSearchReset(): void {
