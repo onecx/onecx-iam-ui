@@ -49,7 +49,6 @@ const routes: Routes = [
   providers: [
     ConfigurationService,
     { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] },
-    { provide: SLOT_SERVICE, useExisting: SlotService },
     {
       provide: APP_INITIALIZER,
       useFactory: initializeRouter,
@@ -62,6 +61,7 @@ const routes: Routes = [
       multi: true,
       deps: [AppStateService]
     },
+    { provide: SLOT_SERVICE, useExisting: SlotService },
     provideHttpClient(withInterceptorsFromDi()),
     providePortalDialogService()
   ]

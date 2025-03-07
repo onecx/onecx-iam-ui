@@ -6,7 +6,8 @@ const config = withModuleFederationPlugin({
   filename: 'remoteEntry.js',
   exposes: {
     './OneCXIamModule': 'src/main.ts',
-    './OneCXChangePasswordComponent': 'src/app/remotes/change-password/change-password.component.main.ts'
+    './OneCXChangePasswordComponent': 'src/app/remotes/change-password/change-password.component.main.ts',
+    './OneCXIamUserRolesComponent': 'src/app/remotes/iam-user-roles/iam-user-roles.component.main.ts'
   },
   shared: share({
     '@angular/core': { requiredVersion: 'auto', includeSecondaries: true },

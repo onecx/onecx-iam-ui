@@ -20,7 +20,7 @@ export class UserDetailComponent implements OnChanges {
   public exceptionKey: string | undefined = undefined
   public datetimeFormat = 'medium'
   public userRoles$: Observable<string[]> = of()
-  public userAttributes: any | undefined = undefined
+  public userAttributes: string | undefined = undefined
 
   constructor(
     private readonly roleApi: RolesInternalAPIService,
