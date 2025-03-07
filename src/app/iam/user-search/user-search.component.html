@@ -99,19 +99,25 @@
     </div>
   </ocx-search-header>
 
-  <ocx-page-content>
-    <div *ngIf="exceptionKey" id="iam_user_search_criteria_error" class="card px-3 align-items-center">
-      <p-message
-        id="iam_user_search_criteria_error_message"
-        severity="error"
-        styleClass="p-2"
-        [text]="exceptionKey | translate"
-      ></p-message>
-    </div>
+  <ocx-page-content *ngIf="(users$ | async)?.sort() as users">
+    <p-message
+      *ngIf="loading"
+      id="iam_user_search_loading"
+      severity="info"
+      styleClass="m-3"
+      [text]="'ACTIONS.LOADING' | translate"
+    ></p-message>
+    <p-message
+      *ngIf="exceptionKey"
+      id="iam_user_search_error_message"
+      severity="error"
+      styleClass="p-2"
+      [text]="exceptionKey | translate"
+    ></p-message>
     <p-dataView
-      *ngIf="!exceptionKey"
+      *ngIf="!(exceptionKey || loading)"
       id="iam_user_search_dataview"
-      [value]="(users$ | async)?.sort()"
+      [value]="users"
       [layout]="viewMode"
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
       [paginator]="true"
@@ -154,7 +160,7 @@
           <div
             *ngFor="let iamUser of users; index as i"
             [id]="'iam_user_search_data_list_' + i"
-            class="relative col-12 sm:col-6 h-3rem md:h-3-5rem py-1 md:py-2 pl-5 pr-3 flex flex-column justify-content-between"
+            class="relative col-12 sm:col-6 h-3rem md:h-3-5rem py-1 md:py-2 pl-6 pr-3 flex flex-column justify-content-between"
             [pTooltip]="iamUser.username.length < 50 ? '' : iamUser.username"
             tooltipPosition="top"
             tooltipEvent="hover"

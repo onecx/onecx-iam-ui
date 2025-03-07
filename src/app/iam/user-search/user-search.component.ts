@@ -42,7 +42,6 @@ export class UserSearchComponent implements OnInit {
   public exceptionKey: string | undefined
   public displayDetailDialog = false
   public viewMode: 'list' | 'grid' = 'grid'
-  public searchInProgress = false
   public filter: string | undefined
   public sortField = 'username'
   public sortOrder = 1
@@ -88,11 +87,10 @@ export class UserSearchComponent implements OnInit {
     this.searchRealms()
     this.searchUsers()
   }
+
   public searchRealms(): void {
     this.realms$ = this.realmApi.getAllRealms().pipe(
-      map((response: RealmResponse) => {
-        return response.realms ?? []
-      }),
+      map((response: RealmResponse) => response.realms ?? []),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.REALMS'
         console.error('getAllRealms', err)
@@ -102,8 +100,9 @@ export class UserSearchComponent implements OnInit {
   }
 
   public searchUsers(): void {
-    this.searchInProgress = true
-    // cleanup forma data to usable search criteria: prevent empty strings
+    this.loading = true
+    this.exceptionKey = undefined
+    // cleanup form data to usable search criteria: prevent empty strings
     let usc: UserSearchCriteria = {
       userId: this.formGroup.controls['userId'].value,
       userName: this.formGroup.controls['userName'].value,
@@ -123,15 +122,13 @@ export class UserSearchComponent implements OnInit {
     if (usc.userId) usc = { userId: usc.userId, realm: usc.realm }
     // execute search
     this.users$ = this.userApi.searchUsersByCriteria({ userSearchCriteria: usc }).pipe(
-      map((response: UserPageResult) => {
-        return response.stream ?? []
-      }),
+      map((response: UserPageResult) => response.stream ?? []),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.USER'
         console.error('searchUsersByCriteria', err)
         return of([])
       }),
-      finalize(() => (this.searchInProgress = false))
+      finalize(() => (this.loading = false))
     )
   }
 

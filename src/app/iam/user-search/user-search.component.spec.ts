@@ -181,7 +181,7 @@ describe('UserSearchComponent', () => {
       component.formGroup.controls['firstName'].setValue(user1.firstName!)
       component.formGroup.controls['lastName'].setValue(user1.lastName!)
       component.formGroup.controls['email'].setValue(user1.email!)
-      userApiServiceSpy.searchUsersByCriteria.and.returnValue(of(userPageResult1 as UserPageResult))
+      userApiServiceSpy.searchUsersByCriteria.and.returnValue(of(userPageResult1))
 
       component.searchUsers()
 
@@ -199,7 +199,7 @@ describe('UserSearchComponent', () => {
       component.formGroup.controls['userId'].setValue(user1.id!)
       component.formGroup.controls['userName'].setValue('unknown')
       component.formGroup.controls['realm'].setValue(user1.realm!)
-      userApiServiceSpy.searchUsersByCriteria.and.returnValue(of(userPageResult1 as UserPageResult))
+      userApiServiceSpy.searchUsersByCriteria.and.returnValue(of(userPageResult1))
 
       component.searchUsers()
 
@@ -215,7 +215,7 @@ describe('UserSearchComponent', () => {
 
     it('should search users result empty', (done) => {
       component.formGroup.controls['userName'].setValue('testuserName')
-      userApiServiceSpy.searchUsersByCriteria.and.returnValue(of({} as UserPageResult))
+      userApiServiceSpy.searchUsersByCriteria.and.returnValue(of({}))
 
       component.searchUsers()
 
@@ -230,7 +230,7 @@ describe('UserSearchComponent', () => {
 
     it('should search users result stream list equals 2', (done) => {
       component.formGroup.controls['userName'].setValue('testuserName')
-      userApiServiceSpy.searchUsersByCriteria.and.returnValue(of(userPageResult2 as UserPageResult))
+      userApiServiceSpy.searchUsersByCriteria.and.returnValue(of(userPageResult2))
 
       component.searchUsers()
 
