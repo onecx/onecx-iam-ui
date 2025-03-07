@@ -5,7 +5,7 @@ import { catchError, finalize, map, Observable, of } from 'rxjs'
 import { UserService } from '@onecx/angular-integration-interface'
 
 import { Role, RolesInternalAPIService, User, UserRolesResponse } from 'src/app/shared/generated'
-import { copyToClipboard } from 'src/app/shared/utils'
+import { copyToClipboard, sortByLocale } from 'src/app/shared/utils'
 
 @Component({
   selector: 'app-user-detail',
@@ -48,7 +48,7 @@ export class UserDetailComponent implements OnChanges {
     this.userRoles$ = this.roleApi.getUserRoles({ userId: this.iamUser.id }).pipe(
       map((response: UserRolesResponse) => {
         const roles: Role[] = response.roles ?? []
-        return (roles?.map((r) => r.name) as string[]).sort()
+        return (roles?.map((r) => r.name) as string[]).sort(sortByLocale)
       }),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.ROLES'
