@@ -93,7 +93,7 @@
         "LABEL": "Benutzer",
         "TOOLTIP": "Benutzer im Identity Access Management (IAM)",
         "CRITERIA": {
-          "ID": "IAM ID, wenn benutzt dann werden alle anderen Suchkriterien ignoriert",
+          "ID": "IAM ID, wenn benutzt dann werden alle anderen Suchkriterien ausser Realm ignoriert",
           "USERNAME": "IAM Benutzernamen, Suche nach Namensteil unterstützt",
           "LASTNAME": "IAM Nachname, Suche nach Namensteil unterstützt",
           "FIRSTNAME": "IAM Vorname, Suche nach Namensteil unterstützt",

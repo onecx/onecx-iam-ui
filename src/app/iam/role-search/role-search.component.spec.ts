@@ -99,14 +99,14 @@ describe('RoleSearchComponent', () => {
 
   it('should search roles result stream list equals 1', (done) => {
     component.roleSearchCriteriaGroup.controls['name'].setValue('testname')
-    apiRoleServiceSpy.searchRolesByCriteria.and.returnValue(of(rolePageResult as RolePageResult))
+    apiRoleServiceSpy.searchRolesByCriteria.and.returnValue(of(rolePageResult))
 
     component.searchRoles()
 
-    component.rolesPageResult$.subscribe({
+    component.roles$.subscribe({
       next: (roles) => {
-        expect(roles.stream?.length).toBe(1)
-        expect(roles.stream?.at(0)).toBe(role)
+        expect(roles.length).toBe(1)
+        expect(roles[0]).toBe(role)
         done()
       },
       error: done.fail
@@ -115,13 +115,13 @@ describe('RoleSearchComponent', () => {
 
   it('should search roles result empty', (done) => {
     component.roleSearchCriteriaGroup.controls['name'].setValue('testname')
-    apiRoleServiceSpy.searchRolesByCriteria.and.returnValue(of({} as RolePageResult))
+    apiRoleServiceSpy.searchRolesByCriteria.and.returnValue(of({}))
 
     component.searchRoles()
 
-    component.rolesPageResult$.subscribe({
+    component.roles$.subscribe({
       next: (roles) => {
-        expect(roles.stream?.length).toBeUndefined()
+        expect(roles.length).toBe(0)
         done()
       },
       error: done.fail
@@ -130,15 +130,15 @@ describe('RoleSearchComponent', () => {
 
   it('should search roles result stream list equals 2', (done) => {
     component.roleSearchCriteriaGroup.controls['name'].setValue('testname')
-    apiRoleServiceSpy.searchRolesByCriteria.and.returnValue(of(rolePageResult2 as RolePageResult))
+    apiRoleServiceSpy.searchRolesByCriteria.and.returnValue(of(rolePageResult2))
 
     component.searchRoles()
 
-    component.rolesPageResult$.subscribe({
+    component.roles$.subscribe({
       next: (roles) => {
-        expect(roles.stream?.length).toBe(2)
-        expect(roles.stream?.at(0)).toBe(role)
-        expect(roles.stream?.at(1)).toBe(role2)
+        expect(roles.length).toBe(2)
+        expect(roles.at(0)).toBe(role)
+        expect(roles.at(1)).toBe(role2)
         done()
       },
       error: done.fail
@@ -161,13 +161,11 @@ describe('RoleSearchComponent', () => {
 
     component.searchRoles()
 
-    component.rolesPageResult$.subscribe({
+    component.roles$.subscribe({
       next: (roles) => {
-        if (roles.stream) {
-          expect(roles.stream.length).toBe(0)
-          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.USER')
-          expect(console.error).toHaveBeenCalledWith('searchRolesByCriteria', errorResponse)
-        }
+        expect(roles.length).toBe(0)
+        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.ROLES')
+        expect(console.error).toHaveBeenCalledWith('searchRolesByCriteria', errorResponse)
         done()
       },
       error: done.fail

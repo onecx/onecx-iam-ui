@@ -25,19 +25,25 @@
     </div>
   </ocx-search-header>
 
-  <ocx-page-content>
-    <div *ngIf="!loading && exceptionKey" id="iam_role_search_criteria_error" class="card px-3 align-items-center">
-      <p-message
-        id="iam_role_search_criteria_error_message"
-        severity="error"
-        styleClass="p-2"
-        [text]="exceptionKey | translate"
-      ></p-message>
-    </div>
+  <ocx-page-content *ngIf="(roles$ | async)?.sort() as roles">
+    <p-message
+      *ngIf="loading"
+      id="iam_user_search_loading"
+      severity="info"
+      styleClass="m-3"
+      [text]="'ACTIONS.LOADING' | translate"
+    ></p-message>
+    <p-message
+      *ngIf="exceptionKey"
+      id="iam_role_search_criteria_error_message"
+      severity="error"
+      styleClass="p-2"
+      [text]="exceptionKey | translate"
+    ></p-message>
     <p-dataView
-      *ngIf="!exceptionKey"
+      *ngIf="!(exceptionKey || loading)"
       id="iam_role_search_dataview"
-      [value]="(rolesPageResult$ | async)?.stream!.sort()"
+      [value]="roles"
       [layout]="viewMode"
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
       [paginator]="true"

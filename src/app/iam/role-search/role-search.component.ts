@@ -18,19 +18,18 @@ export interface RoleSearchCriteria {
   styleUrls: ['./role-search.component.scss']
 })
 export class RoleSearchComponent implements OnInit {
+  // detail
   public exceptionKey: string | undefined
   public loading = false
-
+  public displayDetailDialog = false
+  public displayDeleteDialog = false
+  // data
   public actions$: Observable<Action[]> | undefined
   public roles$!: Observable<Role[]>
-  public rolesPageResult$!: Observable<RolePageResult>
-
   public viewMode: 'list' | 'grid' = 'grid'
   public filter: string | undefined
   public sortField = 'name'
   public sortOrder = 1
-  public displayDetailDialog = false
-  public displayDeleteDialog = false
   public roleSearchCriteriaGroup: FormGroup<RoleSearchCriteria>
 
   ngOnInit(): void {
@@ -60,26 +59,14 @@ export class RoleSearchComponent implements OnInit {
     if (this.roleSearchCriteriaGroup.controls['name'] && this.roleSearchCriteriaGroup.controls['name'].value != '') {
       name = this.roleSearchCriteriaGroup.controls['name'].value ?? undefined
     }
-    this.rolesPageResult$ = this.rolesService
-      .searchRolesByCriteria({
-        roleSearchCriteria: {
-          name: name,
-          pageSize: 1000
-        }
-      })
-      .pipe(
-        catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.ROLES'
-          console.error('searchRolesByCriteria', err)
-          return of({} as RolePageResult)
-        }),
-        finalize(() => (this.loading = false))
-      )
-
-    this.roles$ = this.rolesPageResult$.pipe(
-      map((data) => {
-        return data.stream as Role[]
-      })
+    this.roles$ = this.rolesService.searchRolesByCriteria({ roleSearchCriteria: { name: name, pageSize: 1000 } }).pipe(
+      map((response: RolePageResult) => response.stream ?? []),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.ROLES'
+        console.error('searchRolesByCriteria', err)
+        return of([])
+      }),
+      finalize(() => (this.loading = false))
     )
   }
 
