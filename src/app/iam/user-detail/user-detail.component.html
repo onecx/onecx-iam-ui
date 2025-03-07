@@ -25,96 +25,165 @@
       tooltipEvent="hover"
     >
       <div class="mt-1 mb-2 flex flex-column row-gap-4">
-        <span class="flex-grow-1 p-float-label">
-          <input
-            pInputText
-            type="text"
-            id="iam_detail_field_id"
-            class="w-full pt-3 pb-2 text-responsive"
-            [disabled]="true"
-            [value]="iamUser?.id"
-            [attr.aria-label]="'USER.ID' | translate"
-            [pTooltip]="'USER.TOOLTIPS.ID' | translate"
-            tooltipPosition="top"
+        <div class="p-inputgroup" controlErrorAnchor>
+          <span class="p-float-label">
+            <input
+              #iamUserId
+              pInputText
+              type="text"
+              id="iam_detail_field_id"
+              class="w-full pt-3 pb-2 text-responsive"
+              [disabled]="true"
+              [value]="iamUser?.id"
+              [attr.aria-label]="'USER.ID' | translate"
+              [pTooltip]="'USER.TOOLTIPS.ID' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label for="iam_detail_field_id">{{ 'USER.ID' | translate }}</label>
+          </span>
+          <a
+            tabindex="0"
+            id="ws_detail_props_item_rssFeedUrl_link"
+            class="p-inputgroup-addon bg-primary pseudo-button"
+            [ngClass]="iamUserId.value ? 'cursor-pointer' : 'p-disabled'"
+            (click)="copyToClipboard(iamUserId.value)"
+            [attr.aria-label]="'ACTIONS.COPY.CLIPBOARD' | translate"
+            [pTooltip]="'ACTIONS.COPY.CLIPBOARD' | translate"
+            tooltipPosition="right"
             tooltipEvent="hover"
-          />
-          <label for="bm_detail_form_field_creation_date">{{ 'USER.ID' | translate }}</label>
-        </span>
-        <span class="flex-grow-1 p-float-label">
-          <input
-            pInputText
-            type="text"
-            id="iam_detail_field_creation_date"
-            class="w-full pt-3 pb-2 text-responsive"
-            [disabled]="true"
-            [value]="iamUser?.createdTimestamp | date: datetimeFormat : ''"
-            [attr.aria-label]="'INTERNAL.CREATION_DATE' | translate"
-            [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
-            tooltipPosition="top"
+          >
+            <span class="pi pi-copy"></span>
+          </a>
+        </div>
+
+        <div class="p-inputgroup" controlErrorAnchor>
+          <span class="p-float-label">
+            <input
+              #iamUserName
+              pInputText
+              type="text"
+              id="iam_detail_field_user_name"
+              class="w-full pt-3 pb-2 text-responsive"
+              [disabled]="true"
+              [value]="iamUser?.username"
+              [attr.aria-label]="'USER.USERNAME' | translate"
+              [pTooltip]="'USER.TOOLTIPS.USERNAME' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label for="iam_detail_field_user_name"> {{ 'USER.USERNAME' | translate }} </label>
+          </span>
+          <a
+            tabindex="0"
+            id="ws_detail_props_item_rssFeedUrl_link"
+            class="p-inputgroup-addon bg-primary pseudo-button"
+            [ngClass]="iamUserName.value ? 'cursor-pointer' : 'p-disabled'"
+            (click)="copyToClipboard(iamUserName.value)"
+            [attr.aria-label]="'ACTIONS.COPY.CLIPBOARD' | translate"
+            [pTooltip]="'ACTIONS.COPY.CLIPBOARD' | translate"
+            tooltipPosition="right"
             tooltipEvent="hover"
-          />
-          <label for="bm_detail_form_field_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
-        </span>
-        <span class="flex-grow-1 p-float-label">
-          <input
-            pInputText
-            type="text"
-            id="iam_detail_field_user_name"
-            class="w-full pt-3 pb-2 text-responsive"
-            [disabled]="true"
-            [value]="iamUser?.username"
-            [attr.aria-label]="'USER.USERNAME' | translate"
-            [pTooltip]="'USER.TOOLTIPS.USERNAME' | translate"
-            tooltipPosition="top"
+          >
+            <span class="pi pi-copy"></span>
+          </a>
+        </div>
+
+        <div class="p-inputgroup" controlErrorAnchor>
+          <span class="p-float-label">
+            <input
+              #iamUserEmail
+              pInputText
+              type="text"
+              id="iam_detail_field_user_email"
+              class="w-full pt-3 pb-2 text-responsive"
+              [disabled]="true"
+              [value]="iamUser?.email"
+              [attr.aria-label]="'USER.EMAIL' | translate"
+              [pTooltip]="'USER.TOOLTIPS.EMAIL' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label for="iam_detail_field_user_email"> {{ 'USER.EMAIL' | translate }} </label>
+          </span>
+          <a
+            tabindex="0"
+            id="ws_detail_props_item_rssFeedUrl_link"
+            class="p-inputgroup-addon bg-primary pseudo-button"
+            [ngClass]="iamUserEmail.value ? 'cursor-pointer' : 'p-disabled'"
+            (click)="copyToClipboard(iamUserEmail.value)"
+            [attr.aria-label]="'ACTIONS.COPY.CLIPBOARD' | translate"
+            [pTooltip]="'ACTIONS.COPY.CLIPBOARD' | translate"
+            tooltipPosition="right"
             tooltipEvent="hover"
-          />
-          <label for="iam_detail_field_user_name"> {{ 'USER.USERNAME' | translate }} </label>
-        </span>
-        <span class="flex-grow-1 p-float-label">
-          <input
-            pInputText
-            type="text"
-            id="iam_detail_field_user_email"
-            class="w-full pt-3 pb-2 text-responsive"
-            [disabled]="true"
-            [value]="iamUser?.email"
-            [attr.aria-label]="'USER.EMAIL' | translate"
-            [pTooltip]="'USER.TOOLTIPS.EMAIL' | translate"
-            tooltipPosition="top"
+          >
+            <span class="pi pi-copy"></span>
+          </a>
+        </div>
+
+        <div class="p-inputgroup" controlErrorAnchor>
+          <span class="p-float-label">
+            <input
+              #iamUserFirstName
+              pInputText
+              type="text"
+              id="iam_detail_field_first_name"
+              class="w-full pt-3 pb-2 text-responsive"
+              [disabled]="true"
+              [value]="iamUser?.firstName"
+              [attr.aria-label]="'USER.FIRSTNAME' | translate"
+              [pTooltip]="'USER.TOOLTIPS.FIRSTNAME' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label for="iam_detail_field_first_name"> {{ 'USER.FIRSTNAME' | translate }} </label>
+          </span>
+          <a
+            tabindex="0"
+            id="ws_detail_props_item_rssFeedUrl_link"
+            class="p-inputgroup-addon bg-primary pseudo-button"
+            [ngClass]="iamUserFirstName.value ? 'cursor-pointer' : 'p-disabled'"
+            (click)="copyToClipboard(iamUserFirstName.value)"
+            [attr.aria-label]="'ACTIONS.COPY.CLIPBOARD' | translate"
+            [pTooltip]="'ACTIONS.COPY.CLIPBOARD' | translate"
+            tooltipPosition="right"
             tooltipEvent="hover"
-          />
-          <label for="iam_detail_field_user_email"> {{ 'USER.EMAIL' | translate }} </label>
-        </span>
-        <span class="flex-grow-1 p-float-label">
-          <input
-            pInputText
-            type="text"
-            id="iam_detail_field_first_name"
-            class="w-full pt-3 pb-2 text-responsive"
-            [disabled]="true"
-            [value]="iamUser?.firstName"
-            [attr.aria-label]="'USER.FIRSTNAME' | translate"
-            [pTooltip]="'USER.TOOLTIPS.FIRSTNAME' | translate"
-            tooltipPosition="top"
+          >
+            <span class="pi pi-copy"></span>
+          </a>
+        </div>
+
+        <div class="p-inputgroup" controlErrorAnchor>
+          <span class="p-float-label">
+            <input
+              #iamUserLastName
+              pInputText
+              type="text"
+              id="iam_detail_field_last_name"
+              class="w-full pt-3 pb-2 text-responsive"
+              [disabled]="true"
+              [value]="iamUser?.lastName"
+              [attr.aria-label]="'USER.LASTNAME' | translate"
+              [pTooltip]="'USER.TOOLTIPS.LASTNAME' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label for="iam_detail_field_last_name"> {{ 'USER.LASTNAME' | translate }} </label>
+          </span>
+          <a
+            tabindex="0"
+            id="ws_detail_props_item_rssFeedUrl_link"
+            class="p-inputgroup-addon bg-primary pseudo-button"
+            [ngClass]="iamUserLastName.value ? 'cursor-pointer' : 'p-disabled'"
+            (click)="copyToClipboard(iamUserLastName.value)"
+            [attr.aria-label]="'ACTIONS.COPY.CLIPBOARD' | translate"
+            [pTooltip]="'ACTIONS.COPY.CLIPBOARD' | translate"
+            tooltipPosition="right"
             tooltipEvent="hover"
-          />
-          <label for="iam_detail_field_first_name"> {{ 'USER.FIRSTNAME' | translate }} </label>
-        </span>
-        <span class="flex-grow-1 p-float-label">
-          <input
-            pInputText
-            type="text"
-            id="iam_detail_field_last_name"
-            class="w-full pt-3 pb-2 text-responsive"
-            [disabled]="true"
-            [value]="iamUser?.lastName"
-            [attr.aria-label]="'USER.LASTNAME' | translate"
-            [pTooltip]="'USER.TOOLTIPS.LASTNAME' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          />
-          <label for="iam_detail_field_last_name"> {{ 'USER.LASTNAME' | translate }} </label>
-        </span>
+          >
+            <span class="pi pi-copy"></span>
+          </a>
+        </div>
       </div>
     </p-tabPanel>
 
@@ -164,6 +233,62 @@
             <div class="cursor-auto">{{ role }}</div>
           </ng-template>
         </p-listbox>
+      </div>
+    </p-tabPanel>
+
+    <p-tabPanel
+      [header]="'INTERNAL.HEADER' | translate"
+      [attr.aria-label]="'INTERNAL.HEADER' | translate"
+      [tooltip]="'INTERNAL.TOOLTIP' | translate"
+      tooltipPosition="top"
+      tooltipEvent="focus|hover"
+    >
+      <div class="mt-1 mb-2 flex flex-column row-gap-4">
+        <span class="p-float-label">
+          <input
+            pInputText
+            type="text"
+            id="iam_detail_field_creation_date"
+            class="w-full pt-3 pb-2 text-responsive"
+            [disabled]="true"
+            [value]="iamUser?.createdTimestamp | date: datetimeFormat : ''"
+            [attr.aria-label]="'INTERNAL.CREATION_DATE' | translate"
+            [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          />
+          <label for="iam_detail_field_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
+        </span>
+        <span class="p-float-label">
+          <input
+            pInputText
+            type="text"
+            id="iam_detail_field_realm"
+            class="w-full pt-3 pb-2 text-responsive"
+            [disabled]="true"
+            [value]="iamUser?.realm"
+            [attr.aria-label]="'USER.REALM' | translate"
+            [pTooltip]="'USER.TOOLTIPS.REALM' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          />
+          <label for="iam_detail_field_realm">{{ 'USER.REALM' | translate }}</label>
+        </span>
+        <span class="p-float-label">
+          <input
+            pInputText
+            type="text"
+            id="iam_detail_field_origin"
+            class="w-full pt-3 pb-2 text-responsive"
+            [disabled]="true"
+            [value]="iamUser?.origin"
+            [attr.aria-label]="'USER.ORIGIN' | translate"
+            [pTooltip]="'USER.TOOLTIPS.ORIGIN' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          />
+          <label for="iam_detail_field_origin">{{ 'USER.ORIGIN' | translate }}</label>
+        </span>
       </div>
     </p-tabPanel>
   </p-tabView>

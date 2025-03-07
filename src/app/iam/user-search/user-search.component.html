@@ -10,7 +10,23 @@
     <div id="iam_user_search_criteria" [formGroup]="formGroup" class="flex flex-wrap gap-3">
       <span class="p-float-label">
         <input
-          id="iam_user_search_user_name"
+          #userId
+          id="iam_user_search_criteria_user_id"
+          pInputText
+          type="text"
+          formControlName="userId"
+          class="w-11rem sm:w-21rem text-responsive"
+          (change)="searchOnlyById(userId.value)"
+          [attr.aria-label]="'USER.ID' | translate"
+          [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.ID' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="iam_user_search_criteria_user_id">{{ 'USER.ID' | translate }}</label>
+      </span>
+      <span class="p-float-label">
+        <input
+          id="iam_user_search_criteria_user_name"
           pInputText
           type="text"
           formControlName="userName"
@@ -20,11 +36,27 @@
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="iam_user_search_user_name">{{ 'USER.USERNAME' | translate }}</label>
+        <label for="iam_user_search_criteria_user_name">{{ 'USER.USERNAME' | translate }}</label>
+      </span>
+      <span class="p-float-label">
+        <p-dropdown
+          id="iam_user_search_criteria_realm"
+          styleClass="w-full input-field-correction"
+          formControlName="realm"
+          appendTo="body"
+          [options]="(realms$ | async) ?? []"
+          [showClear]="true"
+          [attr.aria-label]="'USER.REALM' | translate"
+          [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.REALM' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        >
+        </p-dropdown>
+        <label for="iam_user_search_criteria_realm">{{ 'USER.REALM' | translate }}</label>
       </span>
       <span *ocxAdvanced class="p-float-label">
         <input
-          id="iam_user_search_first_name"
+          id="iam_user_search_criteria_first_name"
           pInputText
           type="text"
           formControlName="firstName"
@@ -34,11 +66,11 @@
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="iam_user_search_first_name">{{ 'USER.FIRSTNAME' | translate }}</label>
+        <label for="iam_user_search_criteria_first_name">{{ 'USER.FIRSTNAME' | translate }}</label>
       </span>
       <span *ocxAdvanced class="p-float-label">
         <input
-          id="iam_user_search_last_name"
+          id="iam_user_search_criteria_last_name"
           pInputText
           type="text"
           formControlName="lastName"
@@ -48,11 +80,11 @@
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="iam_user_search_last_name">{{ 'USER.LASTNAME' | translate }}</label>
+        <label for="iam_user_search_criteria_last_name">{{ 'USER.LASTNAME' | translate }}</label>
       </span>
-      <span class="p-float-label">
+      <span *ocxAdvanced class="p-float-label">
         <input
-          id="iam_user_search_email"
+          id="iam_user_search_criteria_email"
           pInputText
           type="text"
           formControlName="email"
@@ -62,7 +94,7 @@
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="iam_user_search_email">{{ 'USER.EMAIL' | translate }}</label>
+        <label for="iam_user_search_criteria_email">{{ 'USER.EMAIL' | translate }}</label>
       </span>
     </div>
   </ocx-search-header>

@@ -5,6 +5,7 @@ import { catchError, finalize, map, Observable, of } from 'rxjs'
 import { UserService } from '@onecx/angular-integration-interface'
 
 import { Role, RolesInternalAPIService, User, UserRolesResponse } from 'src/app/shared/generated'
+import { copyToClipboard } from 'src/app/shared/utils'
 
 @Component({
   selector: 'app-user-detail',
@@ -21,6 +22,7 @@ export class UserDetailComponent implements OnChanges {
   public datetimeFormat = 'medium'
   public userRoles$: Observable<string[]> = of()
   public userAttributes: string | undefined = undefined
+  public copyToClipboard = copyToClipboard
 
   constructor(
     private readonly roleApi: RolesInternalAPIService,

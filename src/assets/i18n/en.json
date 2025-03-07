@@ -7,7 +7,8 @@
       "YES.TOOLTIP": "Proceed with the action"
     },
     "COPY": {
-      "LABEL": "Copy"
+      "LABEL": "Copy",
+      "CLIPBOARD": "Copy to clipboard"
     },
     "CREATE": {
       "LABEL": "Create"
@@ -73,16 +74,11 @@
     "CREATION_USER": "Created by",
     "MODIFICATION_DATE": "Changed on",
     "MODIFICATION_USER": "Changed by",
-    "MANDATORY": "Mandatory",
-    "OPERATOR": "Created by automation",
-    "OPERATOR_MESSAGE": "This Workspace was created by automation. All changes will be lost on the next deployment.",
     "TOOLTIPS": {
       "CREATION_DATE": "Timestamp of the creation",
       "CREATION_USER": "ID of the user of the creation",
       "MODIFICATION_DATE": "Timestamp of the last change",
-      "MODIFICATION_USER": "ID of the user of the last change",
-      "MANDATORY": "If set then this Workspace is necessary for operation and therefore the Workspace cannot be deleted.",
-      "OPERATOR": "If set, the Workspace was created by automation. All changes will be lost during the next deployment."
+      "MODIFICATION_USER": "ID of the user of the last change"
     }
   },
   "DIALOG": {
@@ -97,10 +93,12 @@
         "LABEL": "User",
         "TOOLTIP": "Search Users in Identity Access Management (IAM)",
         "CRITERIA": {
+          "ID": "IAM ID, If used then other search criteria will be ignored",
           "USERNAME": "IAM user name, Search by part of name supported",
           "LASTNAME": "IAM last name, Search by part of name supported",
           "FIRSTNAME": "IAM first name, Search by part of name supported",
-          "EMAIL": "IAM E-Mail Adresse, Search by part of address supported"
+          "EMAIL": "IAM E-Mail Adresse, Search by part of address supported",
+          "REALM": "IAM Realm"
         }
       }
     },
@@ -110,7 +108,7 @@
         "ATTRIBUTES": "Attributes",
         "ATTRIBUTES.TOOLTIP": "Within IAM defined Attributes",
         "PROPS": "Properties",
-        "PROPS.TOOLTIP": "List of IAM User Properties",
+        "PROPS.TOOLTIP": "Primary IAM User Properties",
         "ROLES": "Roles",
         "ROLES.TOOLTIP": "List of IAM User Roles"
       }
@@ -128,13 +126,17 @@
     "FIRSTNAME": "First name",
     "EMAIL": "E-Mail",
     "ATTRIBUTES": "Attributes",
+    "REALM": "Realm",
+    "ORIGIN": "Origin",
     "TOOLTIPS": {
       "ID": "IAM User ID, used as reference within Permission Mgmt and User Profile Mgmt",
       "USERNAME": "IAM user name",
       "LASTNAME": "IAM last name",
       "FIRSTNAME": "IAM first name",
       "EMAIL": "IAM E-Mail address",
-      "ATTRIBUTES": "Within IAM defined Attributes"
+      "ATTRIBUTES": "Within IAM defined Attributes",
+      "REALM": "In which realm the user is created.",
+      "ORIGIN": "Additional information that can be set, for example, when importing the user."
     }
   },
   "ROLE": {
@@ -186,26 +188,37 @@
   "EXCEPTIONS": {
     "HTTP_STATUS_0": {
       "USER": "Unknown problem retrieving User data - please try again.",
+      "REALMS": "Unknown problem retrieving Realm data - please try again.",
       "ROLES": "Unknown problem retrieving Role data - please try again."
+    },
+    "HTTP_STATUS_400": {
+      "USER": "Your request could not be processed.",
+      "REALMS": "Your request could not be processed.",
+      "ROLES": "Your request could not be processed."
     },
     "HTTP_STATUS_401": {
       "USER": "You are not authorized to see Users.",
+      "REALMS": "You are not authorized to see Realms.",
       "ROLES": "You are not authorized to see Roles."
     },
     "HTTP_STATUS_403": {
       "USER": "You have no permissions to see Users.",
+      "REALMS": "You have no permissions to see Realms.",
       "ROLES": "You have no permissions to see Roles."
     },
     "HTTP_STATUS_404": {
       "USER": "No Users could be found.",
+      "REALMS": "No Realms could be found.",
       "ROLES": "No Roles could be found."
     },
     "HTTP_STATUS_500": {
       "USER": "Unknown server problem retrieving User data - please try again.",
+      "REALMS": "Unknown server problem retrieving Realm data - please try again.",
       "ROLES": "Unknown server problem retrieving Role data - please try again."
     },
     "HTTP_STATUS_504": {
       "USER": "Timeout retrieving User data - please try again.",
+      "REALMS": "Timeout retrieving Realm data - please try again.",
       "ROLES": "Timeout retrieving Role data - please try again."
     }
   }

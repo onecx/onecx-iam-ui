@@ -3,8 +3,8 @@
 @include card-badges;
 @include correct-data-view-control;
 @include correct-search-criteria;
-@include media-md-h-3-5;
 @include displaying-text-responsive;
+@include media-md-h-3-5;
 
 :host ::ng-deep {
   .card-badge-left.badge-position {
