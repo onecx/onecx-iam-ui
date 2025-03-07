@@ -19,6 +19,7 @@ import { PortalCoreModule, UserService, createRemoteComponentTranslateLoader } f
 
 import { Configuration, UserRolesResponse, RolesInternalAPIService } from 'src/app/shared/generated'
 import { SharedModule } from 'src/app/shared/shared.module'
+import { sortByLocale } from 'src/app/shared/utils'
 import { environment } from 'src/environments/environment'
 
 @Component({
@@ -84,7 +85,7 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
         .pipe(
           map((response: UserRolesResponse) => {
             response.roles?.forEach((r) => roles.push(r.name!))
-            roles.sort()
+            roles.sort(sortByLocale)
             return roles
           }),
           catchError((err) => {
