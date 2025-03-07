@@ -19,6 +19,7 @@ export interface User {
     firstName?: string;
     lastName?: string;
     email?: string;
+    realm?: string;
     attributes?: { [key: string]: Array<string>; };
 }
 

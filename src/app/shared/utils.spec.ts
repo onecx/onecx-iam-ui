@@ -1,6 +1,6 @@
 import { SelectItem } from 'primeng/api'
 
-import { limitText, dropDownSortItemsByLabel, dropDownGetLabelByValue, sortByLocale } from './utils'
+import { copyToClipboard, limitText, dropDownSortItemsByLabel, dropDownGetLabelByValue, sortByLocale } from './utils'
 
 describe('utils', () => {
   describe('limitText', () => {
@@ -26,6 +26,20 @@ describe('utils', () => {
     it('should handle zero length text', () => {
       const result = limitText(null, 4)
       expect(result).toEqual('')
+    })
+  })
+
+  describe('copyToClipboard', () => {
+    let writeTextSpy: jasmine.Spy
+
+    beforeEach(() => {
+      writeTextSpy = spyOn(navigator.clipboard, 'writeText')
+    })
+
+    it('should copy text to clipboard', () => {
+      copyToClipboard('text')
+
+      expect(writeTextSpy).toHaveBeenCalledWith('text')
     })
   })
 

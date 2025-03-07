@@ -8,6 +8,10 @@ export function limitText(text: string | null | undefined, limit: number): strin
   }
 }
 
+export function copyToClipboard(text?: string): void {
+  if (text) navigator.clipboard.writeText(text)
+}
+
 export function dropDownSortItemsByLabel(a: SelectItem, b: SelectItem): number {
   return (a.label ? (a.label as string).toUpperCase() : '').localeCompare(
     b.label ? (b.label as string).toUpperCase() : ''

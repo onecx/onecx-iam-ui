@@ -11,14 +11,23 @@ import { UserService } from '@onecx/angular-integration-interface'
 import { Action, DataViewControlTranslations, PortalDialogService } from '@onecx/portal-integration-angular'
 
 import { limitText } from 'src/app/shared/utils'
-import { User, UserPageResult, UsersInternalAPIService, UserSearchCriteria } from 'src/app/shared/generated'
+import {
+  RealmsInternalAPIService,
+  RealmResponse,
+  User,
+  UserPageResult,
+  UsersInternalAPIService,
+  UserSearchCriteria
+} from 'src/app/shared/generated'
 import { UserPermissionsComponent } from '../user-permissions/user-permissions.component'
 
 export interface UserSearchCriteriaForm {
+  userId: FormControl<string | null>
   userName: FormControl<string | null>
   firstName: FormControl<string | null>
   lastName: FormControl<string | null>
   email: FormControl<string | null>
+  realm: FormControl<string | null>
 }
 
 @Component({
@@ -43,6 +52,7 @@ export class UserSearchComponent implements OnInit {
   // data
   public actions$: Observable<Action[]> | undefined
   public users$!: Observable<User[]>
+  public realms$!: Observable<string[]>
   public iamUser: User | undefined = undefined
   public permissionsSlotName = 'onecx-iam-user-permissions'
   public isComponentDefined$: Observable<boolean>
@@ -57,38 +67,59 @@ export class UserSearchComponent implements OnInit {
     private readonly slotService: SlotService,
     private readonly portalDialogService: PortalDialogService,
     private readonly translate: TranslateService,
-    private readonly userApi: UsersInternalAPIService
+    private readonly userApi: UsersInternalAPIService,
+    private readonly realmApi: RealmsInternalAPIService
   ) {
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.permissionsSlotName)
     this.userViewDetail = user.hasPermission('USER#VIEW')
     this.formGroup = new FormGroup<UserSearchCriteriaForm>({
+      userId: new FormControl<string | null>(null),
       userName: new FormControl<string | null>(null),
       firstName: new FormControl<string | null>(null),
       lastName: new FormControl<string | null>(null),
-      email: new FormControl<string | null>(null)
+      email: new FormControl<string | null>(null),
+      realm: new FormControl<string | null>(null)
     })
   }
 
   ngOnInit(): void {
     this.prepareDialogTranslations()
     this.prepareActionButtons()
+    this.searchRealms()
     this.searchUsers()
+  }
+  public searchRealms(): void {
+    this.realms$ = this.realmApi.getAllRealms().pipe(
+      map((response: RealmResponse) => {
+        return response.realms ?? []
+      }),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.REALMS'
+        console.error('getAllRealms', err)
+        return of([])
+      })
+    )
   }
 
   public searchUsers(): void {
     this.searchInProgress = true
     // cleanup forma data to usable search criteria: prevent empty strings
-    const usc: UserSearchCriteria = {
+    let usc: UserSearchCriteria = {
+      userId: this.formGroup.controls['userId'].value,
       userName: this.formGroup.controls['userName'].value,
       firstName: this.formGroup.controls['firstName'].value,
       lastName: this.formGroup.controls['lastName'].value,
       email: this.formGroup.controls['email'].value,
+      realm: this.formGroup.controls['realm'].value,
       pageSize: 100
     } as UserSearchCriteria
+    usc.userId = usc.userId === '' || usc.userId === null ? undefined : usc.userId
     usc.userName = usc.userName === '' || usc.userName === null ? undefined : usc.userName
     usc.firstName = usc.firstName === '' || usc.firstName === null ? undefined : usc.firstName
     usc.lastName = usc.lastName === '' || usc.lastName === null ? undefined : usc.lastName
     usc.email = usc.email === '' || usc.email === null ? undefined : usc.email
+    usc.realm = usc.realm === '' || usc.realm === null ? undefined : usc.realm
+    if (usc.userId) usc = { userId: usc.userId } // special case on search by id: ignore all other criteria
     // execute search
     this.users$ = this.userApi.searchUsersByCriteria({ userSearchCriteria: usc }).pipe(
       map((response: UserPageResult) => {
@@ -97,7 +128,7 @@ export class UserSearchComponent implements OnInit {
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.USER'
         console.error('searchUsersByCriteria', err)
-        return of([] as User[])
+        return of([])
       }),
       finalize(() => (this.searchInProgress = false))
     )
@@ -180,8 +211,16 @@ export class UserSearchComponent implements OnInit {
   public onSearch(): void {
     this.searchUsers()
   }
+  public searchOnlyById(val: string) {
+    console.log('searchOnlyById', val)
+    if (val) {
+      this.formGroup.disable()
+      this.formGroup.controls['userId'].enable()
+    }
+  }
   public onSearchReset(): void {
     this.formGroup.reset()
+    this.formGroup.enable()
   }
   public onDetail(ev: Event, user: User): void {
     ev.stopPropagation()
