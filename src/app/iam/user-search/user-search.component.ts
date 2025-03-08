@@ -220,6 +220,7 @@ export class UserSearchComponent implements OnInit {
     this.formGroup.reset()
     this.formGroup.enable()
   }
+
   public onDetail(ev: Event, user: User): void {
     ev.stopPropagation()
     if (this.userViewDetail) {
