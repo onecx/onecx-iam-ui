@@ -223,7 +223,6 @@ export class UserSearchComponent implements OnInit {
 
   public onDetail(ev: Event, user: User): void {
     ev.stopPropagation()
-    if (!this.userViewDetail) return
     if (this.userViewDetail) {
       this.iamUser = user
       this.displayDetailDialog = true
