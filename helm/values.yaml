@@ -26,6 +26,13 @@ app:
           technology: WEBCOMPONENTMODULE
           remoteName: onecx-iam
           tagName: ocx-change-password-component
+        iam-user-roles:
+          exposedModule: "./OneCXIamUserRolesComponent"
+          description: "Provide IAM user roles"
+          type: COMPONENT
+          technology: WEBCOMPONENTMODULE
+          remoteName: onecx-iam
+          tagName: ocx-iam-user-roles          
     # Permission
     permission:
       enabled: true
@@ -38,6 +45,7 @@ app:
             VIEW: View user permissions
           ROLE:
             SEARCH: Search roles
+    # Slot
     slot:
       enabled: true
       specs:
