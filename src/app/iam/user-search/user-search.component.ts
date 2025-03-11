@@ -40,7 +40,6 @@ export class UserSearchComponent implements OnInit {
   // dialog
   public loading = true
   public exceptionKey: string | undefined
-  public exceptionKeyRealms: string | undefined
   public displayDetailDialog = false
   public viewMode: 'list' | 'grid' = 'grid'
   public filter: string | undefined
