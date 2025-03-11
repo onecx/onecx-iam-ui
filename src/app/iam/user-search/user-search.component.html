@@ -38,22 +38,26 @@
         />
         <label for="iam_user_search_criteria_user_name">{{ 'USER.USERNAME' | translate }}</label>
       </span>
-      <span class="p-float-label">
-        <p-dropdown
-          id="iam_user_search_criteria_realm"
-          styleClass="w-full input-field-correction"
-          formControlName="realm"
-          appendTo="body"
-          [options]="(realms$ | async) ?? []"
-          [showClear]="true"
-          [attr.aria-label]="'USER.REALM' | translate"
-          [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.REALM' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        >
-        </p-dropdown>
-        <label for="iam_user_search_criteria_realm">{{ 'USER.REALM' | translate }}</label>
-      </span>
+      <ng-container *ocxIfPermission="'REALM#SEARCH'">
+        <ng-container *ngIf="realms$ | async as realms">
+          <span class="p-float-label" *ngIf="realms.length > 0">
+            <p-dropdown
+              id="iam_user_search_criteria_realm"
+              styleClass="w-full input-field-correction"
+              formControlName="realm"
+              appendTo="body"
+              [options]="realms"
+              [showClear]="true"
+              [attr.aria-label]="'USER.REALM' | translate"
+              [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.REALM' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+            </p-dropdown>
+            <label for="iam_user_search_criteria_realm">{{ 'USER.REALM' | translate }}</label>
+          </span>
+        </ng-container>
+      </ng-container>
       <span *ocxAdvanced class="p-float-label">
         <input
           id="iam_user_search_criteria_first_name"

@@ -40,6 +40,7 @@ export class UserSearchComponent implements OnInit {
   // dialog
   public loading = true
   public exceptionKey: string | undefined
+  public exceptionKeyRealms: string | undefined
   public displayDetailDialog = false
   public viewMode: 'list' | 'grid' = 'grid'
   public filter: string | undefined
@@ -92,7 +93,15 @@ export class UserSearchComponent implements OnInit {
     this.realms$ = this.realmApi.getAllRealms().pipe(
       map((response: RealmResponse) => response.realms ?? []),
       catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.REALMS'
+        const exKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.REALMS'
+        let errorMessage = ''
+        this.translate
+          .get([exKey])
+          .pipe(map((data) => data[exKey]))
+          .subscribe((m) => {
+            errorMessage = m
+          })
+        console.error(errorMessage)
         console.error('getAllRealms', err)
         return of([])
       })
