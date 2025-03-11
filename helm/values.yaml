@@ -32,7 +32,7 @@ app:
           type: COMPONENT
           technology: WEBCOMPONENTMODULE
           remoteName: onecx-iam
-          tagName: ocx-iam-user-roles          
+          tagName: ocx-iam-user-roles-component
     # Permission
     permission:
       enabled: true
