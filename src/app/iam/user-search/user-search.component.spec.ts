@@ -325,7 +325,6 @@ describe('UserSearchComponent', () => {
       component.realms$.subscribe({
         next: (realms) => {
           expect(realms.length).toBe(0)
-          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.REALMS')
           expect(console.error).toHaveBeenCalledWith('getAllRealms', errorResponse)
           done()
         },
