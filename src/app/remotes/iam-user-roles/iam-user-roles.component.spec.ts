@@ -3,19 +3,18 @@ import { CommonModule } from '@angular/common'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { NoopAnimationsModule } from '@angular/platform-browser/animations'
-import { provideRouter, RouterModule } from '@angular/router'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, ReplaySubject, throwError } from 'rxjs'
-import { PanelMenuModule } from 'primeng/panelmenu'
 
 import { BASE_URL, RemoteComponentConfig } from '@onecx/angular-remote-components'
 
-import { RolesInternalAPIService, UserRolesResponse } from 'src/app/shared/generated'
+import { RolesInternalAPIService, RolePageResult, UserRolesResponse } from 'src/app/shared/generated'
 import { OneCXIamUserRolesComponent } from './iam-user-roles.component'
 
 describe('OneCXIamUserRolesComponent', () => {
   const roleApiSpy = {
-    getUserRoles: jasmine.createSpy('getUserRoles').and.returnValue(of({}))
+    getUserRoles: jasmine.createSpy('getUserRoles').and.returnValue(of({})),
+    searchRolesByCriteria: jasmine.createSpy('searchRolesByCriteria').and.returnValue(of({}))
   }
 
   function setUp() {
@@ -32,7 +31,8 @@ describe('OneCXIamUserRolesComponent', () => {
       declarations: [],
       imports: [
         TranslateTestingModule.withTranslations({
-          en: require('../../../assets/i18n/en.json')
+          de: require('src/assets/i18n/de.json'),
+          en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en'),
         NoopAnimationsModule
       ],
@@ -42,13 +42,12 @@ describe('OneCXIamUserRolesComponent', () => {
         {
           provide: BASE_URL,
           useValue: baseUrlSubject
-        },
-        provideRouter([{ path: 'admin/theme', component: OneCXIamUserRolesComponent }])
+        }
       ]
     })
       .overrideComponent(OneCXIamUserRolesComponent, {
         set: {
-          imports: [TranslateTestingModule, CommonModule, RouterModule, PanelMenuModule],
+          imports: [TranslateTestingModule, CommonModule],
           providers: [{ provide: RolesInternalAPIService, useValue: roleApiSpy }]
         }
       })
@@ -56,6 +55,7 @@ describe('OneCXIamUserRolesComponent', () => {
 
     baseUrlSubject.next('base_url_mock')
     roleApiSpy.getUserRoles.calls.reset()
+    roleApiSpy.searchRolesByCriteria.calls.reset()
   })
 
   it('should create', () => {
@@ -99,7 +99,7 @@ describe('OneCXIamUserRolesComponent', () => {
     component.ngOnChanges()
   })
 
-  describe('getting roles', () => {
+  describe('getting roles for user', () => {
     it('should get roles - successful with data', () => {
       const { component } = setUp()
       component.userId = 'user'
@@ -136,6 +136,46 @@ describe('OneCXIamUserRolesComponent', () => {
 
       expect(component.roleList.emit).toHaveBeenCalledWith([])
       expect(console.error).toHaveBeenCalledWith('iam.getUserRoles', errorResponse)
+    })
+  })
+
+  describe('getting all roles', () => {
+    it('should get roles - successful with data', () => {
+      const { component } = setUp()
+      component.userId = undefined
+      const mockResponse: RolePageResult = { stream: [{ name: 'role1' }, { name: 'role2' }] }
+      roleApiSpy.searchRolesByCriteria.and.returnValue(of(mockResponse))
+      spyOn(component.roleList, 'emit')
+
+      component.ngOnChanges()
+
+      expect(component.roleList.emit).toHaveBeenCalled()
+    })
+
+    it('should get roles - successful without data', () => {
+      const { component } = setUp()
+      component.userId = undefined
+      const mockResponse: RolePageResult = { stream: [] }
+      roleApiSpy.searchRolesByCriteria.and.returnValue(of(mockResponse))
+      spyOn(component.roleList, 'emit')
+
+      component.ngOnChanges()
+
+      expect(component.roleList.emit).toHaveBeenCalledWith([])
+    })
+
+    it('should get roles - failed', () => {
+      const { component } = setUp()
+      component.userId = undefined
+      const errorResponse = { status: 400, statusText: 'Error on getting roles' }
+      roleApiSpy.searchRolesByCriteria.and.returnValue(throwError(() => errorResponse))
+      spyOn(component.roleList, 'emit')
+      spyOn(console, 'error')
+
+      component.ngOnChanges()
+
+      expect(component.roleList.emit).toHaveBeenCalledWith([])
+      expect(console.error).toHaveBeenCalledWith('iam.searchRolesByCriteria', errorResponse)
     })
   })
 })

@@ -1,11 +1,9 @@
 import { Component, EventEmitter, Inject, Input, OnChanges } from '@angular/core'
 import { CommonModule, Location } from '@angular/common'
 import { HttpClient } from '@angular/common/http'
-import { RouterModule } from '@angular/router'
 import { UntilDestroy } from '@ngneat/until-destroy'
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
 import { catchError, finalize, map, Observable, of, ReplaySubject } from 'rxjs'
-import { PanelMenuModule } from 'primeng/panelmenu'
 
 import {
   AngularRemoteComponentsModule,
@@ -17,7 +15,13 @@ import {
 } from '@onecx/angular-remote-components'
 import { PortalCoreModule, UserService, createRemoteComponentTranslateLoader } from '@onecx/portal-integration-angular'
 
-import { Configuration, UserRolesResponse, RolesInternalAPIService } from 'src/app/shared/generated'
+import {
+  Configuration,
+  RolesInternalAPIService,
+  RolePageResult,
+  RoleSearchCriteria,
+  UserRolesResponse
+} from 'src/app/shared/generated'
 import { SharedModule } from 'src/app/shared/shared.module'
 import { sortByLocale } from 'src/app/shared/utils'
 import { environment } from 'src/environments/environment'
@@ -26,15 +30,7 @@ import { environment } from 'src/environments/environment'
   selector: 'app-iam-user-roles',
   templateUrl: './iam-user-roles.component.html',
   standalone: true,
-  imports: [
-    AngularRemoteComponentsModule,
-    CommonModule,
-    PortalCoreModule,
-    RouterModule,
-    TranslateModule,
-    SharedModule,
-    PanelMenuModule
-  ],
+  imports: [AngularRemoteComponentsModule, CommonModule, PortalCoreModule, TranslateModule, SharedModule],
   providers: [
     {
       provide: BASE_URL,
@@ -78,8 +74,8 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
   }
 
   ngOnChanges(): void {
+    const roles: string[] = []
     if (this.userId) {
-      const roles: string[] = []
       this.roleApi
         .getUserRoles({ userId: this.userId })
         .pipe(
@@ -90,6 +86,22 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
           }),
           catchError((err) => {
             console.error('iam.getUserRoles', err)
+            return of([])
+          }),
+          finalize(() => this.roleList.emit(roles))
+        )
+        .subscribe()
+    } else {
+      this.roleApi
+        .searchRolesByCriteria({ roleSearchCriteria: { pageSize: 1000 } as RoleSearchCriteria })
+        .pipe(
+          map((response: RolePageResult) => {
+            response.stream?.forEach((r) => roles.push(r.name!))
+            roles.sort(sortByLocale)
+            return roles
+          }),
+          catchError((err) => {
+            console.error('iam.searchRolesByCriteria', err)
             return of([])
           }),
           finalize(() => this.roleList.emit(roles))
