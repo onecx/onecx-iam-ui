@@ -3,19 +3,18 @@ import { CommonModule } from '@angular/common'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { NoopAnimationsModule } from '@angular/platform-browser/animations'
-import { provideRouter, RouterModule } from '@angular/router'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, ReplaySubject, throwError } from 'rxjs'
-import { PanelMenuModule } from 'primeng/panelmenu'
 
 import { BASE_URL, RemoteComponentConfig } from '@onecx/angular-remote-components'
 
-import { RolesInternalAPIService, UserRolesResponse } from 'src/app/shared/generated'
+import { RolesInternalAPIService, RolePageResult, UserRolesResponse } from 'src/app/shared/generated'
 import { OneCXIamUserRolesComponent } from './iam-user-roles.component'
 
 describe('OneCXIamUserRolesComponent', () => {
   const roleApiSpy = {
-    getUserRoles: jasmine.createSpy('getUserRoles').and.returnValue(of({}))
+    getUserRoles: jasmine.createSpy('getUserRoles').and.returnValue(of({})),
+    searchRolesByCriteria: jasmine.createSpy('searchRolesByCriteria').and.returnValue(of({}))
   }
 
   function setUp() {
@@ -32,7 +31,8 @@ describe('OneCXIamUserRolesComponent', () => {
       declarations: [],
       imports: [
         TranslateTestingModule.withTranslations({
-          en: require('../../../assets/i18n/en.json')
+          de: require('src/assets/i18n/de.json'),
+          en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en'),
         NoopAnimationsModule
       ],
@@ -42,13 +42,12 @@ describe('OneCXIamUserRolesComponent', () => {
         {
           provide: BASE_URL,
           useValue: baseUrlSubject
-        },
-        provideRouter([{ path: 'admin/theme', component: OneCXIamUserRolesComponent }])
+        }
       ]
     })
       .overrideComponent(OneCXIamUserRolesComponent, {
         set: {
-          imports: [TranslateTestingModule, CommonModule, RouterModule, PanelMenuModule],
+          imports: [TranslateTestingModule, CommonModule],
           providers: [{ provide: RolesInternalAPIService, useValue: roleApiSpy }]
         }
       })
@@ -56,50 +55,44 @@ describe('OneCXIamUserRolesComponent', () => {
 
     baseUrlSubject.next('base_url_mock')
     roleApiSpy.getUserRoles.calls.reset()
+    roleApiSpy.searchRolesByCriteria.calls.reset()
   })
 
-  it('should create', () => {
-    const { component } = setUp()
+  describe('initialize', () => {
+    it('should create', () => {
+      const { component } = setUp()
 
-    expect(component).toBeTruthy()
-  })
+      expect(component).toBeTruthy()
+    })
 
-  it('should call ocxInitRemoteComponent with the correct config', () => {
-    const { component } = setUp()
-    const mockConfig: RemoteComponentConfig = {
-      appId: 'appId',
-      productName: 'prodName',
-      permissions: ['permission'],
-      baseUrl: 'base'
-    }
-    spyOn(component, 'ocxInitRemoteComponent')
+    it('should call ocxInitRemoteComponent with the correct config', () => {
+      const { component } = setUp()
+      const mockConfig: RemoteComponentConfig = {
+        appId: 'appId',
+        productName: 'prodName',
+        permissions: ['permission'],
+        baseUrl: 'base'
+      }
+      spyOn(component, 'ocxInitRemoteComponent')
 
-    component.ocxRemoteComponentConfig = mockConfig
+      component.ocxRemoteComponentConfig = mockConfig
 
-    expect(component.ocxInitRemoteComponent).toHaveBeenCalledWith(mockConfig)
-  })
+      expect(component.ocxInitRemoteComponent).toHaveBeenCalledWith(mockConfig)
+    })
 
-  it('should init remote component', (done: DoneFn) => {
-    const { component } = setUp()
+    it('should init remote component', (done: DoneFn) => {
+      const { component } = setUp()
 
-    component.ocxInitRemoteComponent({
-      baseUrl: 'base_url'
-    } as RemoteComponentConfig)
+      component.ocxInitRemoteComponent({ baseUrl: 'base_url' } as RemoteComponentConfig)
 
-    baseUrlSubject.asObservable().subscribe((item) => {
-      expect(item).toEqual('base_url')
-      done()
+      baseUrlSubject.asObservable().subscribe((item) => {
+        expect(item).toEqual('base_url')
+        done()
+      })
     })
   })
 
-  it('should call getUserRoles with the current user', () => {
-    const { component } = setUp()
-    component.userId = 'user'
-
-    component.ngOnChanges()
-  })
-
-  describe('getting roles', () => {
+  describe('getting roles for user', () => {
     it('should get roles - successful with data', () => {
       const { component } = setUp()
       component.userId = 'user'
@@ -136,6 +129,109 @@ describe('OneCXIamUserRolesComponent', () => {
 
       expect(component.roleList.emit).toHaveBeenCalledWith([])
       expect(console.error).toHaveBeenCalledWith('iam.getUserRoles', errorResponse)
+    })
+  })
+
+  describe('getting all roles', () => {
+    it('should get roles - successful with data', () => {
+      const { component } = setUp()
+      component.userId = undefined
+      const mockResponse: RolePageResult = { stream: [{ name: 'role1' }, { name: 'role2' }] }
+      roleApiSpy.searchRolesByCriteria.and.returnValue(of(mockResponse))
+      spyOn(component.roleList, 'emit')
+
+      component.ngOnChanges()
+
+      expect(component.roleList.emit).toHaveBeenCalled()
+    })
+
+    it('should get roles - successful without data', () => {
+      const { component } = setUp()
+      component.userId = undefined
+      const mockResponse: RolePageResult = { stream: [] }
+      roleApiSpy.searchRolesByCriteria.and.returnValue(of(mockResponse))
+      spyOn(component.roleList, 'emit')
+
+      component.ngOnChanges()
+
+      expect(component.roleList.emit).toHaveBeenCalledWith([])
+    })
+
+    it('should get roles - successful without stream', () => {
+      const { component } = setUp()
+      component.userId = undefined
+      const mockResponse: RolePageResult = { stream: undefined }
+      roleApiSpy.searchRolesByCriteria.and.returnValue(of(mockResponse))
+      spyOn(component.roleList, 'emit')
+
+      component.ngOnChanges()
+
+      expect(component.roleList.emit).toHaveBeenCalledWith([])
+    })
+
+    it('should get roles - failed', () => {
+      const { component } = setUp()
+      component.userId = undefined
+      const errorResponse = { status: 400, statusText: 'Error on getting roles' }
+      roleApiSpy.searchRolesByCriteria.and.returnValue(throwError(() => errorResponse))
+      spyOn(component.roleList, 'emit')
+      spyOn(console, 'error')
+
+      component.ngOnChanges()
+
+      expect(component.roleList.emit).toHaveBeenCalledWith([])
+      expect(console.error).toHaveBeenCalledWith('iam.searchRolesByCriteria', errorResponse)
+    })
+  })
+
+  describe('sortByRoleName', () => {
+    it('should return negative value when first role name comes before second alphabetically', () => {
+      const { component } = setUp()
+      const roleA = { name: 'Admin' }
+      const roleB = { name: 'User' }
+      expect(component.sortByRoleName(roleA, roleB)).toBeLessThan(0)
+    })
+
+    it('should return positive value when first role name comes after second alphabetically', () => {
+      const { component } = setUp()
+      const roleA = { name: 'User' }
+      const roleB = { name: 'Admin' }
+      expect(component.sortByRoleName(roleA, roleB)).toBeGreaterThan(0)
+    })
+
+    it('should return zero when role names are the same', () => {
+      const { component } = setUp()
+      const roleA = { name: 'Admin' }
+      const roleB = { name: 'Admin' }
+      expect(component.sortByRoleName(roleA, roleB)).toBe(0)
+    })
+
+    it('should be case-insensitive', () => {
+      const { component } = setUp()
+      const roleA = { name: 'admin' }
+      const roleB = { name: 'Admin' }
+      expect(component.sortByRoleName(roleA, roleB)).toBe(0)
+    })
+
+    it('should handle undefined names', () => {
+      const { component } = setUp()
+      const roleA = { name: undefined }
+      const roleB = { name: 'Admin' }
+      expect(component.sortByRoleName(roleA, roleB)).toBeLessThan(0)
+    })
+
+    it('should handle empty string names', () => {
+      const { component } = setUp()
+      const roleA = { name: '' }
+      const roleB = { name: 'Admin' }
+      expect(component.sortByRoleName(roleA, roleB)).toBeLessThan(0)
+    })
+
+    it('should handle both names being undefined', () => {
+      const { component } = setUp()
+      const roleA = { name: undefined }
+      const roleB = { name: undefined }
+      expect(component.sortByRoleName(roleA, roleB)).toBe(0)
     })
   })
 })
