@@ -17,13 +17,13 @@ import { PortalCoreModule, UserService, createRemoteComponentTranslateLoader } f
 
 import {
   Configuration,
+  Role,
   RolesInternalAPIService,
   RolePageResult,
   RoleSearchCriteria,
   UserRolesResponse
 } from 'src/app/shared/generated'
 import { SharedModule } from 'src/app/shared/shared.module'
-import { sortByLocale } from 'src/app/shared/utils'
 import { environment } from 'src/environments/environment'
 
 @Component({
@@ -49,9 +49,9 @@ import { environment } from 'src/environments/environment'
 @UntilDestroy()
 export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemoteWebcomponent, OnChanges {
   @Input() userId: string | undefined = undefined
-  @Input() roleList = new EventEmitter<string[]>() // provided in slot (output)
+  @Input() roleList = new EventEmitter<Role[]>() // provided in slot (output)
 
-  public iamRoles$: Observable<string[]> | undefined
+  public iamRoles$: Observable<Role[]> | undefined
 
   constructor(
     @Inject(BASE_URL) private readonly baseUrl: ReplaySubject<string>,
@@ -74,14 +74,13 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
   }
 
   ngOnChanges(): void {
-    const roles: string[] = []
+    let roles: Role[] = []
     if (this.userId) {
       this.roleApi
         .getUserRoles({ userId: this.userId })
         .pipe(
           map((response: UserRolesResponse) => {
-            response.roles?.forEach((r) => roles.push(r.name!))
-            roles.sort(sortByLocale)
+            roles = response.roles?.sort(this.sortByRoleName) ?? []
             return roles
           }),
           catchError((err) => {
@@ -96,8 +95,7 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
         .searchRolesByCriteria({ roleSearchCriteria: { pageSize: 1000 } as RoleSearchCriteria })
         .pipe(
           map((response: RolePageResult) => {
-            response.stream?.forEach((r) => roles.push(r.name!))
-            roles.sort(sortByLocale)
+            roles = response.stream?.sort(this.sortByRoleName) ?? []
             return roles
           }),
           catchError((err) => {
@@ -108,5 +106,9 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
         )
         .subscribe()
     }
+  }
+
+  public sortByRoleName(a: Role, b: Role): number {
+    return (a.name ? a.name.toUpperCase() : '').localeCompare(b.name ? b.name.toUpperCase() : '')
   }
 }

@@ -157,6 +157,18 @@ describe('OneCXIamUserRolesComponent', () => {
       expect(component.roleList.emit).toHaveBeenCalledWith([])
     })
 
+    it('should get roles - successful without stream', () => {
+      const { component } = setUp()
+      component.userId = undefined
+      const mockResponse: RolePageResult = { stream: undefined }
+      roleApiSpy.searchRolesByCriteria.and.returnValue(of(mockResponse))
+      spyOn(component.roleList, 'emit')
+
+      component.ngOnChanges()
+
+      expect(component.roleList.emit).toHaveBeenCalledWith([])
+    })
+
     it('should get roles - failed', () => {
       const { component } = setUp()
       component.userId = undefined
@@ -169,6 +181,57 @@ describe('OneCXIamUserRolesComponent', () => {
 
       expect(component.roleList.emit).toHaveBeenCalledWith([])
       expect(console.error).toHaveBeenCalledWith('iam.searchRolesByCriteria', errorResponse)
+    })
+  })
+
+  describe('sortByRoleName', () => {
+    it('should return negative value when first role name comes before second alphabetically', () => {
+      const { component } = setUp()
+      const roleA = { name: 'Admin' }
+      const roleB = { name: 'User' }
+      expect(component.sortByRoleName(roleA, roleB)).toBeLessThan(0)
+    })
+
+    it('should return positive value when first role name comes after second alphabetically', () => {
+      const { component } = setUp()
+      const roleA = { name: 'User' }
+      const roleB = { name: 'Admin' }
+      expect(component.sortByRoleName(roleA, roleB)).toBeGreaterThan(0)
+    })
+
+    it('should return zero when role names are the same', () => {
+      const { component } = setUp()
+      const roleA = { name: 'Admin' }
+      const roleB = { name: 'Admin' }
+      expect(component.sortByRoleName(roleA, roleB)).toBe(0)
+    })
+
+    it('should be case-insensitive', () => {
+      const { component } = setUp()
+      const roleA = { name: 'admin' }
+      const roleB = { name: 'Admin' }
+      expect(component.sortByRoleName(roleA, roleB)).toBe(0)
+    })
+
+    it('should handle undefined names', () => {
+      const { component } = setUp()
+      const roleA = { name: undefined }
+      const roleB = { name: 'Admin' }
+      expect(component.sortByRoleName(roleA, roleB)).toBeLessThan(0)
+    })
+
+    it('should handle empty string names', () => {
+      const { component } = setUp()
+      const roleA = { name: '' }
+      const roleB = { name: 'Admin' }
+      expect(component.sortByRoleName(roleA, roleB)).toBeLessThan(0)
+    })
+
+    it('should handle both names being undefined', () => {
+      const { component } = setUp()
+      const roleA = { name: undefined }
+      const roleB = { name: undefined }
+      expect(component.sortByRoleName(roleA, roleB)).toBe(0)
     })
   })
 })
