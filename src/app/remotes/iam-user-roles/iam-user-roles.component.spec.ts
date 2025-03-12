@@ -58,45 +58,38 @@ describe('OneCXIamUserRolesComponent', () => {
     roleApiSpy.searchRolesByCriteria.calls.reset()
   })
 
-  it('should create', () => {
-    const { component } = setUp()
+  describe('initialize', () => {
+    it('should create', () => {
+      const { component } = setUp()
 
-    expect(component).toBeTruthy()
-  })
-
-  it('should call ocxInitRemoteComponent with the correct config', () => {
-    const { component } = setUp()
-    const mockConfig: RemoteComponentConfig = {
-      appId: 'appId',
-      productName: 'prodName',
-      permissions: ['permission'],
-      baseUrl: 'base'
-    }
-    spyOn(component, 'ocxInitRemoteComponent')
-
-    component.ocxRemoteComponentConfig = mockConfig
-
-    expect(component.ocxInitRemoteComponent).toHaveBeenCalledWith(mockConfig)
-  })
-
-  it('should init remote component', (done: DoneFn) => {
-    const { component } = setUp()
-
-    component.ocxInitRemoteComponent({
-      baseUrl: 'base_url'
-    } as RemoteComponentConfig)
-
-    baseUrlSubject.asObservable().subscribe((item) => {
-      expect(item).toEqual('base_url')
-      done()
+      expect(component).toBeTruthy()
     })
-  })
 
-  it('should call getUserRoles with the current user', () => {
-    const { component } = setUp()
-    component.userId = 'user'
+    it('should call ocxInitRemoteComponent with the correct config', () => {
+      const { component } = setUp()
+      const mockConfig: RemoteComponentConfig = {
+        appId: 'appId',
+        productName: 'prodName',
+        permissions: ['permission'],
+        baseUrl: 'base'
+      }
+      spyOn(component, 'ocxInitRemoteComponent')
 
-    component.ngOnChanges()
+      component.ocxRemoteComponentConfig = mockConfig
+
+      expect(component.ocxInitRemoteComponent).toHaveBeenCalledWith(mockConfig)
+    })
+
+    it('should init remote component', (done: DoneFn) => {
+      const { component } = setUp()
+
+      component.ocxInitRemoteComponent({ baseUrl: 'base_url' } as RemoteComponentConfig)
+
+      baseUrlSubject.asObservable().subscribe((item) => {
+        expect(item).toEqual('base_url')
+        done()
+      })
+    })
   })
 
   describe('getting roles for user', () => {
