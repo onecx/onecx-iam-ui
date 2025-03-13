@@ -49,6 +49,7 @@ import { environment } from 'src/environments/environment'
 @UntilDestroy()
 export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemoteWebcomponent, OnChanges {
   @Input() userId: string | undefined = undefined
+  @Input() refresh: boolean | undefined = false // on any change here a reload is triggered
   @Input() roleList = new EventEmitter<Role[]>() // provided in slot (output)
 
   public iamRoles$: Observable<Role[]> | undefined
@@ -73,9 +74,24 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
     })
   }
 
-  ngOnChanges(): void {
+  public ngOnChanges(): void {
     let roles: Role[] = []
-    if (this.userId) {
+    if (this.userId === '$$ocx-iam-roles-search-all-indicator$$') {
+      this.roleApi
+        .searchRolesByCriteria({ roleSearchCriteria: { pageSize: 1000 } as RoleSearchCriteria })
+        .pipe(
+          map((response: RolePageResult) => {
+            roles = response.stream?.sort(this.sortByRoleName) ?? []
+            return roles
+          }),
+          catchError((err) => {
+            console.error('iam.searchRolesByCriteria', err)
+            return of([])
+          }),
+          finalize(() => this.roleList.emit(roles))
+        )
+        .subscribe()
+    } else if (this.userId) {
       this.roleApi
         .getUserRoles({ userId: this.userId })
         .pipe(
@@ -91,20 +107,7 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
         )
         .subscribe()
     } else {
-      this.roleApi
-        .searchRolesByCriteria({ roleSearchCriteria: { pageSize: 1000 } as RoleSearchCriteria })
-        .pipe(
-          map((response: RolePageResult) => {
-            roles = response.stream?.sort(this.sortByRoleName) ?? []
-            return roles
-          }),
-          catchError((err) => {
-            console.error('iam.searchRolesByCriteria', err)
-            return of([])
-          }),
-          finalize(() => this.roleList.emit(roles))
-        )
-        .subscribe()
+      this.roleList.emit(roles)
     }
   }
 

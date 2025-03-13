@@ -132,10 +132,22 @@ describe('OneCXIamUserRolesComponent', () => {
     })
   })
 
+  describe('no user id', () => {
+    it('should get empty role array', () => {
+      const { component } = setUp()
+      component.userId = undefined
+      spyOn(component.roleList, 'emit')
+
+      component.ngOnChanges()
+
+      expect(component.roleList.emit).toHaveBeenCalled()
+    })
+  })
+
   describe('getting all roles', () => {
     it('should get roles - successful with data', () => {
       const { component } = setUp()
-      component.userId = undefined
+      component.userId = '$$ocx-iam-roles-search-all-indicator$$'
       const mockResponse: RolePageResult = { stream: [{ name: 'role1' }, { name: 'role2' }] }
       roleApiSpy.searchRolesByCriteria.and.returnValue(of(mockResponse))
       spyOn(component.roleList, 'emit')
@@ -147,7 +159,7 @@ describe('OneCXIamUserRolesComponent', () => {
 
     it('should get roles - successful without data', () => {
       const { component } = setUp()
-      component.userId = undefined
+      component.userId = '$$ocx-iam-roles-search-all-indicator$$'
       const mockResponse: RolePageResult = { stream: [] }
       roleApiSpy.searchRolesByCriteria.and.returnValue(of(mockResponse))
       spyOn(component.roleList, 'emit')
@@ -159,7 +171,7 @@ describe('OneCXIamUserRolesComponent', () => {
 
     it('should get roles - successful without stream', () => {
       const { component } = setUp()
-      component.userId = undefined
+      component.userId = '$$ocx-iam-roles-search-all-indicator$$'
       const mockResponse: RolePageResult = { stream: undefined }
       roleApiSpy.searchRolesByCriteria.and.returnValue(of(mockResponse))
       spyOn(component.roleList, 'emit')
@@ -169,9 +181,9 @@ describe('OneCXIamUserRolesComponent', () => {
       expect(component.roleList.emit).toHaveBeenCalledWith([])
     })
 
-    it('should get roles - failed', () => {
+    it('should get roles- failed', () => {
       const { component } = setUp()
-      component.userId = undefined
+      component.userId = '$$ocx-iam-roles-search-all-indicator$$'
       const errorResponse = { status: 400, statusText: 'Error on getting roles' }
       roleApiSpy.searchRolesByCriteria.and.returnValue(throwError(() => errorResponse))
       spyOn(component.roleList, 'emit')
