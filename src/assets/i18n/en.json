@@ -83,40 +83,45 @@
   },
   "DIALOG": {
     "SEARCH": {
-      "ROLE.HEADER": "IAM Roles",
-      "ROLE.SUBHEADER": "Roles in Identity Access Management (IAM)",
-      "ROLE.LABEL": "Roles",
-      "ROLE.TOOLTIP": "Search Roles in Identity Access Management (IAM)",
+      "ROLE": {
+        "HEADER": "IDM Roles",
+        "SUBHEADER": "Roles in Identity Management (IDM)",
+        "LABEL": "Roles",
+        "TOOLTIP": "Search Roles in Identity Management (IDM)"
+      },
       "USER": {
-        "HEADER": "IAM Users",
-        "SUBHEADER": "Users in Identity Access Management (IAM)",
+        "HEADER": "IDM Users",
+        "SUBHEADER": "Search and Manage Users in Identity Management (IDM)",
         "LABEL": "User",
-        "TOOLTIP": "Search Users in Identity Access Management (IAM)",
+        "TOOLTIP": "Search Users in Identity Management (IDM)",
+        "PROVIDER": "IDM",
         "CRITERIA": {
-          "ID": "IAM ID, If used then other search criteria except Realm swill be ignored",
-          "USERNAME": "IAM user name, Search by part of name supported",
-          "LASTNAME": "IAM last name, Search by part of name supported",
-          "FIRSTNAME": "IAM first name, Search by part of name supported",
-          "EMAIL": "IAM E-Mail Adresse, Search by part of address supported",
-          "REALM": "IAM Realm"
+          "ID": "User ID - If used then other search criteria except Realm will be ignored",
+          "USERNAME": "User name, Search by part of name supported",
+          "LASTNAME": "Last name, Search by part of name supported",
+          "FIRSTNAME": "First name, Search by part of name supported",
+          "EMAIL": "E-Mail Adresse, Search by part of address supported",
+          "PROVIDER": "IDM Provider",
+          "NO_PROVIDER": "Select Provider first",
+          "DOMAIN": "IDM Domain - space within IDM where users, roles etc. are manage (Keycloak = Realm)"
         }
       }
     },
     "DETAIL": {
-      "HEADER": "IAM User Details",
+      "HEADER": "IDM User Details",
       "TABS": {
-        "ATTRIBUTES": "Attributes",
-        "ATTRIBUTES.TOOLTIP": "Within IAM defined Attributes",
-        "PROPS": "Properties",
-        "PROPS.TOOLTIP": "Primary IAM User Properties",
+        "ATTRIBUTES": "Properties",
+        "ATTRIBUTES.TOOLTIP": "Within IDM defined Properties",
+        "PROPS": "Primary",
+        "PROPS.TOOLTIP": "Primary IDM User Properties",
         "ROLES": "Roles",
-        "ROLES.TOOLTIP": "List of IAM User Roles"
+        "ROLES.TOOLTIP": "List of IDM User Roles"
       }
     },
     "PERMISSIONS": {
       "HEADER": "User Permissions",
       "TOOLTIP": "Display Permissions",
-      "SLOT_NOT_DEFINED": "No component is defined for this slot."
+      "SLOT_NOT_DEFINED": "No Component is defined for this Slot."
     }
   },
   "USER": {
@@ -126,17 +131,19 @@
     "FIRSTNAME": "First name",
     "EMAIL": "E-Mail",
     "ATTRIBUTES": "Attributes",
-    "REALM": "Realm",
+    "DOMAIN": "Realm",
+    "PROVIDER": "Provider",
     "ORIGIN": "Origin",
     "TOOLTIPS": {
-      "ID": "IAM User ID, used as reference within Permission Mgmt and User Profile Mgmt",
-      "USERNAME": "IAM user name",
-      "LASTNAME": "IAM last name",
-      "FIRSTNAME": "IAM first name",
-      "EMAIL": "IAM E-Mail address",
-      "ATTRIBUTES": "Within IAM defined Attributes",
-      "REALM": "In which realm the user is created.",
-      "ORIGIN": "Additional information that can be set, for example, when importing the user."
+      "ID": "User ID, used as reference within Permission Mgmt and User Profile Mgmt",
+      "USERNAME": "User name",
+      "LASTNAME": "Last name",
+      "FIRSTNAME": "First name",
+      "EMAIL": "E-Mail address",
+      "ATTRIBUTES": "Within IDM defined Attributes",
+      "DOMAIN": "Area in IDM in which the user is managed (Keycloak = Realm)",
+      "PROVIDER": "IDM which managed the User",
+      "ORIGIN": "Additional information that can be set, for example, when importing the User."
     }
   },
   "ROLE": {
@@ -151,7 +158,7 @@
   },
   "CHANGE_PASSWORD": {
     "BUTTON_LABEL": "Change Password",
-    "BUTTON_TOOLTIP": "Change the password for current user",
+    "BUTTON_TOOLTIP": "Change the password for current User",
     "NO_PERMISSION": "You do not have permissions to change password",
     "DIALOG": {
       "TITLE": "Change password",
@@ -186,39 +193,43 @@
     }
   },
   "EXCEPTIONS": {
+    "MISSING_ISSUER": {
+      "USER": "No issuer selected. Search not possible.",
+      "ROLES": "No issuer selected. Search not possible."
+    },
     "HTTP_STATUS_0": {
       "USER": "Unknown problem retrieving User data - please try again.",
-      "REALMS": "Unknown problem retrieving Realm data - please try again.",
+      "PROVIDER": "Unknown problem retrieving Realm data - please try again.",
       "ROLES": "Unknown problem retrieving Role data - please try again."
     },
     "HTTP_STATUS_400": {
       "USER": "Your request could not be processed.",
-      "REALMS": "Your request could not be processed.",
+      "PROVIDER": "Your request could not be processed.",
       "ROLES": "Your request could not be processed."
     },
     "HTTP_STATUS_401": {
       "USER": "You are not authorized to see Users.",
-      "REALMS": "You are not authorized to see Realms.",
+      "PROVIDER": "You are not authorized to see Provider.",
       "ROLES": "You are not authorized to see Roles."
     },
     "HTTP_STATUS_403": {
       "USER": "You have no permissions to see Users.",
-      "REALMS": "You have no permissions to see Realms.",
+      "PROVIDER": "You have no permissions to see Provider.",
       "ROLES": "You have no permissions to see Roles."
     },
     "HTTP_STATUS_404": {
       "USER": "No Users could be found.",
-      "REALMS": "No Realms could be found.",
+      "PROVIDER": "No Provider could be found.",
       "ROLES": "No Roles could be found."
     },
     "HTTP_STATUS_500": {
       "USER": "Unknown server problem retrieving User data - please try again.",
-      "REALMS": "Unknown server problem retrieving Realm data - please try again.",
+      "PROVIDER": "Unknown server problem retrieving Realm data - please try again.",
       "ROLES": "Unknown server problem retrieving Role data - please try again."
     },
     "HTTP_STATUS_504": {
       "USER": "Timeout retrieving User data - please try again.",
-      "REALMS": "Timeout retrieving Realm data - please try again.",
+      "PROVIDER": "Timeout retrieving Realm data - please try again.",
       "ROLES": "Timeout retrieving Role data - please try again."
     }
   }

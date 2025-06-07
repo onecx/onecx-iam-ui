@@ -1,6 +1,14 @@
 import { SelectItem } from 'primeng/api'
 
-import { copyToClipboard, limitText, dropDownSortItemsByLabel, dropDownGetLabelByValue, sortByLocale } from './utils'
+import {
+  copyToClipboard,
+  limitText,
+  sortItemsByDisplayName,
+  sortItemsByLabel,
+  sortItemsByName,
+  dropDownGetLabelByValue,
+  sortByLocale
+} from './utils'
 
 describe('utils', () => {
   describe('limitText', () => {
@@ -43,14 +51,14 @@ describe('utils', () => {
     })
   })
 
-  describe('dropDownSortItemsByLabel', () => {
+  describe('sortItemsByLabel', () => {
     it('should correctly sort items by label', () => {
-      const items: SelectItem[] = [
+      const items: any[] = [
         { label: 'label2', value: 2 },
         { label: 'label1', value: 1 }
       ]
 
-      const sortedItems = items.sort(dropDownSortItemsByLabel)
+      const sortedItems = items.sort(sortItemsByLabel)
 
       expect(sortedItems[0].label).toEqual('label1')
     })
@@ -61,9 +69,57 @@ describe('utils', () => {
         { label: 'label1', value: 2 }
       ]
 
-      const sortedItems = items.sort(dropDownSortItemsByLabel)
+      const sortedItems = items.sort(sortItemsByLabel)
 
       expect(sortedItems[0].label).toEqual(undefined)
+    })
+  })
+
+  describe('sortItemsByName', () => {
+    it('should correctly sort items by name', () => {
+      const items: any[] = [
+        { name: 'label2', value: 2 },
+        { name: 'label1', value: 1 }
+      ]
+
+      const sortedItems = items.sort(sortItemsByName)
+
+      expect(sortedItems[0].name).toEqual('label1')
+    })
+    it("should treat falsy values for name as ''", () => {
+      const items: any[] = [
+        { name: undefined, value: 1 },
+        { name: undefined, value: 2 },
+        { name: 'name1', value: 2 }
+      ]
+
+      const sortedItems = items.sort(sortItemsByName)
+
+      expect(sortedItems[0].name).toEqual(undefined)
+    })
+  })
+
+  describe('sortItemsByDisplayName', () => {
+    it('should correctly sort items by name', () => {
+      const items: any[] = [
+        { displayName: 'label2', value: 2 },
+        { displayName: 'label1', value: 1 }
+      ]
+
+      const sortedItems = items.sort(sortItemsByDisplayName)
+
+      expect(sortedItems[0].displayName).toEqual('label1')
+    })
+    it("should treat falsy values for name as ''", () => {
+      const items: any[] = [
+        { displayName: undefined, value: 1 },
+        { displayName: undefined, value: 2 },
+        { displayName: 'name1', value: 2 }
+      ]
+
+      const sortedItems = items.sort(sortItemsByDisplayName)
+
+      expect(sortedItems[0].displayName).toEqual(undefined)
     })
   })
 

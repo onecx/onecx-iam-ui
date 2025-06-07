@@ -11,20 +11,9 @@
  */
 
 
-export interface UserSearchCriteria { 
-    userName?: string;
-    firstName?: string;
-    lastName?: string;
-    userId?: string;
-    email?: string;
-    issuer: string;
-    /**
-     * The number of page.
-     */
-    pageNumber?: number;
-    /**
-     * The size of page
-     */
-    pageSize?: number;
+export interface Domain { 
+    name?: string;
+    displayName?: string;
+    issuer?: string;
 }
 

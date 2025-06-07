@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
-import { FormControl, FormGroup } from '@angular/forms'
+import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { finalize, map, of, Observable, Subject, catchError } from 'rxjs'
@@ -10,13 +10,14 @@ import { SlotService } from '@onecx/angular-remote-components'
 import { UserService } from '@onecx/angular-integration-interface'
 import { Action, DataViewControlTranslations, PortalDialogService } from '@onecx/portal-integration-angular'
 
-import { limitText } from 'src/app/shared/utils'
+import { limitText, sortItemsByDisplayName } from 'src/app/shared/utils'
 import {
-  RealmsInternalAPIService,
-  RealmResponse,
+  AdminInternalAPIService,
+  Domain,
+  Provider,
+  ProvidersResponse,
   User,
   UserPageResult,
-  UsersInternalAPIService,
   UserSearchCriteria
 } from 'src/app/shared/generated'
 import { UserPermissionsComponent } from '../user-permissions/user-permissions.component'
@@ -27,7 +28,8 @@ export interface UserSearchCriteriaForm {
   firstName: FormControl<string | null>
   lastName: FormControl<string | null>
   email: FormControl<string | null>
-  realm: FormControl<string | null>
+  provider: FormControl<string | null>
+  issuer: FormControl<string | null>
 }
 
 @Component({
@@ -46,12 +48,13 @@ export class UserSearchComponent implements OnInit {
   public sortField = 'username'
   public sortOrder = 1
   public formGroup: FormGroup<UserSearchCriteriaForm>
+  public domains: Domain[] = []
   public limitText = limitText
   public userViewDetail = false // view permission?
   // data
   public actions$: Observable<Action[]> | undefined
   public users$!: Observable<User[]>
-  public realms$!: Observable<string[]>
+  public provider$!: Observable<Provider[]>
   public iamUser: User | undefined = undefined
   public permissionsSlotName = 'onecx-iam-user-permissions'
   public isComponentDefined$: Observable<boolean>
@@ -66,8 +69,7 @@ export class UserSearchComponent implements OnInit {
     private readonly slotService: SlotService,
     private readonly portalDialogService: PortalDialogService,
     private readonly translate: TranslateService,
-    private readonly userApi: UsersInternalAPIService,
-    private readonly realmApi: RealmsInternalAPIService
+    private readonly iamAdminApi: AdminInternalAPIService
   ) {
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.permissionsSlotName)
     this.userViewDetail = user.hasPermission('USER#VIEW')
@@ -77,59 +79,70 @@ export class UserSearchComponent implements OnInit {
       firstName: new FormControl<string | null>(null),
       lastName: new FormControl<string | null>(null),
       email: new FormControl<string | null>(null),
-      realm: new FormControl<string | null>(null)
+      provider: new FormControl<string | null>(null, [Validators.required]),
+      issuer: new FormControl<string | null>(null, [Validators.required])
     })
   }
 
   ngOnInit(): void {
     this.prepareDialogTranslations()
     this.prepareActionButtons()
-    this.searchRealms()
-    this.searchUsers()
+    this.searchProviders()
   }
 
-  public searchRealms(): void {
-    this.realms$ = this.realmApi.getAllRealms().pipe(
-      map((response: RealmResponse) => response.realms ?? []),
-      catchError((err) => {
-        const exKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.REALMS'
-        let errorMessage = ''
-        this.translate
-          .get([exKey])
-          .pipe(map((data) => data[exKey]))
-          .subscribe((m) => {
-            errorMessage = m
-          })
-        console.error(errorMessage)
-        console.error('getAllRealms', err)
-        return of([])
-      })
-    )
-  }
-
-  public searchUsers(): void {
+  /* SEARCH CRITERIA => provider, domain => issuer
+   */
+  public searchProviders(): void {
     this.loading = true
     this.exceptionKey = undefined
-    // cleanup form data to usable search criteria: prevent empty strings
+    this.provider$ = this.iamAdminApi.getAllProviders().pipe(
+      map((response: ProvidersResponse) => {
+        const provs: Provider[] = []
+        response.providers?.forEach((p) => provs.push({ ...p, displayName: p.displayName ?? p.name }))
+        return provs.sort(sortItemsByDisplayName)
+      }),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PROVIDER'
+        console.error('getAllProviders', err)
+        return of([])
+      }),
+      finalize(() => (this.loading = false))
+    )
+  }
+  // load appId dropdown with app ids from product
+  public onChangeProvider(name: string | undefined, provider: Provider[]) {
+    this.domains = []
+    this.formGroup.controls['issuer'].setValue(null)
+    if (!name) return
+    provider
+      .filter((p) => p.name === name)
+      .forEach((p) => {
+        p.domains?.forEach((d) => {
+          this.domains.push({ ...d, displayName: d.displayName ?? d.name })
+        })
+      })
+    this.domains.sort(sortItemsByDisplayName)
+  }
+
+  /* SEARCH
+   */
+  public searchUsers(): void {
+    this.exceptionKey = undefined
+    // create criteria but exclude nulls and non-existings
     let usc: UserSearchCriteria = {
-      userId: this.formGroup.controls['userId'].value,
-      userName: this.formGroup.controls['userName'].value,
-      firstName: this.formGroup.controls['firstName'].value,
-      lastName: this.formGroup.controls['lastName'].value,
-      email: this.formGroup.controls['email'].value,
-      realm: this.formGroup.controls['realm'].value,
-      pageSize: 100
-    } as UserSearchCriteria
-    usc.userId = usc.userId === '' || usc.userId === null ? undefined : usc.userId
-    usc.userName = usc.userName === '' || usc.userName === null ? undefined : usc.userName
-    usc.firstName = usc.firstName === '' || usc.firstName === null ? undefined : usc.firstName
-    usc.lastName = usc.lastName === '' || usc.lastName === null ? undefined : usc.lastName
-    usc.email = usc.email === '' || usc.email === null ? undefined : usc.email
-    usc.realm = usc.realm === '' || usc.realm === null ? undefined : usc.realm
-    // special case on search by id: ignore all other criteria
-    if (usc.userId) usc = { userId: usc.userId, realm: usc.realm }
-    // execute search
-    this.users$ = this.userApi.searchUsersByCriteria({ userSearchCriteria: usc }).pipe(
+      issuer: '',
+      ...Object.fromEntries(Object.entries(this.formGroup.value).filter(([n, v]) => n !== 'provider' && v !== null)),
+      pageSize: 1000
+    }
+    if (!usc.issuer) {
+      this.exceptionKey = 'EXCEPTIONS.MISSING_ISSUER.USER'
+      return
+    }
+    // shrink criteria if user id is used
+    if (usc.userId) usc = { userId: usc.userId, issuer: usc.issuer, pageSize: usc.pageSize }
+
+    this.loading = true
+    this.users$ = this.iamAdminApi.searchUsersByCriteria({ userSearchCriteria: usc }).pipe(
       map((response: UserPageResult) => response.stream ?? []),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.USER'
@@ -221,7 +234,7 @@ export class UserSearchComponent implements OnInit {
     if (val) {
       this.formGroup.disable()
       this.formGroup.controls['userId'].enable()
-      this.formGroup.controls['realm'].enable()
+      this.formGroup.controls['issuer'].enable()
     }
   }
   public onSearchReset(): void {

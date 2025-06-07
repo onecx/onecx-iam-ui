@@ -9,22 +9,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Domain } from './domain';
 
 
-export interface UserSearchCriteria { 
-    userName?: string;
-    firstName?: string;
-    lastName?: string;
-    userId?: string;
-    email?: string;
-    issuer: string;
-    /**
-     * The number of page.
-     */
-    pageNumber?: number;
-    /**
-     * The size of page
-     */
-    pageSize?: number;
+export interface Provider { 
+    name?: string;
+    displayName?: string;
+    description?: string;
+    fromToken?: boolean;
+    domains?: Array<Domain>;
 }
 

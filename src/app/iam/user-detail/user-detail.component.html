@@ -259,21 +259,21 @@
           />
           <label for="iam_detail_field_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
         </span>
-        <span class="p-float-label">
+        <!--span class="p-float-label"> TODO
           <input
             pInputText
             type="text"
-            id="iam_detail_field_realm"
+            id="iam_detail_field_domain"
             class="w-full pt-3 pb-2 text-responsive"
             [disabled]="true"
             [value]="iamUser?.realm"
-            [attr.aria-label]="'USER.REALM' | translate"
-            [pTooltip]="'USER.TOOLTIPS.REALM' | translate"
+            [attr.aria-label]="'USER.DOMAIN' | translate"
+            [pTooltip]="'USER.TOOLTIPS.DOMAIN' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           />
-          <label for="iam_detail_field_realm">{{ 'USER.REALM' | translate }}</label>
-        </span>
+          <label for="iam_detail_field_domain">{{ 'USER.DOMAIN' | translate }}</label>
+        </span-->
         <span class="p-float-label">
           <input
             pInputText

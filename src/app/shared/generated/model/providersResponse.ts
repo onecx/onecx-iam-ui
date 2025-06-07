@@ -9,9 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Provider } from './provider';
 
 
-export interface RealmResponse { 
-    realms?: Array<string>;
+export interface ProvidersResponse { 
+    providers?: Array<Provider>;
 }
 

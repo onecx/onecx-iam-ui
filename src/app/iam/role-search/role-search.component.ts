@@ -6,10 +6,11 @@ import { finalize, map, of, Observable, catchError } from 'rxjs'
 import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 import { DataView } from 'primeng/dataview'
 
-import { Role, RolePageResult, RolesInternalAPIService } from 'src/app/shared/generated'
+import { AdminInternalAPIService, Role, RolePageResult, RoleSearchCriteria } from 'src/app/shared/generated'
 
-export interface RoleSearchCriteria {
+export interface RoleSearchCriteriaForm {
   name: FormControl<string | null>
+  issuer: FormControl<string | null>
 }
 
 @Component({
@@ -30,7 +31,7 @@ export class RoleSearchComponent implements OnInit {
   public filter: string | undefined
   public sortField = 'name'
   public sortOrder = 1
-  public roleSearchCriteriaGroup: FormGroup<RoleSearchCriteria>
+  public roleSearchCriteriaGroup: FormGroup<RoleSearchCriteriaForm>
 
   ngOnInit(): void {
     this.prepareDialogTranslations()
@@ -44,22 +45,25 @@ export class RoleSearchComponent implements OnInit {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly rolesService: RolesInternalAPIService,
+    private readonly adminService: AdminInternalAPIService,
     private readonly translate: TranslateService
   ) {
-    this.roleSearchCriteriaGroup = new FormGroup<RoleSearchCriteria>({
-      name: new FormControl<string | null>(null)
+    this.roleSearchCriteriaGroup = new FormGroup<RoleSearchCriteriaForm>({
+      name: new FormControl<string | null>(null),
+      issuer: new FormControl<string | null>(null)
     })
   }
 
   public searchRoles() {
-    let name: string | undefined = undefined
+    if (!this.roleSearchCriteriaGroup.controls['issuer'].value) return
     this.loading = true
     this.exceptionKey = undefined
-    if (this.roleSearchCriteriaGroup.controls['name'] && this.roleSearchCriteriaGroup.controls['name'].value != '') {
-      name = this.roleSearchCriteriaGroup.controls['name'].value ?? undefined
+    const criteria: RoleSearchCriteria = {
+      name: this.roleSearchCriteriaGroup.controls['name'].value ?? undefined,
+      issuer: this.roleSearchCriteriaGroup.controls['issuer'].value,
+      pageSize: 1000
     }
-    this.roles$ = this.rolesService.searchRolesByCriteria({ roleSearchCriteria: { name: name, pageSize: 1000 } }).pipe(
+    this.roles$ = this.adminService.searchRolesByCriteria({ roleSearchCriteria: criteria }).pipe(
       map((response: RolePageResult) => response.stream ?? []),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.ROLES'

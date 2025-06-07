@@ -25,7 +25,7 @@ import {
 } from '@onecx/portal-integration-angular'
 
 import { SharedModule } from 'src/app/shared/shared.module'
-import { Configuration, UsersInternalAPIService } from 'src/app/shared/generated'
+import { Configuration, UserInternalAPIService } from 'src/app/shared/generated'
 import { environment } from 'src/environments/environment'
 
 import { ChangePasswordDialogComponent } from './change-password-dialog/change-password-dialog.component'
@@ -44,7 +44,7 @@ import { ChangePasswordDialogComponent } from './change-password-dialog/change-p
     AngularRemoteComponentsModule
   ],
   providers: [
-    UsersInternalAPIService,
+    UserInternalAPIService,
     PortalMessageService,
     providePortalDialogService(),
     {
@@ -66,8 +66,8 @@ export class OneCXChangePasswordComponent implements ocxRemoteComponent, ocxRemo
 
   constructor(
     @Inject(BASE_URL) private readonly baseUrl: ReplaySubject<string>,
-    private readonly usersInternalService: UsersInternalAPIService,
     private readonly userService: UserService,
+    private readonly iamUserService: UserInternalAPIService,
     private readonly portalDialogService: PortalDialogService,
     private readonly msgService: PortalMessageService,
     private readonly translateService: TranslateService
@@ -82,7 +82,7 @@ export class OneCXChangePasswordComponent implements ocxRemoteComponent, ocxRemo
   ocxInitRemoteComponent(config: RemoteComponentConfig): void {
     this.baseUrl.next(config.baseUrl)
     this.permissions = config.permissions
-    this.usersInternalService.configuration = new Configuration({
+    this.iamUserService.configuration = new Configuration({
       basePath: Location.joinWithSlash(config.baseUrl, environment.apiPrefix)
     })
   }
@@ -125,7 +125,7 @@ export class OneCXChangePasswordComponent implements ocxRemoteComponent, ocxRemo
         }),
         mergeMap((password) => {
           if (!password) return of(false)
-          return this.usersInternalService
+          return this.iamUserService
             .resetPassword({
               userResetPasswordRequest: { password: password }
             })
