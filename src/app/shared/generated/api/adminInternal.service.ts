@@ -21,9 +21,17 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { ProblemDetailResponse } from '../model/problemDetailResponse';
 // @ts-ignore
+import { ProvidersResponse } from '../model/providersResponse';
+// @ts-ignore
+import { RolePageResult } from '../model/rolePageResult';
+// @ts-ignore
+import { RoleSearchCriteria } from '../model/roleSearchCriteria';
+// @ts-ignore
+import { SearchUserRolesRequest } from '../model/searchUserRolesRequest';
+// @ts-ignore
 import { UserPageResult } from '../model/userPageResult';
 // @ts-ignore
-import { UserResetPasswordRequest } from '../model/userResetPasswordRequest';
+import { UserRolesResponse } from '../model/userRolesResponse';
 // @ts-ignore
 import { UserSearchCriteria } from '../model/userSearchCriteria';
 
@@ -32,8 +40,14 @@ import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables'
 import { Configuration }                                     from '../configuration';
 
 
-export interface ResetPasswordRequestParams {
-    userResetPasswordRequest: UserResetPasswordRequest;
+export interface GetUserRolesRequestParams {
+    /** Keycloak userId */
+    userId: string;
+    searchUserRolesRequest?: SearchUserRolesRequest;
+}
+
+export interface SearchRolesByCriteriaRequestParams {
+    roleSearchCriteria: RoleSearchCriteria;
 }
 
 export interface SearchUsersByCriteriaRequestParams {
@@ -44,7 +58,7 @@ export interface SearchUsersByCriteriaRequestParams {
 @Injectable({
   providedIn: 'any'
 })
-export class UsersInternalAPIService {
+export class AdminInternalAPIService {
 
     protected basePath = 'http://onecx-iam-bff:8080';
     public defaultHeaders = new HttpHeaders();
@@ -106,18 +120,142 @@ export class UsersInternalAPIService {
     }
 
     /**
-     * Reset user password
+     * Get all providers
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public getAllProviders(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ProvidersResponse>;
+    public getAllProviders(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ProvidersResponse>>;
+    public getAllProviders(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ProvidersResponse>>;
+    public getAllProviders(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/admin/providers`;
+        return this.httpClient.request<ProvidersResponse>('get', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Get roles of user by id
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public resetPassword(requestParameters: ResetPasswordRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
-    public resetPassword(requestParameters: ResetPasswordRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
-    public resetPassword(requestParameters: ResetPasswordRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
-    public resetPassword(requestParameters: ResetPasswordRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
-        const userResetPasswordRequest = requestParameters.userResetPasswordRequest;
-        if (userResetPasswordRequest === null || userResetPasswordRequest === undefined) {
-            throw new Error('Required parameter userResetPasswordRequest was null or undefined when calling resetPassword.');
+    public getUserRoles(requestParameters: GetUserRolesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<UserRolesResponse>;
+    public getUserRoles(requestParameters: GetUserRolesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<UserRolesResponse>>;
+    public getUserRoles(requestParameters: GetUserRolesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<UserRolesResponse>>;
+    public getUserRoles(requestParameters: GetUserRolesRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+        const userId = requestParameters.userId;
+        if (userId === null || userId === undefined) {
+            throw new Error('Required parameter userId was null or undefined when calling getUserRoles.');
+        }
+        const searchUserRolesRequest = requestParameters.searchUserRolesRequest;
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/admin/${this.configuration.encodeParam({name: "userId", value: userId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/roles`;
+        return this.httpClient.request<UserRolesResponse>('post', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: searchUserRolesRequest,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Search roles by criteria
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public searchRolesByCriteria(requestParameters: SearchRolesByCriteriaRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<RolePageResult>;
+    public searchRolesByCriteria(requestParameters: SearchRolesByCriteriaRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<RolePageResult>>;
+    public searchRolesByCriteria(requestParameters: SearchRolesByCriteriaRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<RolePageResult>>;
+    public searchRolesByCriteria(requestParameters: SearchRolesByCriteriaRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+        const roleSearchCriteria = requestParameters.roleSearchCriteria;
+        if (roleSearchCriteria === null || roleSearchCriteria === undefined) {
+            throw new Error('Required parameter roleSearchCriteria was null or undefined when calling searchRolesByCriteria.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -160,11 +298,11 @@ export class UsersInternalAPIService {
             }
         }
 
-        let localVarPath = `/users/password`;
-        return this.httpClient.request<any>('put', `${this.configuration.basePath}${localVarPath}`,
+        let localVarPath = `/admin/roles/search`;
+        return this.httpClient.request<RolePageResult>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: userResetPasswordRequest,
+                body: roleSearchCriteria,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -229,7 +367,7 @@ export class UsersInternalAPIService {
             }
         }
 
-        let localVarPath = `/users/search`;
+        let localVarPath = `/admin/users/search`;
         return this.httpClient.request<UserPageResult>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,

@@ -18,7 +18,7 @@ import { PortalCoreModule, UserService, createRemoteComponentTranslateLoader } f
 import {
   Configuration,
   Role,
-  RolesInternalAPIService,
+  AdminInternalAPIService,
   RolePageResult,
   RoleSearchCriteria,
   UserRolesResponse
@@ -58,7 +58,7 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
     @Inject(BASE_URL) private readonly baseUrl: ReplaySubject<string>,
     private readonly userService: UserService,
     private readonly translateService: TranslateService,
-    private readonly roleApi: RolesInternalAPIService
+    private readonly adminApi: AdminInternalAPIService
   ) {
     this.userService.lang$.subscribe((lang) => this.translateService.use(lang))
   }
@@ -69,7 +69,7 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
 
   ocxInitRemoteComponent(remoteComponentConfig: RemoteComponentConfig) {
     this.baseUrl.next(remoteComponentConfig.baseUrl)
-    this.roleApi.configuration = new Configuration({
+    this.adminApi.configuration = new Configuration({
       basePath: Location.joinWithSlash(remoteComponentConfig.baseUrl, environment.apiPrefix)
     })
   }
@@ -77,7 +77,7 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
   public ngOnChanges(): void {
     let roles: Role[] = []
     if (this.userId === '$$ocx-iam-roles-search-all-indicator$$') {
-      this.roleApi
+      this.adminApi
         .searchRolesByCriteria({ roleSearchCriteria: { pageSize: 1000 } as RoleSearchCriteria })
         .pipe(
           map((response: RolePageResult) => {
@@ -92,7 +92,7 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
         )
         .subscribe()
     } else if (this.userId) {
-      this.roleApi
+      this.adminApi
         .getUserRoles({ userId: this.userId })
         .pipe(
           map((response: UserRolesResponse) => {

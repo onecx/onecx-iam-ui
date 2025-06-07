@@ -11,20 +11,7 @@
  */
 
 
-export interface UserSearchCriteria { 
-    userName?: string;
-    firstName?: string;
-    lastName?: string;
-    userId?: string;
-    email?: string;
+export interface SearchUserRolesRequest { 
     issuer: string;
-    /**
-     * The number of page.
-     */
-    pageNumber?: number;
-    /**
-     * The size of page
-     */
-    pageSize?: number;
 }
 

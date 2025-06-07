@@ -13,6 +13,7 @@
 
 export interface RoleSearchCriteria { 
     name?: string;
+    issuer: string;
     /**
      * The number of page.
      */
