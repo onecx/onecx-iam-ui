@@ -47,14 +47,14 @@ export class UserSearchComponent implements OnInit {
   public filter: string | undefined
   public sortField = 'username'
   public sortOrder = 1
-  public formGroup: FormGroup<UserSearchCriteriaForm>
+  public searchCriteriaForm: FormGroup<UserSearchCriteriaForm>
   public domains: Domain[] = []
   public limitText = limitText
   public userViewDetail = false // view permission?
   // data
   public actions$: Observable<Action[]> | undefined
-  public users$!: Observable<User[]>
-  public provider$!: Observable<Provider[]>
+  public users$: Observable<User[]> | undefined
+  public provider$: Observable<Provider[]> | undefined
   public iamUser: User | undefined = undefined
   public permissionsSlotName = 'onecx-iam-user-permissions'
   public isComponentDefined$: Observable<boolean>
@@ -73,7 +73,7 @@ export class UserSearchComponent implements OnInit {
   ) {
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.permissionsSlotName)
     this.userViewDetail = user.hasPermission('USER#VIEW')
-    this.formGroup = new FormGroup<UserSearchCriteriaForm>({
+    this.searchCriteriaForm = new FormGroup<UserSearchCriteriaForm>({
       userId: new FormControl<string | null>(null),
       userName: new FormControl<string | null>(null),
       firstName: new FormControl<string | null>(null),
@@ -112,7 +112,7 @@ export class UserSearchComponent implements OnInit {
   // load appId dropdown with app ids from product
   public onChangeProvider(name: string | undefined, provider: Provider[]) {
     this.domains = []
-    this.formGroup.controls['issuer'].setValue(null)
+    this.searchCriteriaForm.controls['issuer'].setValue(null)
     if (!name) return
     provider
       .filter((p) => p.name === name)
@@ -131,7 +131,9 @@ export class UserSearchComponent implements OnInit {
     // create criteria but exclude nulls and non-existings
     let usc: UserSearchCriteria = {
       issuer: '',
-      ...Object.fromEntries(Object.entries(this.formGroup.value).filter(([n, v]) => n !== 'provider' && v !== null)),
+      ...Object.fromEntries(
+        Object.entries(this.searchCriteriaForm.value).filter(([n, v]) => n !== 'provider' && v !== null)
+      ),
       pageSize: 1000
     }
     if (!usc.issuer) {
@@ -232,14 +234,15 @@ export class UserSearchComponent implements OnInit {
   }
   public searchOnlyById(val: string) {
     if (val) {
-      this.formGroup.disable()
-      this.formGroup.controls['userId'].enable()
-      this.formGroup.controls['issuer'].enable()
+      this.searchCriteriaForm.disable()
+      this.searchCriteriaForm.controls['userId'].enable()
+      this.searchCriteriaForm.controls['issuer'].enable()
     }
   }
   public onSearchReset(): void {
-    this.formGroup.reset()
-    this.formGroup.enable()
+    this.searchCriteriaForm.reset()
+    this.searchCriteriaForm.enable()
+    this.users$ = of([])
   }
 
   public onDetail(ev: Event, user: User): void {

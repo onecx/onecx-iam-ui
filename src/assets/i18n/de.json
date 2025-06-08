@@ -83,6 +83,7 @@
   },
   "DIALOG": {
     "SEARCH": {
+      "SELECT_ISSUER_FIRST": "Um die Suche starten zu können bitte zuerst IDM und Domain wählen.",
       "ROLE": {
         "HEADER": "IDM Rollen",
         "SUBHEADER": "Rollen im Identity Management (IDM)",

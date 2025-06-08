@@ -7,55 +7,53 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div id="iam_user_search_criteria" [formGroup]="formGroup" class="flex flex-wrap gap-3">
-      <ng-container *ocxIfPermission="'REALM#SEARCH'">
-        <ng-container *ngIf="provider$ | async as provider">
-          <span class="p-float-label">
-            <p-dropdown
-              id="iam_user_search_criteria_provider"
-              styleClass="w-full input-field-correction"
-              formControlName="provider"
-              appendTo="body"
-              [options]="provider"
-              (onChange)="onChangeProvider($event.value, provider)"
-              dataKey="name"
-              optionValue="name"
-              optionLabel="displayName"
-              [autoDisplayFirst]="true"
-              [showClear]="true"
-              [ariaLabel]="'USER.PROVIDER' | translate"
-              [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.PROVIDER' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            >
-            </p-dropdown>
-            <label class="ocx-required-label" for="iam_user_search_criteria_provider">
-              {{ 'USER.PROVIDER' | translate }}
-            </label>
-          </span>
-          <span class="p-float-label">
-            <p-dropdown
-              id="iam_user_search_criteria_issuer"
-              styleClass="w-full input-field-correction"
-              formControlName="issuer"
-              appendTo="body"
-              [options]="domains"
-              dataKey="name"
-              optionValue="issuer"
-              optionLabel="displayName"
-              [showClear]="true"
-              [emptyMessage]="'DIALOG.SEARCH.USER.CRITERIA.NO_PROVIDER' | translate"
-              [ariaLabel]="'USER.DOMAIN' | translate"
-              [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.DOMAIN' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            >
-            </p-dropdown>
-            <label class="ocx-required-label" for="iam_user_search_criteria_issuer">
-              {{ 'USER.DOMAIN' | translate }}
-            </label>
-          </span>
-        </ng-container>
+    <div id="iam_user_search_criteria" [formGroup]="searchCriteriaForm" class="flex flex-wrap gap-3">
+      <ng-container *ngIf="provider$ | async as provider">
+        <span class="p-float-label">
+          <p-dropdown
+            id="iam_user_search_criteria_provider"
+            styleClass="w-full input-field-correction"
+            formControlName="provider"
+            appendTo="body"
+            [options]="provider"
+            (onChange)="onChangeProvider($event.value, provider)"
+            dataKey="name"
+            optionValue="name"
+            optionLabel="displayName"
+            [autoDisplayFirst]="true"
+            [showClear]="true"
+            [ariaLabel]="'USER.PROVIDER' | translate"
+            [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.PROVIDER' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+          </p-dropdown>
+          <label class="ocx-required-label" for="iam_user_search_criteria_provider">
+            {{ 'USER.PROVIDER' | translate }}
+          </label>
+        </span>
+        <span class="p-float-label">
+          <p-dropdown
+            id="iam_user_search_criteria_issuer"
+            styleClass="w-full input-field-correction"
+            formControlName="issuer"
+            appendTo="body"
+            [options]="domains"
+            dataKey="name"
+            optionValue="issuer"
+            optionLabel="displayName"
+            [showClear]="true"
+            [emptyMessage]="'DIALOG.SEARCH.USER.CRITERIA.NO_PROVIDER' | translate"
+            [ariaLabel]="'USER.DOMAIN' | translate"
+            [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.DOMAIN' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+          </p-dropdown>
+          <label class="ocx-required-label" for="iam_user_search_criteria_issuer">
+            {{ 'USER.DOMAIN' | translate }}
+          </label>
+        </span>
       </ng-container>
       <span class="p-float-label">
         <input
@@ -146,6 +144,13 @@
       severity="error"
       styleClass="m-3"
       [text]="exceptionKey | translate"
+    ></p-message>
+    <p-message
+      *ngIf="!loading && !exceptionKey && searchCriteriaForm.invalid"
+      id="iam_user_search_hint_select_provider_first"
+      severity="info"
+      styleClass="m-3"
+      [text]="'DIALOG.SEARCH.SELECT_ISSUER_FIRST' | translate"
     ></p-message>
     <p-dataView
       *ngIf="(users$ | async)?.sort() as users"

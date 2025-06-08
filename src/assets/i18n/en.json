@@ -83,6 +83,7 @@
   },
   "DIALOG": {
     "SEARCH": {
+      "SELECT_ISSUER_FIRST": "To start the search please first select IDM and domain.",
       "ROLE": {
         "HEADER": "IDM Roles",
         "SUBHEADER": "Roles in Identity Management (IDM)",
