@@ -196,12 +196,12 @@
       <ng-template let-users pTemplate="listItem">
         <div class="p-grid p-nogutter grid grid-nogutter">
           <a
-            *ngFor="let iamUser of users; index as i"
+            *ngFor="let idmUser of users; index as i"
             [id]="'iam_user_search_data_list_' + i"
             class="relative col-12 sm:col-6 h-3rem md:h-3-5rem py-1 md:py-2 pl-6 pr-3 flex flex-column justify-content-between"
-            [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewDetail }"
-            (click)="onDetail($event, iamUser)"
-            [pTooltip]="iamUser.username.length < 50 ? '' : iamUser.username"
+            [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewPermission }"
+            (click)="onDetail($event, idmUser)"
+            [pTooltip]="idmUser.username.length < 50 ? '' : idmUser.username"
             tooltipPosition="top"
             tooltipEvent="hover"
           >
@@ -212,7 +212,7 @@
                 tabindex="0"
                 [id]="'iam_user_search_data_grid_' + i + '_action_permissions'"
                 class="card-badge-left badge-position pi pi-lock button-icon-only"
-                (click)="onUserPermissions(iamUser, $event)"
+                (click)="onUserPermissions($event, idmUser)"
                 [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
                 [pTooltip]="'DIALOG.PERMISSIONS.TOOLTIP' | translate"
                 tooltipPosition="top"
@@ -220,10 +220,10 @@
               ></a>
             </ng-container>
             <div [id]="'iam_user_search_data_list_' + i + '_user_name'" class="font-bold text-responsive">
-              {{ iamUser.username }}
+              {{ idmUser.username }}
             </div>
             <div [id]="'iam_user_search_data_list_' + i + '_name'" class="text-xs text-responsive">
-              {{ prepareDisplayName(iamUser, 30, 150) }}
+              {{ prepareDisplayName(idmUser, 30, 150) }}
             </div>
           </a>
         </div>
@@ -233,7 +233,7 @@
       <ng-template let-users pTemplate="gridItem">
         <div class="p-grid p-nogutter grid grid-nogutter">
           <div
-            *ngFor="let iamUser of users; index as i"
+            *ngFor="let idmUser of users; index as i"
             [id]="'iam_user_search_data_grid_' + i"
             class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 px-2 sm:px-3 py-1 md:py-2"
           >
@@ -241,10 +241,10 @@
               [tabIndex]="0"
               [id]="'iam_user_search_data_grid_anchor_' + i"
               class="card block relative h-3rem md:h-3-5rem py-1 md:py-2 px-4 text-center flex flex-column justify-content-between"
-              [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewDetail }"
-              (click)="onDetail($event, iamUser)"
-              [attr.aria-label]="iamUser.username"
-              [pTooltip]="iamUser.username.length < 24 ? '' : iamUser.username"
+              [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewPermission }"
+              (click)="onDetail($event, idmUser)"
+              [attr.aria-label]="idmUser.username"
+              [pTooltip]="idmUser.username.length < 24 ? '' : idmUser.username"
               tooltipPosition="top"
               tooltipEvent="hover"
             >
@@ -255,7 +255,7 @@
                   tabindex="0"
                   [id]="'iam_user_search_data_grid_' + i + '_action_permissions'"
                   class="card-badge-right badge-1 pi pi-lock button-icon-only"
-                  (click)="onUserPermissions(iamUser, $event)"
+                  (click)="onUserPermissions($event, idmUser)"
                   [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
                   [pTooltip]="'DIALOG.PERMISSIONS.TOOLTIP' | translate"
                   tooltipPosition="top"
@@ -263,10 +263,10 @@
                 ></a>
               </ng-container>
               <div [id]="'iam_user_search_data_grid_' + i + '_user_name'" class="font-bold text-responsive">
-                {{ iamUser.username }}
+                {{ idmUser.username }}
               </div>
               <div [id]="'iam_user_search_data_grid_' + i + '_name'" class="text-xs text-responsive">
-                {{ prepareDisplayName(iamUser, 20, 42) }}
+                {{ prepareDisplayName(idmUser, 20, 42) }}
               </div>
             </a>
           </div>
@@ -276,5 +276,10 @@
   </ocx-page-content>
 </ocx-portal-page>
 
-<!--app-user-detail [iamUser]="iamUser" [displayDialog]="displayDetailDialog" (hideDialog)="onHideDetailDialog()">
-</app-user-detail-->
+<app-user-detail
+  [idmUser]="idmUser"
+  [issuer]="idmUserIssuer"
+  [displayDialog]="displayDetailDialog"
+  (hideDialog)="onHideDetailDialog()"
+>
+</app-user-detail>

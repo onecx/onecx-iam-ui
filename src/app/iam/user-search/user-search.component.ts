@@ -50,12 +50,13 @@ export class UserSearchComponent implements OnInit {
   public searchCriteriaForm: FormGroup<UserSearchCriteriaForm>
   public domains: Domain[] = []
   public limitText = limitText
-  public userViewDetail = false // view permission?
+  public userViewPermission = false // view permission?
   // data
   public actions$: Observable<Action[]> | undefined
   public users$: Observable<User[]> | undefined
   public provider$: Observable<Provider[]> | undefined
-  public iamUser: User | undefined = undefined
+  public idmUser: User | undefined = undefined
+  public idmUserIssuer: string | undefined = undefined
   public permissionsSlotName = 'onecx-iam-user-permissions'
   public isComponentDefined$: Observable<boolean>
 
@@ -72,7 +73,7 @@ export class UserSearchComponent implements OnInit {
     private readonly iamAdminApi: AdminInternalAPIService
   ) {
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.permissionsSlotName)
-    this.userViewDetail = user.hasPermission('USER#VIEW')
+    this.userViewPermission = user.hasPermission('USER#VIEW')
     this.searchCriteriaForm = new FormGroup<UserSearchCriteriaForm>({
       userId: new FormControl<string | null>(null),
       userName: new FormControl<string | null>(null),
@@ -246,9 +247,11 @@ export class UserSearchComponent implements OnInit {
   }
 
   public onDetail(ev: Event, user: User): void {
+    if (!user) return
     ev.stopPropagation()
-    if (this.userViewDetail) {
-      this.iamUser = user
+    if (this.userViewPermission) {
+      this.idmUser = user
+      this.idmUserIssuer = this.domains.find((d) => (d.name = user.domain))?.issuer
       this.displayDetailDialog = true
     }
   }
@@ -256,8 +259,9 @@ export class UserSearchComponent implements OnInit {
     this.displayDetailDialog = false
   }
 
-  public onUserPermissions(user: User, ev?: Event): void {
-    ev?.stopPropagation()
+  public onUserPermissions(ev: Event, user: User): void {
+    if (!user) return
+    ev.stopPropagation()
     this.portalDialogService
       .openDialog(
         'DIALOG.PERMISSIONS.HEADER',

@@ -79,14 +79,14 @@ describe('UserDetailComponent', () => {
 
     it('should ignore any action if no user data', () => {
       component.displayDialog = true
-      component.iamUser = undefined
+      component.idmUser = undefined
 
       component.ngOnChanges()
     })
 
     it('should call get user roles', () => {
       component.displayDialog = true
-      component.iamUser = user1
+      component.idmUser = user1
       apiRoleServiceSpy.getUserRoles.and.returnValue(of(urResponse))
 
       component.ngOnChanges()
@@ -100,7 +100,7 @@ describe('UserDetailComponent', () => {
 
     it('should call get empty role array if user does not have role', () => {
       component.displayDialog = true
-      component.iamUser = user1
+      component.idmUser = user1
       apiRoleServiceSpy.getUserRoles.and.returnValue(of({}))
 
       component.ngOnChanges()
@@ -112,7 +112,7 @@ describe('UserDetailComponent', () => {
 
     it('should call get empty role array if user does not have role', (done) => {
       component.displayDialog = true
-      component.iamUser = user1
+      component.idmUser = user1
       apiRoleServiceSpy.getUserRoles.and.returnValue(throwError(() => errorResponse))
       const errorResponse = { status: 404, statusText: 'Not Found' }
       spyOn(console, 'error')

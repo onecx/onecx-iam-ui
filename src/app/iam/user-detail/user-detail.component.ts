@@ -14,7 +14,8 @@ import { copyToClipboard, sortByLocale } from 'src/app/shared/utils'
 })
 export class UserDetailComponent implements OnChanges {
   @Input() public displayDialog = false
-  @Input() public iamUser: User | undefined
+  @Input() public idmUser: User | undefined
+  @Input() public issuer: string | undefined
   @Output() public hideDialog = new EventEmitter<boolean>()
 
   public loading = false
@@ -41,12 +42,12 @@ export class UserDetailComponent implements OnChanges {
    * READING data
    */
   private prepareQuery(): void {
-    if (!this.iamUser?.id) return
-    this.userAttributes = JSON.stringify(this.iamUser.attributes, undefined, 2)
+    if (!this.idmUser?.id) return
+    this.userAttributes = JSON.stringify(this.idmUser.attributes, undefined, 2)
     this.loading = true
     this.exceptionKey = undefined
     this.userRoles$ = this.adminApi
-      .getUserRoles({ userId: this.iamUser.id, searchUserRolesRequest: { issuer: '' } }) // TODO
+      .getUserRoles({ userId: this.idmUser.id, searchUserRolesRequest: { issuer: this.issuer ?? '' } })
       .pipe(
         map((response: UserRolesResponse) => {
           const roles: Role[] = response.roles ?? []
