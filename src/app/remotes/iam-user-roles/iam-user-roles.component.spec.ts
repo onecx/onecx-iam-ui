@@ -8,7 +8,7 @@ import { of, ReplaySubject, throwError } from 'rxjs'
 
 import { BASE_URL, RemoteComponentConfig } from '@onecx/angular-remote-components'
 
-import { RolesInternalAPIService, RolePageResult, UserRolesResponse } from 'src/app/shared/generated'
+import { AdminInternalAPIService, RolePageResult, UserRolesResponse } from 'src/app/shared/generated'
 import { OneCXIamUserRolesComponent } from './iam-user-roles.component'
 
 describe('OneCXIamUserRolesComponent', () => {
@@ -48,7 +48,7 @@ describe('OneCXIamUserRolesComponent', () => {
       .overrideComponent(OneCXIamUserRolesComponent, {
         set: {
           imports: [TranslateTestingModule, CommonModule],
-          providers: [{ provide: RolesInternalAPIService, useValue: roleApiSpy }]
+          providers: [{ provide: AdminInternalAPIService, useValue: roleApiSpy }]
         }
       })
       .compileComponents()

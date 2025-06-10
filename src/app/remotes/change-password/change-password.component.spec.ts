@@ -21,7 +21,7 @@ import {
 } from '@onecx/portal-integration-angular'
 import { MockUserService } from '@onecx/angular-integration-interface/mocks'
 
-import { UsersInternalAPIService } from 'src/app/shared/generated'
+import { UserInternalAPIService } from 'src/app/shared/generated'
 import { OneCXChangePasswordComponent } from './change-password.component'
 import { OneCXChangePasswordHarness } from './change-password.harness'
 import { ChangePasswordDialogComponent } from './change-password-dialog/change-password-dialog.component'
@@ -47,9 +47,7 @@ describe('ChangePasswordComponent', () => {
   let oneCXChangePasswordHarness: OneCXChangePasswordHarness
   let baseUrlSubject: ReplaySubject<any>
 
-  const usersInternalApiServiceSpy = jasmine.createSpyObj<UsersInternalAPIService>('UsersInternalAPIService', [
-    'resetPassword'
-  ])
+  const userApiSpy = jasmine.createSpyObj<UserInternalAPIService>('UserInternalAPIService', ['resetPassword'])
   const messageServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['error', 'success'])
   const portalDialogServiceSpy = jasmine.createSpyObj<PortalDialogService>('PortalDialogService', ['openDialog'])
 
@@ -89,7 +87,7 @@ describe('ChangePasswordComponent', () => {
           ],
           providers: [
             DialogService,
-            { provide: UsersInternalAPIService, useValue: usersInternalApiServiceSpy },
+            { provide: UserInternalAPIService, useValue: userApiSpy },
             { provide: PortalDialogService, useValue: portalDialogServiceSpy },
             { provide: PortalMessageService, useValue: messageServiceSpy }
           ]
@@ -100,11 +98,11 @@ describe('ChangePasswordComponent', () => {
   })
 
   afterEach(() => {
-    usersInternalApiServiceSpy.resetPassword.calls.reset()
+    userApiSpy.resetPassword.calls.reset()
     portalDialogServiceSpy.openDialog.calls.reset()
     messageServiceSpy.error.calls.reset()
     messageServiceSpy.success.calls.reset()
-    usersInternalApiServiceSpy.resetPassword.and.returnValue(of({} as any))
+    userApiSpy.resetPassword.and.returnValue(of({} as any))
     portalDialogServiceSpy.openDialog.and.returnValue(of({} as any))
   })
 
@@ -120,7 +118,7 @@ describe('ChangePasswordComponent', () => {
 
     it('should init remote component', (done: DoneFn) => {
       expect(component.permissions).toEqual([pwdChangePermission])
-      expect(usersInternalApiServiceSpy.configuration.basePath).toEqual('base_url/bff')
+      expect(userApiSpy.configuration.basePath).toEqual('base_url/bff')
       baseUrlSubject.asObservable().subscribe((item) => {
         expect(item).toEqual('base_url')
         done()
@@ -198,7 +196,7 @@ describe('ChangePasswordComponent', () => {
         'CHANGE_PASSWORD.DIALOG.CHANGE_BUTTON',
         'CHANGE_PASSWORD.DIALOG.CANCEL'
       )
-      expect(usersInternalApiServiceSpy.resetPassword).toHaveBeenCalledTimes(0)
+      expect(userApiSpy.resetPassword).toHaveBeenCalledTimes(0)
       expect(messageServiceSpy.error).toHaveBeenCalledTimes(0)
       expect(messageServiceSpy.success).toHaveBeenCalledTimes(0)
     })
@@ -237,7 +235,7 @@ describe('ChangePasswordComponent', () => {
       await oneCXChangePasswordHarness.clickChangePasswordButton()
 
       expect(portalDialogServiceSpy.openDialog).toHaveBeenCalledTimes(2)
-      expect(usersInternalApiServiceSpy.resetPassword).toHaveBeenCalledTimes(0)
+      expect(userApiSpy.resetPassword).toHaveBeenCalledTimes(0)
       expect(messageServiceSpy.error).toHaveBeenCalledTimes(0)
       expect(messageServiceSpy.success).toHaveBeenCalledTimes(0)
     })
@@ -256,7 +254,7 @@ describe('ChangePasswordComponent', () => {
       await oneCXChangePasswordHarness.clickChangePasswordButton()
 
       expect(portalDialogServiceSpy.openDialog).toHaveBeenCalledTimes(2)
-      expect(usersInternalApiServiceSpy.resetPassword).toHaveBeenCalledOnceWith({
+      expect(userApiSpy.resetPassword).toHaveBeenCalledOnceWith({
         userResetPasswordRequest: { password: 'new_password' }
       })
     })
@@ -272,11 +270,11 @@ describe('ChangePasswordComponent', () => {
           result: undefined
         })
       )
-      usersInternalApiServiceSpy.resetPassword.and.returnValue(throwError(() => {}))
+      userApiSpy.resetPassword.and.returnValue(throwError(() => {}))
 
       await oneCXChangePasswordHarness.clickChangePasswordButton()
       expect(portalDialogServiceSpy.openDialog).toHaveBeenCalledTimes(2)
-      expect(usersInternalApiServiceSpy.resetPassword).toHaveBeenCalledTimes(1)
+      expect(userApiSpy.resetPassword).toHaveBeenCalledTimes(1)
       expect(messageServiceSpy.error).toHaveBeenCalledOnceWith({
         summaryKey: 'CHANGE_PASSWORD.PASSWORD_CHANGE_ERROR'
       })
@@ -284,7 +282,7 @@ describe('ChangePasswordComponent', () => {
     })
 
     it('should display success message on successful password reset', async () => {
-      usersInternalApiServiceSpy.resetPassword.and.returnValue(of({} as any))
+      userApiSpy.resetPassword.and.returnValue(of({} as any))
       portalDialogServiceSpy.openDialog.and.returnValues(
         of({
           button: 'primary',
@@ -298,7 +296,7 @@ describe('ChangePasswordComponent', () => {
       await oneCXChangePasswordHarness.clickChangePasswordButton()
 
       expect(portalDialogServiceSpy.openDialog).toHaveBeenCalledTimes(2)
-      expect(usersInternalApiServiceSpy.resetPassword).toHaveBeenCalledTimes(1)
+      expect(userApiSpy.resetPassword).toHaveBeenCalledTimes(1)
       expect(messageServiceSpy.error).toHaveBeenCalledTimes(0)
       expect(messageServiceSpy.success).toHaveBeenCalledOnceWith({
         summaryKey: 'CHANGE_PASSWORD.PASSWORD_CHANGED_SUCCESSFULLY'

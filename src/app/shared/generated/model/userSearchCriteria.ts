@@ -16,8 +16,8 @@ export interface UserSearchCriteria {
     firstName?: string;
     lastName?: string;
     userId?: string;
-    realm?: string;
     email?: string;
+    issuer: string;
     /**
      * The number of page.
      */

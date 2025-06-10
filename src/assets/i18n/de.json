@@ -45,7 +45,7 @@
     },
     "SEARCH": {
       "NO_DATA": "Keine Daten",
-      "NOT_FOUND": "Keine Daten gefunden",
+      "NOT_FOUND": "Keine Daten",
       "OF": "von"
     },
     "VIEW": {
@@ -83,34 +83,45 @@
   },
   "DIALOG": {
     "SEARCH": {
-      "ROLE.HEADER": "IAM Rollen",
-      "ROLE.SUBHEADER": "Rollen im Identity Access Management (IAM)",
-      "ROLE.LABEL": "Rollen",
-      "ROLE.TOOLTIP": "Rollen im Identity Access Management (IAM)",
+      "CRITERIA": {
+        "DOMAIN": "Domain",
+        "PROVIDER": "IDM",
+        "NO_PROVIDER": "Zuerst IDM wählen",
+        "SELECT_ISSUER_FIRST": "Um die Suche starten zu können bitte zuerst IDM und Domain wählen.",
+        "TOOLTIPS": {
+          "PROVIDER": "IDM Provider",
+          "DOMAIN": "Domain - Bereich im IDM in dem Benutzer, Rollen etc. verwaltet werden (Keycloak = Realm)"
+        }
+      },
+      "ROLE": {
+        "HEADER": "IDM Rollen",
+        "SUBHEADER": "Rollen im Identity Management (IDM)",
+        "LABEL": "Rollen",
+        "TOOLTIP": "Rollen im Identity Management (IDM)"
+      },
       "USER": {
-        "HEADER": "IAM Benutzer",
-        "SUBHEADER": "Benutzer im Identity Access Management (IAM)",
+        "HEADER": "IDM Benutzer",
+        "SUBHEADER": "Benutzer im Identity Management (IDM) suchen und verwalten",
         "LABEL": "Benutzer",
-        "TOOLTIP": "Benutzer im Identity Access Management (IAM)",
+        "TOOLTIP": "Benutzer im Identity Management (IDM)",
         "CRITERIA": {
-          "ID": "IAM ID, wenn benutzt dann werden alle anderen Suchkriterien ausser Realm ignoriert",
-          "USERNAME": "IAM Benutzernamen, Suche nach Namensteil unterstützt",
-          "LASTNAME": "IAM Nachname, Suche nach Namensteil unterstützt",
-          "FIRSTNAME": "IAM Vorname, Suche nach Namensteil unterstützt",
-          "EMAIL": "IAM E-Mail Adresse, Suche nach Adressteil unterstützt",
-          "REALM": "IAM Realm"
+          "ID": "Benutzer ID - Wenn benutzt, dann werden alle anderen Suchkriterien ausser IDM und Domain ignoriert",
+          "USERNAME": "Benutzername, Suche nach Namensteil unterstützt",
+          "LASTNAME": "Nachname, Suche nach Namensteil unterstützt",
+          "FIRSTNAME": "Vorname, Suche nach Namensteil unterstützt",
+          "EMAIL": "E-Mail Adresse, Suche nach Adressteil unterstützt"
         }
       }
     },
     "DETAIL": {
-      "HEADER": "IAM Benutzer Details",
+      "HEADER": "IDM Benutzer Details",
       "TABS": {
-        "ATTRIBUTES": "Attribute",
-        "ATTRIBUTES.TOOLTIP": "Im IAM definierte Attribute",
-        "PROPS": "Eigenschaften",
-        "PROPS.TOOLTIP": "Primäre IAM Benutzereigenschaften",
+        "ATTRIBUTES": "Eigenschaften",
+        "ATTRIBUTES.TOOLTIP": "Im IDM definierte Eigenschaften",
+        "PROPS": "Primäre",
+        "PROPS.TOOLTIP": "Primäre IDM Benutzereigenschaften",
         "ROLES": "Rollen",
-        "ROLES.TOOLTIP": "Liste der IAM Benutzerrollen"
+        "ROLES.TOOLTIP": "Liste der IDM Benutzerrollen"
       }
     },
     "PERMISSIONS": {
@@ -126,17 +137,19 @@
     "FIRSTNAME": "Vorname",
     "EMAIL": "E-Mail",
     "ATTRIBUTES": "Attribute",
-    "REALM": "Realm",
+    "PROVIDER": "IDM",
+    "DOMAIN": "Domain",
     "ORIGIN": "Herkunft",
     "TOOLTIPS": {
-      "ID": "IAM User ID, wird als Referenz im Permission und User Profile Mgmt benutzt",
-      "USERNAME": "IAM Benutzernamen",
-      "LASTNAME": "IAM Nachname",
-      "FIRSTNAME": "IAM Vorname",
-      "EMAIL": "IAM E-Mail Adresse",
-      "ATTRIBUTES": "Im IAM definierte Attribute",
-      "REALM": "In welcher Realm der Benutzer angelegt ist.",
-      "ORIGIN": "Zusätzliche Information die z.b. beim Import des Benutzers gesetzt werden kann."
+      "ID": "User ID, wird als Referenz im Permission und User Profile Mgmt benutzt",
+      "USERNAME": "Benutzernamen",
+      "LASTNAME": "Nachname",
+      "FIRSTNAME": "Vorname",
+      "EMAIL": "E-Mail Adresse",
+      "ATTRIBUTES": "Im IDM definierte Eigenschaften",
+      "DOMAIN": "Bereich im IDM in dem der Benutzer verwaltet wird (Keycloak = Realm)",
+      "PROVIDER": "IDM welches den Benutzer authentifiziert",
+      "ORIGIN": "Zusätzliche Information die z.b. beim Import des Benutzers gesetzt werden kann"
     }
   },
   "ROLE": {
@@ -186,39 +199,40 @@
     }
   },
   "EXCEPTIONS": {
+    "MISSING_ISSUER": "Kein Issuer ausgewählt. Suche nicht möglich.",
     "HTTP_STATUS_0": {
       "USER": "Unbekanntes Problem beim Abrufen von Benutzer-Daten - Bitte versuchen sie es noch einmal.",
-      "REALMS": "Unbekanntes Problem beim Abrufen von Realm-Daten - Bitte versuchen sie es noch einmal.",
+      "PROVIDER": "Unbekanntes Problem beim Abrufen von Provider-Daten - Bitte versuchen sie es noch einmal.",
       "ROLES": "Unbekanntes Problem beim Abrufen von Rollen-Daten - Bitte versuchen sie es noch einmal."
     },
     "HTTP_STATUS_400": {
       "USER": "Ihre Anfrage konnte nicht bearbeitet werden.",
-      "REALMS": "Ihre Anfrage konnte nicht bearbeitet werden.",
+      "PROVIDER": "Ihre Anfrage konnte nicht bearbeitet werden.",
       "ROLES": "Ihre Anfrage konnte nicht bearbeitet werden."
     },
     "HTTP_STATUS_401": {
       "USER": "Sie sind nicht autorisiert um Benutzer zu sehen.",
-      "REALMS": "Sie sind nicht autorisiert um Realms zu sehen.",
+      "PROVIDER": "Sie sind nicht autorisiert um Provider zu sehen.",
       "ROLES": "Sie sind nicht autorisiert um Rollen zu sehen."
     },
     "HTTP_STATUS_403": {
       "USER": "Sie haben keine Rechte um Benutzer zu sehen.",
-      "REALMS": "Sie haben keine Rechte um Realms zu sehen.",
+      "PROVIDER": "Sie haben keine Rechte um Provider zu sehen.",
       "ROLES": "Sie haben keine Rechte um Rollen zu sehen."
     },
     "HTTP_STATUS_404": {
       "USER": "Es konnten keine Benutzer gefunden werden.",
-      "REALMS": "Es konnten keine Realms gefunden werden.",
+      "PROVIDER": "Es konnten keine Provider gefunden werden.",
       "ROLES": "Es konnten keine Rollen gefunden werden."
     },
     "HTTP_STATUS_500": {
       "USER": "Unbekanntes Server-Problem beim Abrufen von Benutzer-Daten - Bitte versuchen sie es noch einmal.",
-      "REALMS": "Unbekanntes Problem beim Abrufen von Realm-Daten - Bitte versuchen sie es noch einmal.",
+      "PROVIDER": "Unbekanntes Problem beim Abrufen von Provider-Daten - Bitte versuchen sie es noch einmal.",
       "ROLES": "Unbekanntes Server-Problem beim Abrufen von Rollen-Daten - Bitte versuchen sie es noch einmal."
     },
     "HTTP_STATUS_504": {
       "USER": "Timeout beim Abrufen von Benutzer-Daten - Bitte versuchen sie es noch einmal.",
-      "REALMS": "Timeout beim Abrufen von Realm-Daten - Bitte versuchen sie es noch einmal.",
+      "PROVIDER": "Timeout beim Abrufen von Provider-Daten - Bitte versuchen sie es noch einmal.",
       "ROLES": "Timeout beim Abrufen von Rollen-Daten - Bitte versuchen sie es noch einmal."
     }
   }

@@ -9,18 +9,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Domain } from './domain';
 
 
-export interface User { 
-    id?: string;
-    origin?: string;
-    provider?: string;
-    domain?: string;
-    createdTimestamp?: string;
-    username?: string;
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    attributes?: { [key: string]: Array<string>; };
+export interface Provider { 
+    name?: string;
+    displayName?: string;
+    description?: string;
+    fromToken?: boolean;
+    domains?: Array<Domain>;
 }
 

@@ -7,8 +7,69 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div id="iam_user_search_criteria" [formGroup]="formGroup" class="flex flex-wrap gap-3">
+    <div id="iam_user_search_criteria" [formGroup]="searchCriteriaForm" class="flex flex-wrap gap-3">
+      <ng-container *ngIf="provider$ | async as provider">
+        <span class="p-float-label">
+          <p-dropdown
+            id="iam_user_search_criteria_provider"
+            styleClass="w-full input-field-correction"
+            formControlName="provider"
+            appendTo="body"
+            [options]="provider"
+            (onChange)="onChangeProvider($event.value, provider)"
+            dataKey="name"
+            optionValue="name"
+            optionLabel="displayName"
+            [autoDisplayFirst]="true"
+            [showClear]="true"
+            [ariaLabel]="'DIALOG.SEARCH.CRITERIA.PROVIDER' | translate"
+            [pTooltip]="'DIALOG.SEARCH.CRITERIA.TOOLTIPS.PROVIDER' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+          </p-dropdown>
+          <label class="ocx-required-label" for="iam_user_search_criteria_provider">
+            {{ 'DIALOG.SEARCH.CRITERIA.PROVIDER' | translate }}
+          </label>
+        </span>
+        <span class="p-float-label">
+          <p-dropdown
+            id="iam_user_search_criteria_issuer"
+            styleClass="w-full input-field-correction"
+            formControlName="issuer"
+            appendTo="body"
+            [options]="domains"
+            dataKey="name"
+            optionValue="issuer"
+            optionLabel="displayName"
+            [showClear]="true"
+            [emptyMessage]="'DIALOG.SEARCH.CRITERIA.NO_PROVIDER' | translate"
+            [ariaLabel]="'DIALOG.SEARCH.CRITERIA.DOMAIN' | translate"
+            [pTooltip]="'DIALOG.SEARCH.CRITERIA.TOOLTIPS.DOMAIN' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+          </p-dropdown>
+          <label class="ocx-required-label" for="iam_user_search_criteria_issuer">
+            {{ 'DIALOG.SEARCH.CRITERIA.DOMAIN' | translate }}
+          </label>
+        </span>
+      </ng-container>
       <span class="p-float-label">
+        <input
+          id="iam_user_search_criteria_user_name"
+          pInputText
+          type="text"
+          formControlName="userName"
+          class="w-11rem sm:w-13rem"
+          [attr.aria-label]="'USER.USERNAME' | translate"
+          [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.USERNAME' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="iam_user_search_criteria_user_name">{{ 'USER.USERNAME' | translate }}</label>
+      </span>
+      <span *ocxAdvanced class="p-float-label">
         <input
           #userId
           id="iam_user_search_criteria_user_id"
@@ -24,40 +85,6 @@
         />
         <label for="iam_user_search_criteria_user_id">{{ 'USER.ID' | translate }}</label>
       </span>
-      <span class="p-float-label">
-        <input
-          id="iam_user_search_criteria_user_name"
-          pInputText
-          type="text"
-          formControlName="userName"
-          class="w-11rem sm:w-13rem"
-          [attr.aria-label]="'USER.USERNAME' | translate"
-          [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.USERNAME' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        />
-        <label for="iam_user_search_criteria_user_name">{{ 'USER.USERNAME' | translate }}</label>
-      </span>
-      <ng-container *ocxIfPermission="'REALM#SEARCH'">
-        <ng-container *ngIf="realms$ | async as realms">
-          <span class="p-float-label" *ngIf="realms.length > 0">
-            <p-dropdown
-              id="iam_user_search_criteria_realm"
-              styleClass="w-full input-field-correction"
-              formControlName="realm"
-              appendTo="body"
-              [options]="realms"
-              [showClear]="true"
-              [attr.aria-label]="'USER.REALM' | translate"
-              [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.REALM' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            >
-            </p-dropdown>
-            <label for="iam_user_search_criteria_realm">{{ 'USER.REALM' | translate }}</label>
-          </span>
-        </ng-container>
-      </ng-container>
       <span *ocxAdvanced class="p-float-label">
         <input
           id="iam_user_search_criteria_first_name"
@@ -103,7 +130,7 @@
     </div>
   </ocx-search-header>
 
-  <ocx-page-content *ngIf="(users$ | async)?.sort() as users">
+  <ocx-page-content>
     <p-message
       *ngIf="loading"
       id="iam_user_search_loading"
@@ -118,8 +145,15 @@
       styleClass="m-3"
       [text]="exceptionKey | translate"
     ></p-message>
+    <p-message
+      *ngIf="!loading && !exceptionKey && searchCriteriaForm.invalid"
+      id="iam_user_search_hint_select_provider_first"
+      severity="info"
+      styleClass="m-3"
+      [text]="'DIALOG.SEARCH.CRITERIA.SELECT_ISSUER_FIRST' | translate"
+    ></p-message>
     <p-dataView
-      *ngIf="!(exceptionKey || loading)"
+      *ngIf="(users$ | async)?.sort() as users"
       id="iam_user_search_dataview"
       [value]="users"
       [layout]="viewMode"
@@ -162,12 +196,12 @@
       <ng-template let-users pTemplate="listItem">
         <div class="p-grid p-nogutter grid grid-nogutter">
           <a
-            *ngFor="let iamUser of users; index as i"
+            *ngFor="let idmUser of users; index as i"
             [id]="'iam_user_search_data_list_' + i"
             class="relative col-12 sm:col-6 h-3rem md:h-3-5rem py-1 md:py-2 pl-6 pr-3 flex flex-column justify-content-between"
-            [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewDetail }"
-            (click)="onDetail($event, iamUser)"
-            [pTooltip]="iamUser.username.length < 50 ? '' : iamUser.username"
+            [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewPermission }"
+            (click)="onDetail($event, idmUser)"
+            [pTooltip]="idmUser.username.length < 50 ? '' : idmUser.username"
             tooltipPosition="top"
             tooltipEvent="hover"
           >
@@ -178,7 +212,7 @@
                 tabindex="0"
                 [id]="'iam_user_search_data_grid_' + i + '_action_permissions'"
                 class="card-badge-left badge-position pi pi-lock button-icon-only"
-                (click)="onUserPermissions(iamUser, $event)"
+                (click)="onUserPermissions($event, idmUser)"
                 [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
                 [pTooltip]="'DIALOG.PERMISSIONS.TOOLTIP' | translate"
                 tooltipPosition="top"
@@ -186,10 +220,10 @@
               ></a>
             </ng-container>
             <div [id]="'iam_user_search_data_list_' + i + '_user_name'" class="font-bold text-responsive">
-              {{ iamUser.username }}
+              {{ idmUser.username }}
             </div>
             <div [id]="'iam_user_search_data_list_' + i + '_name'" class="text-xs text-responsive">
-              {{ prepareDisplayName(iamUser, 30, 150) }}
+              {{ prepareDisplayName(idmUser, 30, 150) }}
             </div>
           </a>
         </div>
@@ -199,7 +233,7 @@
       <ng-template let-users pTemplate="gridItem">
         <div class="p-grid p-nogutter grid grid-nogutter">
           <div
-            *ngFor="let iamUser of users; index as i"
+            *ngFor="let idmUser of users; index as i"
             [id]="'iam_user_search_data_grid_' + i"
             class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 px-2 sm:px-3 py-1 md:py-2"
           >
@@ -207,10 +241,10 @@
               [tabIndex]="0"
               [id]="'iam_user_search_data_grid_anchor_' + i"
               class="card block relative h-3rem md:h-3-5rem py-1 md:py-2 px-4 text-center flex flex-column justify-content-between"
-              [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewDetail }"
-              (click)="onDetail($event, iamUser)"
-              [attr.aria-label]="iamUser.username"
-              [pTooltip]="iamUser.username.length < 24 ? '' : iamUser.username"
+              [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewPermission }"
+              (click)="onDetail($event, idmUser)"
+              [attr.aria-label]="idmUser.username"
+              [pTooltip]="idmUser.username.length < 24 ? '' : idmUser.username"
               tooltipPosition="top"
               tooltipEvent="hover"
             >
@@ -221,7 +255,7 @@
                   tabindex="0"
                   [id]="'iam_user_search_data_grid_' + i + '_action_permissions'"
                   class="card-badge-right badge-1 pi pi-lock button-icon-only"
-                  (click)="onUserPermissions(iamUser, $event)"
+                  (click)="onUserPermissions($event, idmUser)"
                   [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
                   [pTooltip]="'DIALOG.PERMISSIONS.TOOLTIP' | translate"
                   tooltipPosition="top"
@@ -229,10 +263,10 @@
                 ></a>
               </ng-container>
               <div [id]="'iam_user_search_data_grid_' + i + '_user_name'" class="font-bold text-responsive">
-                {{ iamUser.username }}
+                {{ idmUser.username }}
               </div>
               <div [id]="'iam_user_search_data_grid_' + i + '_name'" class="text-xs text-responsive">
-                {{ prepareDisplayName(iamUser, 20, 42) }}
+                {{ prepareDisplayName(idmUser, 20, 42) }}
               </div>
             </a>
           </div>
@@ -242,5 +276,10 @@
   </ocx-page-content>
 </ocx-portal-page>
 
-<app-user-detail [iamUser]="iamUser" [displayDialog]="displayDetailDialog" (hideDialog)="onHideDetailDialog()">
+<app-user-detail
+  [idmUser]="idmUser"
+  [issuer]="idmUserIssuer"
+  [displayDialog]="displayDetailDialog"
+  (hideDialog)="onHideDetailDialog()"
+>
 </app-user-detail>

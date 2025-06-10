@@ -4,7 +4,7 @@ import { catchError, finalize, map, Observable, of } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
 
-import { Role, RolesInternalAPIService, User, UserRolesResponse } from 'src/app/shared/generated'
+import { Role, AdminInternalAPIService, User, UserRolesResponse } from 'src/app/shared/generated'
 import { copyToClipboard, sortByLocale } from 'src/app/shared/utils'
 
 @Component({
@@ -14,7 +14,8 @@ import { copyToClipboard, sortByLocale } from 'src/app/shared/utils'
 })
 export class UserDetailComponent implements OnChanges {
   @Input() public displayDialog = false
-  @Input() public iamUser: User | undefined
+  @Input() public idmUser: User | undefined
+  @Input() public issuer: string | undefined
   @Output() public hideDialog = new EventEmitter<boolean>()
 
   public loading = false
@@ -25,7 +26,7 @@ export class UserDetailComponent implements OnChanges {
   public copyToClipboard = copyToClipboard
 
   constructor(
-    private readonly roleApi: RolesInternalAPIService,
+    private readonly adminApi: AdminInternalAPIService,
     private readonly user: UserService,
     private readonly translate: TranslateService
   ) {
@@ -41,22 +42,24 @@ export class UserDetailComponent implements OnChanges {
    * READING data
    */
   private prepareQuery(): void {
-    if (!this.iamUser?.id) return
-    this.userAttributes = JSON.stringify(this.iamUser.attributes, undefined, 2)
+    if (!this.idmUser?.id || !this.issuer) return
+    this.userAttributes = JSON.stringify(this.idmUser.attributes, undefined, 2)
     this.loading = true
     this.exceptionKey = undefined
-    this.userRoles$ = this.roleApi.getUserRoles({ userId: this.iamUser.id }).pipe(
-      map((response: UserRolesResponse) => {
-        const roles: Role[] = response.roles ?? []
-        return (roles?.map((r) => r.name) as string[]).sort(sortByLocale)
-      }),
-      catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.ROLES'
-        console.error('getUserRoles', err)
-        return of([])
-      }),
-      finalize(() => (this.loading = false))
-    )
+    this.userRoles$ = this.adminApi
+      .getUserRoles({ userId: this.idmUser.id, searchUserRolesRequest: { issuer: this.issuer } })
+      .pipe(
+        map((response: UserRolesResponse) => {
+          const roles: Role[] = response.roles ?? []
+          return (roles?.map((r) => r.name) as string[]).sort(sortByLocale)
+        }),
+        catchError((err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.ROLES'
+          console.error('getUserRoles', err)
+          return of([])
+        }),
+        finalize(() => (this.loading = false))
+      )
   }
 
   /****************************************************************************

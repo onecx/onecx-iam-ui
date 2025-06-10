@@ -1,15 +1,27 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
-import { FormControl, FormGroup } from '@angular/forms'
+import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { finalize, map, of, Observable, catchError } from 'rxjs'
 import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 import { DataView } from 'primeng/dataview'
 
-import { Role, RolePageResult, RolesInternalAPIService } from 'src/app/shared/generated'
+import {
+  AdminInternalAPIService,
+  Domain,
+  Provider,
+  ProvidersResponse,
+  Role,
+  RolePageResult,
+  RoleSearchCriteria
+} from 'src/app/shared/generated'
 
-export interface RoleSearchCriteria {
+import { sortItemsByDisplayName } from 'src/app/shared/utils'
+
+export interface RoleSearchCriteriaForm {
   name: FormControl<string | null>
+  provider: FormControl<string | null>
+  issuer: FormControl<string | null>
 }
 
 @Component({
@@ -25,18 +37,14 @@ export class RoleSearchComponent implements OnInit {
   public displayDeleteDialog = false
   // data
   public actions$: Observable<Action[]> | undefined
-  public roles$!: Observable<Role[]>
+  public roles$!: Observable<Role[]> | undefined
   public viewMode: 'list' | 'grid' = 'grid'
   public filter: string | undefined
   public sortField = 'name'
   public sortOrder = 1
-  public roleSearchCriteriaGroup: FormGroup<RoleSearchCriteria>
-
-  ngOnInit(): void {
-    this.prepareDialogTranslations()
-    this.prepareActionButtons()
-    this.searchRoles()
-  }
+  public searchCriteriaForm: FormGroup<RoleSearchCriteriaForm>
+  public domains: Domain[] = []
+  public provider$: Observable<Provider[]> | undefined
 
   public dataViewControlsTranslations: DataViewControlTranslations = {}
   @ViewChild(DataView) dv: DataView | undefined
@@ -44,22 +52,76 @@ export class RoleSearchComponent implements OnInit {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly rolesService: RolesInternalAPIService,
+    private readonly iamAdminApi: AdminInternalAPIService,
     private readonly translate: TranslateService
   ) {
-    this.roleSearchCriteriaGroup = new FormGroup<RoleSearchCriteria>({
-      name: new FormControl<string | null>(null)
+    this.searchCriteriaForm = new FormGroup<RoleSearchCriteriaForm>({
+      name: new FormControl<string | null>(null),
+      provider: new FormControl<string | null>(null, [Validators.required]),
+      issuer: new FormControl<string | null>(null, [Validators.required])
     })
   }
 
-  public searchRoles() {
-    let name: string | undefined = undefined
+  ngOnInit(): void {
+    this.prepareDialogTranslations()
+    this.prepareActionButtons()
+    this.searchProviders()
+  }
+
+  /* SEARCH CRITERIA => provider, domain => issuer
+   */
+  public searchProviders(): void {
     this.loading = true
     this.exceptionKey = undefined
-    if (this.roleSearchCriteriaGroup.controls['name'] && this.roleSearchCriteriaGroup.controls['name'].value != '') {
-      name = this.roleSearchCriteriaGroup.controls['name'].value ?? undefined
+    this.provider$ = this.iamAdminApi.getAllProviders().pipe(
+      map((response: ProvidersResponse) => {
+        const provs: Provider[] = []
+        response.providers?.forEach((p) => provs.push({ ...p, displayName: p.displayName ?? p.name }))
+        return provs.sort(sortItemsByDisplayName)
+      }),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PROVIDER'
+        console.error('getAllProviders', err)
+        return of([])
+      }),
+      finalize(() => (this.loading = false))
+    )
+  }
+  // load appId dropdown with app ids from product
+  public onChangeProvider(name: string | undefined, provider: Provider[]) {
+    this.domains = []
+    this.roles$ = of([])
+    this.searchCriteriaForm.controls['issuer'].setValue(null)
+    if (!name) return
+    provider
+      .filter((p) => p.name === name)
+      .forEach((p) => {
+        p.domains?.forEach((d) => {
+          this.domains.push({ ...d, displayName: d.displayName ?? d.name })
+        })
+      })
+    this.domains.sort(sortItemsByDisplayName)
+  }
+  public onChangeDomain() {
+    this.roles$ = of([])
+  }
+
+  public searchRoles() {
+    this.loading = true
+    this.exceptionKey = undefined
+    // create criteria but exclude nulls and non-existings
+    const rsc: RoleSearchCriteria = {
+      issuer: '',
+      ...Object.fromEntries(
+        Object.entries(this.searchCriteriaForm.value).filter(([n, v]) => n !== 'provider' && v !== null)
+      ),
+      pageSize: 1000
     }
-    this.roles$ = this.rolesService.searchRolesByCriteria({ roleSearchCriteria: { name: name, pageSize: 1000 } }).pipe(
+    if (!rsc.issuer) {
+      this.exceptionKey = 'EXCEPTIONS.MISSING_ISSUER'
+      return
+    }
+    this.roles$ = this.iamAdminApi.searchRolesByCriteria({ roleSearchCriteria: rsc }).pipe(
       map((response: RolePageResult) => response.stream ?? []),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.ROLES'
@@ -137,6 +199,6 @@ export class RoleSearchComponent implements OnInit {
     this.searchRoles()
   }
   public onSearchReset() {
-    this.roleSearchCriteriaGroup.reset()
+    this.searchCriteriaForm.reset()
   }
 }

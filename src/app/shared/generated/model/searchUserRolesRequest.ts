@@ -11,16 +11,7 @@
  */
 
 
-export interface User { 
-    id?: string;
-    origin?: string;
-    provider?: string;
-    domain?: string;
-    createdTimestamp?: string;
-    username?: string;
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    attributes?: { [key: string]: Array<string>; };
+export interface SearchUserRolesRequest { 
+    issuer: string;
 }
 

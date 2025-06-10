@@ -19,6 +19,11 @@ app:
           technology: WEBCOMPONENTMODULE
           remoteName: onecx-iam
           tagName: ocx-iam-component
+          endpoints:
+            - name: users
+              path: /users
+            - name: roles
+              path: /roles
         change-password:
           exposedModule: "./OneCXChangePasswordComponent"
           description: "Change password"
@@ -39,14 +44,18 @@ app:
       spec:
         permissions:
           USER:
+            CREATE: Create a IDM user
+            DELETE: Delete a IDM user
+            EDIT: Edit user details
             SEARCH: Search users
             VIEW: View user details
           PERMISSION:
             VIEW: View user permissions
           ROLE:
+            CREATE: Create a IDM role
+            DELETE: Delete a IDM role
+            EDIT: Edit role details
             SEARCH: Search roles
-          REALM:
-            SEARCH: Search realms
     # Slot
     slot:
       enabled: true

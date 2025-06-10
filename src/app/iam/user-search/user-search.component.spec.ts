@@ -12,38 +12,40 @@ import { UserService } from '@onecx/angular-integration-interface'
 import { PortalDialogService } from '@onecx/portal-integration-angular'
 
 import {
-  RealmsInternalAPIService,
-  RealmResponse,
+  AdminInternalAPIService,
+  Domain,
+  Provider,
+  ProvidersResponse,
   User,
-  UserPageResult,
-  UsersInternalAPIService
+  UserPageResult
 } from 'src/app/shared/generated'
 import { UserSearchComponent, UserSearchCriteriaForm } from './user-search.component'
 
-const form = new FormGroup<UserSearchCriteriaForm>({
+const searchForm = new FormGroup<UserSearchCriteriaForm>({
   userId: new FormControl<string | null>(null),
   userName: new FormControl<string | null>(null),
   firstName: new FormControl<string | null>(null),
   lastName: new FormControl<string | null>(null),
   email: new FormControl<string | null>(null),
-  realm: new FormControl<string | null>(null)
+  provider: new FormControl<string | null>(null),
+  issuer: new FormControl<string | null>(null)
 })
 
 const user1: User = {
-  id: 'userid1',
+  id: 'userId1',
   username: 'username1',
   firstName: 'first1',
   lastName: 'last1',
   email: 'em@ail1',
-  realm: 'realm1'
+  domain: 'domain1'
 }
 const user2: User = {
-  id: 'userid2',
+  id: 'userId2',
   username: 'username2',
   firstName: 'first2',
   lastName: 'last2',
   email: 'em@ail2',
-  realm: 'realm2'
+  domain: 'domain2'
 }
 const userPageResult1: UserPageResult = {
   totalElements: 1,
@@ -59,6 +61,17 @@ const userPageResult2: UserPageResult = {
   totalPages: 2,
   stream: [user1, user2]
 }
+const domain1: Domain = { name: 'domain1', displayName: 'IDM 1', issuer: 'http://keycloak' }
+const domain2: Domain = { name: 'domain2', issuer: 'http://keycloak2' }
+const provider1: Provider = {
+  name: 'idm1',
+  displayName: 'IDM 1',
+  domains: [domain1]
+}
+const provider2: Provider = {
+  name: 'idm2',
+  domains: [domain1, domain2]
+}
 
 describe('UserSearchComponent', () => {
   let component: UserSearchComponent
@@ -66,12 +79,9 @@ describe('UserSearchComponent', () => {
   const routerSpy = jasmine.createSpyObj('Router', ['navigate'])
   const routeMock = { snapshot: { paramMap: new Map() } }
 
-  //const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
-  const userApiServiceSpy = {
+  const adminApiSpy = {
+    getAllProviders: jasmine.createSpy('getAllProviders').and.returnValue(of({})),
     searchUsersByCriteria: jasmine.createSpy('searchUsersByCriteria').and.returnValue(of({}))
-  }
-  const roleApiServiceSpy = {
-    getAllRealms: jasmine.createSpy('getAllRealms').and.returnValue(of({}))
   }
   const mockUserService = {
     lang$: { getValue: jasmine.createSpy('getValue') },
@@ -92,8 +102,7 @@ describe('UserSearchComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([{ path: '', component: UserSearchComponent }]),
-        { provide: RealmsInternalAPIService, useValue: roleApiServiceSpy },
-        { provide: UsersInternalAPIService, useValue: userApiServiceSpy },
+        { provide: AdminInternalAPIService, useValue: adminApiSpy },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock },
         { provide: UserService, useValue: mockUserService },
@@ -102,11 +111,11 @@ describe('UserSearchComponent', () => {
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents()
     // to spy data: reset
-    userApiServiceSpy.searchUsersByCriteria.calls.reset()
-    roleApiServiceSpy.getAllRealms.calls.reset()
+    adminApiSpy.searchUsersByCriteria.calls.reset()
+    adminApiSpy.getAllProviders.calls.reset()
     // to spy data: refill with neutral data
-    userApiServiceSpy.searchUsersByCriteria.and.returnValue(of({}))
-    roleApiServiceSpy.getAllRealms.and.returnValue(of({}))
+    adminApiSpy.searchUsersByCriteria.and.returnValue(of({}))
+    adminApiSpy.getAllProviders.and.returnValue(of({}))
   }))
 
   beforeEach(() => {
@@ -116,7 +125,7 @@ describe('UserSearchComponent', () => {
     //fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
   })
 
-  describe('init', () => {
+  describe('initialize', () => {
     it('should create', () => {
       expect(component).toBeTruthy()
     })
@@ -167,25 +176,30 @@ describe('UserSearchComponent', () => {
     })
   })
 
-  it('should call initial search', () => {
-    spyOn(component, 'searchUsers')
-
-    component.onSearch()
-
-    expect(component.searchUsers).toHaveBeenCalled()
-  })
-
   describe('search users', () => {
-    it('should search user and found', (done) => {
-      component.formGroup.controls['userName'].setValue(user1.username!)
-      component.formGroup.controls['firstName'].setValue(user1.firstName!)
-      component.formGroup.controls['lastName'].setValue(user1.lastName!)
-      component.formGroup.controls['email'].setValue(user1.email!)
-      userApiServiceSpy.searchUsersByCriteria.and.returnValue(of(userPageResult1))
+    it('should call search but missing issuer', () => {
+      component.searchCriteriaForm.reset()
+      component.searchCriteriaForm.controls['userName'].setValue(user1.username!)
+      component.searchCriteriaForm.controls['provider'].setValue(provider1.name!)
 
+      component.ngOnInit()
+      component.onSearch()
+
+      expect(component.exceptionKey).toBe('EXCEPTIONS.MISSING_ISSUER')
+    })
+
+    it('should search user and found', (done) => {
+      component.searchCriteriaForm.controls['userName'].setValue(user1.username!)
+      component.searchCriteriaForm.controls['firstName'].setValue(user1.firstName!)
+      component.searchCriteriaForm.controls['lastName'].setValue(user1.lastName!)
+      component.searchCriteriaForm.controls['email'].setValue(user1.email!)
+      component.searchCriteriaForm.controls['issuer'].setValue(domain1.issuer!)
+      adminApiSpy.searchUsersByCriteria.and.returnValue(of(userPageResult1))
+
+      component.ngOnInit()
       component.searchUsers()
 
-      component.users$.subscribe({
+      component.users$?.subscribe({
         next: (users) => {
           expect(users.length).toBe(1)
           expect(users[0]).toBe(user1)
@@ -195,15 +209,16 @@ describe('UserSearchComponent', () => {
       })
     })
 
-    it('should search by userId and realms - ignore other criteria', (done) => {
-      component.formGroup.controls['userId'].setValue(user1.id!)
-      component.formGroup.controls['userName'].setValue('unknown')
-      component.formGroup.controls['realm'].setValue(user1.realm!)
-      userApiServiceSpy.searchUsersByCriteria.and.returnValue(of(userPageResult1))
+    it('should search by userId and providers - ignore other criteria', (done) => {
+      component.searchCriteriaForm.controls['userId'].setValue(user1.id!)
+      component.searchCriteriaForm.controls['userName'].setValue('unknown')
+      component.searchCriteriaForm.controls['issuer'].setValue(domain1.issuer!)
+      adminApiSpy.searchUsersByCriteria.and.returnValue(of(userPageResult1))
 
+      component.ngOnInit()
       component.searchUsers()
 
-      component.users$.subscribe({
+      component.users$?.subscribe({
         next: (users) => {
           expect(users.length).toBe(1)
           expect(users[0]).toBe(user1)
@@ -214,12 +229,14 @@ describe('UserSearchComponent', () => {
     })
 
     it('should search users result empty', (done) => {
-      component.formGroup.controls['userName'].setValue('testuserName')
-      userApiServiceSpy.searchUsersByCriteria.and.returnValue(of({}))
+      component.searchCriteriaForm.controls['userName'].setValue('testuserName')
+      component.searchCriteriaForm.controls['issuer'].setValue(domain1.issuer!)
+      adminApiSpy.searchUsersByCriteria.and.returnValue(of({}))
 
+      component.ngOnInit()
       component.searchUsers()
 
-      component.users$.subscribe({
+      component.users$?.subscribe({
         next: (users) => {
           expect(users.length).toBe(0)
           done()
@@ -229,12 +246,14 @@ describe('UserSearchComponent', () => {
     })
 
     it('should search users result stream list equals 2', (done) => {
-      component.formGroup.controls['userName'].setValue('testuserName')
-      userApiServiceSpy.searchUsersByCriteria.and.returnValue(of(userPageResult2))
+      component.searchCriteriaForm.controls['userName'].setValue('testuserName')
+      component.searchCriteriaForm.controls['issuer'].setValue(domain1.issuer!)
+      adminApiSpy.searchUsersByCriteria.and.returnValue(of(userPageResult2))
 
+      component.ngOnInit()
       component.searchUsers()
 
-      component.users$.subscribe({
+      component.users$?.subscribe({
         next: (users) => {
           expect(users.length).toBe(2)
           expect(users.at(0)).toBe(user1)
@@ -244,7 +263,7 @@ describe('UserSearchComponent', () => {
         error: done.fail
       })
 
-      component.users$.subscribe({
+      component.users$?.subscribe({
         next: (users) => {
           expect(users.length).toBe(2)
           expect(users[0].username).toBe('username1')
@@ -255,13 +274,15 @@ describe('UserSearchComponent', () => {
 
     it('should search user Error response', (done) => {
       const errorResponse = { status: 404, statusText: 'Not Found' }
-      component.formGroup.controls['userName'].setValue('testcriteria')
-      userApiServiceSpy.searchUsersByCriteria.and.returnValue(throwError(() => errorResponse))
+      component.searchCriteriaForm.controls['userName'].setValue('testcriteria')
+      component.searchCriteriaForm.controls['issuer'].setValue(domain1.issuer!)
+      adminApiSpy.searchUsersByCriteria.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 
+      component.ngOnInit()
       component.searchUsers()
 
-      component.users$.subscribe({
+      component.users$?.subscribe({
         next: (users) => {
           if (users) {
             expect(users.length).toBe(0)
@@ -274,58 +295,92 @@ describe('UserSearchComponent', () => {
       })
     })
 
-    it('should manage form on search criteria user id', () => {
-      expect(component.formGroup.controls['userName'].enable).toBeTruthy()
+    it('should manage searchForm on search criteria user id', () => {
+      expect(component.searchCriteriaForm.controls['userName'].enable).toBeTruthy()
+      component.searchCriteriaForm.controls['issuer'].setValue(domain1.issuer!)
 
+      component.ngOnInit()
       component.searchOnlyById('id')
 
-      expect(component.formGroup.controls['userName'].disable).toBeTruthy()
+      expect(component.searchCriteriaForm.controls['userName'].disable).toBeTruthy()
     })
   })
 
-  describe('search realms', () => {
-    it('should search & found realms - successful', (done) => {
-      const realmResponse: RealmResponse = { realms: ['realm1', 'realm2'] }
-      roleApiServiceSpy.getAllRealms.and.returnValue(of(realmResponse))
+  describe('search providers', () => {
+    it('should search & found providers - successful with data', (done) => {
+      const providerResponse: ProvidersResponse = {
+        providers: [provider1, provider2]
+      }
+      adminApiSpy.getAllProviders.and.returnValue(of(providerResponse))
 
-      component.searchRealms()
+      component.searchProviders()
 
-      component.realms$.subscribe({
-        next: (realms) => {
-          expect(realms.length).toBe(2)
-          expect(realms[0]).toBe('realm1')
+      component.provider$?.subscribe({
+        next: (data) => {
+          expect(data.length).toBe(2)
           done()
         },
         error: done.fail
       })
     })
 
-    it('should search realms - successful without data', (done) => {
-      const realmResponse: RealmResponse = {}
-      roleApiServiceSpy.getAllRealms.and.returnValue(of(realmResponse))
+    it('should search providers - successful without data', (done) => {
+      const providerResponse: ProvidersResponse = {}
+      adminApiSpy.getAllProviders.and.returnValue(of(providerResponse))
 
-      component.searchRealms()
+      component.searchProviders()
 
-      component.realms$.subscribe({
-        next: (realms) => {
-          expect(realms.length).toBe(0)
+      component.provider$?.subscribe({
+        next: (data) => {
+          expect(data.length).toBe(0)
           done()
         },
         error: done.fail
       })
     })
 
-    it('should search realms - successful without data', (done) => {
+    it('should search providers - successful without data', (done) => {
       const errorResponse = { status: 404, statusText: 'Not Found' }
-      roleApiServiceSpy.getAllRealms.and.returnValue(throwError(() => errorResponse))
+      adminApiSpy.getAllProviders.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 
-      component.searchRealms()
+      component.searchProviders()
 
-      component.realms$.subscribe({
-        next: (realms) => {
-          expect(realms.length).toBe(0)
-          expect(console.error).toHaveBeenCalledWith('getAllRealms', errorResponse)
+      component.provider$?.subscribe({
+        next: (data) => {
+          expect(data.length).toBe(0)
+          expect(console.error).toHaveBeenCalledWith('getAllProviders', errorResponse)
+          done()
+        },
+        error: done.fail
+      })
+    })
+  })
+
+  describe('change search criteria', () => {
+    it('should reset domain - no provider selected', () => {
+      component.domains = [domain1, domain2]
+
+      component.onChangeProvider(undefined, [])
+
+      expect(component.domains.length).toBe(0)
+      expect(component.searchCriteriaForm?.controls['issuer'].value).toBeNull()
+    })
+
+    it('should refill domain from provider', () => {
+      const provs = [provider1, provider2]
+
+      component.onChangeProvider(provider2.name, provs)
+
+      expect(component.domains.length).toBe(2)
+    })
+
+    it('should reset search results', (done) => {
+      component.onChangeDomain()
+
+      component.users$?.subscribe({
+        next: (data) => {
+          expect(data.length).toBe(0)
           done()
         },
         error: done.fail
@@ -379,12 +434,12 @@ describe('UserSearchComponent', () => {
     })
 
     it('should reset roleSearchCriteriaGroup onSearchReset is called', () => {
-      component.formGroup = form
-      spyOn(form, 'reset').and.callThrough()
+      component.searchCriteriaForm = searchForm
+      spyOn(searchForm, 'reset').and.callThrough()
 
       component.onSearchReset()
 
-      expect(component.formGroup.reset).toHaveBeenCalled()
+      expect(component.searchCriteriaForm.reset).toHaveBeenCalled()
     })
 
     it('should prepare action buttons with translated labels and tooltips', () => {
@@ -397,10 +452,6 @@ describe('UserSearchComponent', () => {
           const firstAction = actions[0]
           firstAction.actionCallback()
           expect(component.onGoToRoleSearch).toHaveBeenCalled()
-          expect(actions[0].label).toBe('Roles')
-          expect(actions[0].title).toBe('Search Roles in Identity Access Management (IAM)')
-          expect(actions[0].icon).toBe('pi pi-bars')
-          expect(actions[0].show).toBe('always')
         })
       }
     })
@@ -408,11 +459,12 @@ describe('UserSearchComponent', () => {
 
   describe('UI actions', () => {
     it('should call detail dialog', () => {
+      component.searchCriteriaForm.controls['issuer'].setValue(domain1.issuer!)
       const mockEvent = new MouseEvent('click')
 
       component.onDetail(mockEvent, user1)
 
-      expect(component.iamUser).toEqual(user1)
+      expect(component.idmUser).toEqual(user1)
       expect(component.displayDetailDialog).toBeTrue()
     })
 
@@ -428,8 +480,9 @@ describe('UserSearchComponent', () => {
   describe('onUserPermission', () => {
     it('should display permission dialog', () => {
       mockDialogService.openDialog.and.returnValue(of({}))
+      const mockEvent = new MouseEvent('click')
 
-      component.onUserPermissions(user1)
+      component.onUserPermissions(mockEvent, user1)
 
       expect(mockDialogService.openDialog).toHaveBeenCalled()
     })

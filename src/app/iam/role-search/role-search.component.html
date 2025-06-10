@@ -7,7 +7,55 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div id="iam_role_search_criteria" [formGroup]="roleSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3">
+    <div id="iam_role_search_criteria" [formGroup]="searchCriteriaForm" class="flex flex-wrap gap-4 row-gap-3">
+      <ng-container *ngIf="provider$ | async as provider">
+        <span class="p-float-label">
+          <p-dropdown
+            id="iam_role_search_criteria_provider"
+            styleClass="w-full input-field-correction"
+            formControlName="provider"
+            appendTo="body"
+            [options]="provider"
+            (onChange)="onChangeProvider($event.value, provider)"
+            dataKey="name"
+            optionValue="name"
+            optionLabel="displayName"
+            [autoDisplayFirst]="true"
+            [showClear]="true"
+            [ariaLabel]="'DIALOG.SEARCH.CRITERIA.PROVIDER' | translate"
+            [pTooltip]="'DIALOG.SEARCH.CRITERIA.TOOLTIPS.PROVIDER' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+          </p-dropdown>
+          <label class="ocx-required-label" for="iam_role_search_criteria_provider">
+            {{ 'DIALOG.SEARCH.CRITERIA.PROVIDER' | translate }}
+          </label>
+        </span>
+        <span class="p-float-label">
+          <p-dropdown
+            id="iam_role_search_criteria_issuer"
+            styleClass="w-full input-field-correction"
+            formControlName="issuer"
+            appendTo="body"
+            [options]="domains"
+            (onChange)="onChangeDomain()"
+            dataKey="name"
+            optionValue="issuer"
+            optionLabel="displayName"
+            [showClear]="true"
+            [emptyMessage]="'DIALOG.SEARCH.CRITERIA.NO_PROVIDER' | translate"
+            [ariaLabel]="'DIALOG.SEARCH.CRITERIA.DOMAIN' | translate"
+            [pTooltip]="'DIALOG.SEARCH.CRITERIA.TOOLTIPS.DOMAIN' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+          </p-dropdown>
+          <label class="ocx-required-label" for="iam_role_search_criteria_issuer">
+            {{ 'DIALOG.SEARCH.CRITERIA.DOMAIN' | translate }}
+          </label>
+        </span>
+      </ng-container>
       <span class="p-float-label">
         <input
           id="iam_role_search_criteria_role_name"
@@ -25,10 +73,10 @@
     </div>
   </ocx-search-header>
 
-  <ocx-page-content *ngIf="(roles$ | async)?.sort() as roles">
+  <ocx-page-content>
     <p-message
       *ngIf="loading"
-      id="iam_user_search_loading"
+      id="iam_role_search_loading"
       severity="info"
       styleClass="m-3"
       [text]="'ACTIONS.LOADING' | translate"
@@ -40,8 +88,15 @@
       styleClass="m-3"
       [text]="exceptionKey | translate"
     ></p-message>
+    <p-message
+      *ngIf="!loading && !exceptionKey && searchCriteriaForm.invalid"
+      id="iam_role_search_hint_select_provider_first"
+      severity="info"
+      styleClass="m-3"
+      [text]="'DIALOG.SEARCH.CRITERIA.SELECT_ISSUER_FIRST' | translate"
+    ></p-message>
     <p-dataView
-      *ngIf="!(exceptionKey || loading)"
+      *ngIf="(roles$ | async)?.sort() as roles"
       id="iam_role_search_dataview"
       [value]="roles"
       [layout]="viewMode"

@@ -21,31 +21,24 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { ProblemDetailResponse } from '../model/problemDetailResponse';
 // @ts-ignore
-import { RolePageResult } from '../model/rolePageResult';
+import { ProvidersResponse } from '../model/providersResponse';
 // @ts-ignore
-import { RoleSearchCriteria } from '../model/roleSearchCriteria';
-// @ts-ignore
-import { UserRolesResponse } from '../model/userRolesResponse';
+import { UserResetPasswordRequest } from '../model/userResetPasswordRequest';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 
 
-export interface GetUserRolesRequestParams {
-    /** Keycloak userId */
-    userId: string;
-}
-
-export interface SearchRolesByCriteriaRequestParams {
-    roleSearchCriteria: RoleSearchCriteria;
+export interface ResetPasswordRequestParams {
+    userResetPasswordRequest: UserResetPasswordRequest;
 }
 
 
 @Injectable({
   providedIn: 'any'
 })
-export class RolesInternalAPIService {
+export class UserInternalAPIService {
 
     protected basePath = 'http://onecx-iam-bff:8080';
     public defaultHeaders = new HttpHeaders();
@@ -107,19 +100,14 @@ export class RolesInternalAPIService {
     }
 
     /**
-     * Get roles of user by id
-     * @param requestParameters
+     * Get user provider
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getUserRoles(requestParameters: GetUserRolesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<UserRolesResponse>;
-    public getUserRoles(requestParameters: GetUserRolesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<UserRolesResponse>>;
-    public getUserRoles(requestParameters: GetUserRolesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<UserRolesResponse>>;
-    public getUserRoles(requestParameters: GetUserRolesRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
-        const userId = requestParameters.userId;
-        if (userId === null || userId === undefined) {
-            throw new Error('Required parameter userId was null or undefined when calling getUserRoles.');
-        }
+    public getUserProvider(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ProvidersResponse>;
+    public getUserProvider(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ProvidersResponse>>;
+    public getUserProvider(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ProvidersResponse>>;
+    public getUserProvider(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -152,8 +140,8 @@ export class RolesInternalAPIService {
             }
         }
 
-        let localVarPath = `/roles/${this.configuration.encodeParam({name: "userId", value: userId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<UserRolesResponse>('get', `${this.configuration.basePath}${localVarPath}`,
+        let localVarPath = `/me/provider`;
+        return this.httpClient.request<ProvidersResponse>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -166,18 +154,18 @@ export class RolesInternalAPIService {
     }
 
     /**
-     * Search roles by criteria
+     * Reset user password
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchRolesByCriteria(requestParameters: SearchRolesByCriteriaRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<RolePageResult>;
-    public searchRolesByCriteria(requestParameters: SearchRolesByCriteriaRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<RolePageResult>>;
-    public searchRolesByCriteria(requestParameters: SearchRolesByCriteriaRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<RolePageResult>>;
-    public searchRolesByCriteria(requestParameters: SearchRolesByCriteriaRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
-        const roleSearchCriteria = requestParameters.roleSearchCriteria;
-        if (roleSearchCriteria === null || roleSearchCriteria === undefined) {
-            throw new Error('Required parameter roleSearchCriteria was null or undefined when calling searchRolesByCriteria.');
+    public resetPassword(requestParameters: ResetPasswordRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public resetPassword(requestParameters: ResetPasswordRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public resetPassword(requestParameters: ResetPasswordRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public resetPassword(requestParameters: ResetPasswordRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+        const userResetPasswordRequest = requestParameters.userResetPasswordRequest;
+        if (userResetPasswordRequest === null || userResetPasswordRequest === undefined) {
+            throw new Error('Required parameter userResetPasswordRequest was null or undefined when calling resetPassword.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -220,11 +208,11 @@ export class RolesInternalAPIService {
             }
         }
 
-        let localVarPath = `/roles/search`;
-        return this.httpClient.request<RolePageResult>('post', `${this.configuration.basePath}${localVarPath}`,
+        let localVarPath = `/me/password`;
+        return this.httpClient.request<any>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: roleSearchCriteria,
+                body: userResetPasswordRequest,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
