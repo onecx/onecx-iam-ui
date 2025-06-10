@@ -55,6 +55,7 @@ export class UserSearchComponent implements OnInit {
   public actions$: Observable<Action[]> | undefined
   public users$: Observable<User[]> | undefined
   public provider$: Observable<Provider[]> | undefined
+  public provider: Provider[] = []
   public idmUser: User | undefined = undefined
   public idmUserIssuer: string | undefined = undefined
   public permissionsSlotName = 'onecx-iam-user-permissions'
@@ -98,9 +99,9 @@ export class UserSearchComponent implements OnInit {
     this.exceptionKey = undefined
     this.provider$ = this.iamAdminApi.getAllProviders().pipe(
       map((response: ProvidersResponse) => {
-        const provs: Provider[] = []
-        response.providers?.forEach((p) => provs.push({ ...p, displayName: p.displayName ?? p.name }))
-        return provs.sort(sortItemsByDisplayName)
+        this.provider = []
+        response.providers?.forEach((p) => this.provider.push({ ...p, displayName: p.displayName ?? p.name }))
+        return this.provider.sort(sortItemsByDisplayName)
       }),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PROVIDER'
@@ -251,7 +252,9 @@ export class UserSearchComponent implements OnInit {
     ev.stopPropagation()
     if (this.userViewPermission) {
       this.idmUser = user
-      this.idmUserIssuer = this.domains.find((d) => (d.name = user.domain))?.issuer
+      this.idmUserIssuer = undefined
+      if (this.searchCriteriaForm?.controls['issuer'].value !== null)
+        this.idmUserIssuer = this.searchCriteriaForm?.controls['issuer'].value
       this.displayDetailDialog = true
     }
   }

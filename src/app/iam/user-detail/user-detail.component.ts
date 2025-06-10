@@ -34,7 +34,7 @@ export class UserDetailComponent implements OnChanges {
   }
 
   public ngOnChanges() {
-    if (!this.displayDialog) return
+    if (!this.displayDialog || !this.issuer || !this.idmUser) return
     this.prepareQuery()
   }
 
