@@ -5,7 +5,7 @@ import { BehaviorSubject, of, throwError } from 'rxjs'
 
 import { UserService } from '@onecx/portal-integration-angular'
 
-import { Role, RolesInternalAPIService, User, UserRolesResponse } from 'src/app/shared/generated'
+import { AdminInternalAPIService, Role, User, UserRolesResponse } from 'src/app/shared/generated'
 import { UserDetailComponent } from './user-detail.component'
 
 const user1: User = {
@@ -28,7 +28,7 @@ describe('UserDetailComponent', () => {
   let mockUserService: any
 
   const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
-  const apiRoleServiceSpy = {
+  const adminApiSpy = {
     getUserRoles: jasmine.createSpy('getUserRoles').and.returnValue(of({}))
   }
 
@@ -43,7 +43,7 @@ describe('UserDetailComponent', () => {
         }).withDefaultLanguage('en')
       ],
       providers: [
-        { provide: RolesInternalAPIService, useValue: apiRoleServiceSpy },
+        { provide: AdminInternalAPIService, useValue: adminApiSpy },
         { provide: UserService, useValue: mockUserService }
       ],
       schemas: [NO_ERRORS_SCHEMA]
@@ -62,8 +62,10 @@ describe('UserDetailComponent', () => {
   })
 
   afterEach(() => {
-    apiRoleServiceSpy.getUserRoles.calls.reset()
+    adminApiSpy.getUserRoles.calls.reset()
     translateServiceSpy.get.calls.reset()
+    component.issuer = undefined
+    component.idmUser = undefined
   })
 
   it('should create', () => {
@@ -84,10 +86,19 @@ describe('UserDetailComponent', () => {
       component.ngOnChanges()
     })
 
-    it('should call get user roles', () => {
+    it('should ignore any action if no issuer', () => {
       component.displayDialog = true
       component.idmUser = user1
-      apiRoleServiceSpy.getUserRoles.and.returnValue(of(urResponse))
+      component.issuer = undefined
+
+      component.ngOnChanges()
+    })
+
+    it('should call get user roles', (done) => {
+      component.displayDialog = true
+      component.idmUser = user1
+      component.issuer = 'issuer'
+      adminApiSpy.getUserRoles.and.returnValue(of(urResponse))
 
       component.ngOnChanges()
 
@@ -95,25 +106,34 @@ describe('UserDetailComponent', () => {
         expect(roles.length).toBe(2)
         expect(roles[0]).toEqual(roles1[0].name!)
         expect(roles[1]).toEqual(roles1[1].name!)
-      })
-    })
-
-    it('should call get empty role array if user does not have role', () => {
-      component.displayDialog = true
-      component.idmUser = user1
-      apiRoleServiceSpy.getUserRoles.and.returnValue(of({}))
-
-      component.ngOnChanges()
-
-      component.userRoles$.subscribe((roles) => {
-        expect(roles.length).toBe(0)
+        done()
       })
     })
 
     it('should call get empty role array if user does not have role', (done) => {
       component.displayDialog = true
       component.idmUser = user1
-      apiRoleServiceSpy.getUserRoles.and.returnValue(throwError(() => errorResponse))
+      component.issuer = 'issuer'
+      adminApiSpy.getUserRoles.and.returnValue(of({}))
+
+      component.ngOnChanges()
+
+      component.userRoles$.subscribe({
+        next: (roles) => {
+          if (roles) {
+            expect(roles.length).toBe(0)
+          }
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should call get empty role array if user does not have role', (done) => {
+      component.displayDialog = true
+      component.idmUser = user1
+      component.issuer = 'issuer'
+      adminApiSpy.getUserRoles.and.returnValue(throwError(() => errorResponse))
       const errorResponse = { status: 404, statusText: 'Not Found' }
       spyOn(console, 'error')
 

@@ -123,6 +123,7 @@ export class UserSearchComponent implements OnInit {
         })
       })
     this.domains.sort(sortItemsByDisplayName)
+    this.users$ = of([])
   }
   public onChangeDomain() {
     this.users$ = of([])
@@ -141,7 +142,7 @@ export class UserSearchComponent implements OnInit {
       pageSize: 1000
     }
     if (!usc.issuer) {
-      this.exceptionKey = 'EXCEPTIONS.MISSING_ISSUER.USER'
+      this.exceptionKey = 'EXCEPTIONS.MISSING_ISSUER'
       return
     }
     // shrink criteria if user id is used
@@ -250,7 +251,6 @@ export class UserSearchComponent implements OnInit {
   }
 
   public onDetail(ev: Event, user: User): void {
-    if (!user) return
     ev.stopPropagation()
     if (this.userViewPermission) {
       this.idmUser = user
@@ -265,7 +265,6 @@ export class UserSearchComponent implements OnInit {
   }
 
   public onUserPermissions(ev: Event, user: User): void {
-    if (!user) return
     ev.stopPropagation()
     this.portalDialogService
       .openDialog(

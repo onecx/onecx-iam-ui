@@ -199,10 +199,7 @@
     }
   },
   "EXCEPTIONS": {
-    "MISSING_ISSUER": {
-      "USER": "Kein Issuer ausgewählt. Suche nicht möglich.",
-      "ROLES": "Kein Issuer ausgewählt. Suche nicht möglich."
-    },
+    "MISSING_ISSUER": "Kein Issuer ausgewählt. Suche nicht möglich.",
     "HTTP_STATUS_0": {
       "USER": "Unbekanntes Problem beim Abrufen von Benutzer-Daten - Bitte versuchen sie es noch einmal.",
       "PROVIDER": "Unbekanntes Problem beim Abrufen von Provider-Daten - Bitte versuchen sie es noch einmal.",

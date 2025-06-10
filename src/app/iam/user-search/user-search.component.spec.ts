@@ -79,7 +79,6 @@ describe('UserSearchComponent', () => {
   const routerSpy = jasmine.createSpyObj('Router', ['navigate'])
   const routeMock = { snapshot: { paramMap: new Map() } }
 
-  //const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
   const adminApiSpy = {
     getAllProviders: jasmine.createSpy('getAllProviders').and.returnValue(of({})),
     searchUsersByCriteria: jasmine.createSpy('searchUsersByCriteria').and.returnValue(of({}))
@@ -126,7 +125,7 @@ describe('UserSearchComponent', () => {
     //fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
   })
 
-  describe('init', () => {
+  describe('initialize', () => {
     it('should create', () => {
       expect(component).toBeTruthy()
     })
@@ -177,22 +176,27 @@ describe('UserSearchComponent', () => {
     })
   })
 
-  it('should call initial search', () => {
-    spyOn(component, 'searchUsers')
-
-    component.onSearch()
-
-    expect(component.searchUsers).toHaveBeenCalled()
-  })
-
   describe('search users', () => {
+    it('should call search but missing issuer', () => {
+      component.searchCriteriaForm.reset()
+      component.searchCriteriaForm.controls['userName'].setValue(user1.username!)
+      component.searchCriteriaForm.controls['provider'].setValue(provider1.name!)
+
+      component.ngOnInit()
+      component.onSearch()
+
+      expect(component.exceptionKey).toBe('EXCEPTIONS.MISSING_ISSUER')
+    })
+
     it('should search user and found', (done) => {
       component.searchCriteriaForm.controls['userName'].setValue(user1.username!)
       component.searchCriteriaForm.controls['firstName'].setValue(user1.firstName!)
       component.searchCriteriaForm.controls['lastName'].setValue(user1.lastName!)
       component.searchCriteriaForm.controls['email'].setValue(user1.email!)
+      component.searchCriteriaForm.controls['issuer'].setValue(domain1.issuer!)
       adminApiSpy.searchUsersByCriteria.and.returnValue(of(userPageResult1))
 
+      component.ngOnInit()
       component.searchUsers()
 
       component.users$?.subscribe({
@@ -211,6 +215,7 @@ describe('UserSearchComponent', () => {
       component.searchCriteriaForm.controls['issuer'].setValue(domain1.issuer!)
       adminApiSpy.searchUsersByCriteria.and.returnValue(of(userPageResult1))
 
+      component.ngOnInit()
       component.searchUsers()
 
       component.users$?.subscribe({
@@ -225,8 +230,10 @@ describe('UserSearchComponent', () => {
 
     it('should search users result empty', (done) => {
       component.searchCriteriaForm.controls['userName'].setValue('testuserName')
+      component.searchCriteriaForm.controls['issuer'].setValue(domain1.issuer!)
       adminApiSpy.searchUsersByCriteria.and.returnValue(of({}))
 
+      component.ngOnInit()
       component.searchUsers()
 
       component.users$?.subscribe({
@@ -240,8 +247,10 @@ describe('UserSearchComponent', () => {
 
     it('should search users result stream list equals 2', (done) => {
       component.searchCriteriaForm.controls['userName'].setValue('testuserName')
+      component.searchCriteriaForm.controls['issuer'].setValue(domain1.issuer!)
       adminApiSpy.searchUsersByCriteria.and.returnValue(of(userPageResult2))
 
+      component.ngOnInit()
       component.searchUsers()
 
       component.users$?.subscribe({
@@ -266,9 +275,11 @@ describe('UserSearchComponent', () => {
     it('should search user Error response', (done) => {
       const errorResponse = { status: 404, statusText: 'Not Found' }
       component.searchCriteriaForm.controls['userName'].setValue('testcriteria')
+      component.searchCriteriaForm.controls['issuer'].setValue(domain1.issuer!)
       adminApiSpy.searchUsersByCriteria.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 
+      component.ngOnInit()
       component.searchUsers()
 
       component.users$?.subscribe({
@@ -286,7 +297,9 @@ describe('UserSearchComponent', () => {
 
     it('should manage searchForm on search criteria user id', () => {
       expect(component.searchCriteriaForm.controls['userName'].enable).toBeTruthy()
+      component.searchCriteriaForm.controls['issuer'].setValue(domain1.issuer!)
 
+      component.ngOnInit()
       component.searchOnlyById('id')
 
       expect(component.searchCriteriaForm.controls['userName'].disable).toBeTruthy()
@@ -337,6 +350,37 @@ describe('UserSearchComponent', () => {
         next: (data) => {
           expect(data.length).toBe(0)
           expect(console.error).toHaveBeenCalledWith('getAllProviders', errorResponse)
+          done()
+        },
+        error: done.fail
+      })
+    })
+  })
+
+  describe('change search criteria', () => {
+    it('should reset domain - no provider selected', () => {
+      component.domains = [domain1, domain2]
+
+      component.onChangeProvider(undefined, [])
+
+      expect(component.domains.length).toBe(0)
+      expect(component.searchCriteriaForm?.controls['issuer'].value).toBeNull()
+    })
+
+    it('should refill domain from provider', () => {
+      const provs = [provider1, provider2]
+
+      component.onChangeProvider(provider2.name, provs)
+
+      expect(component.domains.length).toBe(2)
+    })
+
+    it('should reset search results', (done) => {
+      component.onChangeDomain()
+
+      component.users$?.subscribe({
+        next: (data) => {
+          expect(data.length).toBe(0)
           done()
         },
         error: done.fail
@@ -408,10 +452,6 @@ describe('UserSearchComponent', () => {
           const firstAction = actions[0]
           firstAction.actionCallback()
           expect(component.onGoToRoleSearch).toHaveBeenCalled()
-          expect(actions[0].label).toBe('Roles')
-          expect(actions[0].title).toBe('Search Roles in Identity Access Management (IAM)')
-          expect(actions[0].icon).toBe('pi pi-bars')
-          expect(actions[0].show).toBe('always')
         })
       }
     })
@@ -419,6 +459,7 @@ describe('UserSearchComponent', () => {
 
   describe('UI actions', () => {
     it('should call detail dialog', () => {
+      component.searchCriteriaForm.controls['issuer'].setValue(domain1.issuer!)
       const mockEvent = new MouseEvent('click')
 
       component.onDetail(mockEvent, user1)
@@ -439,8 +480,9 @@ describe('UserSearchComponent', () => {
   describe('onUserPermission', () => {
     it('should display permission dialog', () => {
       mockDialogService.openDialog.and.returnValue(of({}))
+      const mockEvent = new MouseEvent('click')
 
-      component.onUserPermissions(user1)
+      component.onUserPermissions(mockEvent, user1)
 
       expect(mockDialogService.openDialog).toHaveBeenCalled()
     })

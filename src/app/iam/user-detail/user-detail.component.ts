@@ -34,7 +34,7 @@ export class UserDetailComponent implements OnChanges {
   }
 
   public ngOnChanges() {
-    if (!this.displayDialog || !this.issuer || !this.idmUser) return
+    if (!this.displayDialog) return
     this.prepareQuery()
   }
 
@@ -42,12 +42,12 @@ export class UserDetailComponent implements OnChanges {
    * READING data
    */
   private prepareQuery(): void {
-    if (!this.idmUser?.id) return
+    if (!this.idmUser?.id || !this.issuer) return
     this.userAttributes = JSON.stringify(this.idmUser.attributes, undefined, 2)
     this.loading = true
     this.exceptionKey = undefined
     this.userRoles$ = this.adminApi
-      .getUserRoles({ userId: this.idmUser.id, searchUserRolesRequest: { issuer: this.issuer ?? '' } })
+      .getUserRoles({ userId: this.idmUser.id, searchUserRolesRequest: { issuer: this.issuer } })
       .pipe(
         map((response: UserRolesResponse) => {
           const roles: Role[] = response.roles ?? []

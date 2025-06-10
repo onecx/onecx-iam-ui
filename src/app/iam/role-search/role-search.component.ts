@@ -107,15 +107,21 @@ export class RoleSearchComponent implements OnInit {
   }
 
   public searchRoles() {
-    if (!this.searchCriteriaForm.controls['issuer'].value) return
     this.loading = true
     this.exceptionKey = undefined
-    const criteria: RoleSearchCriteria = {
-      name: this.searchCriteriaForm.controls['name'].value ?? undefined,
-      issuer: this.searchCriteriaForm.controls['issuer'].value,
+    // create criteria but exclude nulls and non-existings
+    const rsc: RoleSearchCriteria = {
+      issuer: '',
+      ...Object.fromEntries(
+        Object.entries(this.searchCriteriaForm.value).filter(([n, v]) => n !== 'provider' && v !== null)
+      ),
       pageSize: 1000
     }
-    this.roles$ = this.iamAdminApi.searchRolesByCriteria({ roleSearchCriteria: criteria }).pipe(
+    if (!rsc.issuer) {
+      this.exceptionKey = 'EXCEPTIONS.MISSING_ISSUER'
+      return
+    }
+    this.roles$ = this.iamAdminApi.searchRolesByCriteria({ roleSearchCriteria: rsc }).pipe(
       map((response: RolePageResult) => response.stream ?? []),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.ROLES'

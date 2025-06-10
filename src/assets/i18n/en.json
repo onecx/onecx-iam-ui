@@ -199,10 +199,7 @@
     }
   },
   "EXCEPTIONS": {
-    "MISSING_ISSUER": {
-      "USER": "No issuer selected. Search not possible.",
-      "ROLES": "No issuer selected. Search not possible."
-    },
+    "MISSING_ISSUER": "No issuer selected. Search not possible.",
     "HTTP_STATUS_0": {
       "USER": "Unknown problem retrieving User data - please try again.",
       "PROVIDER": "Unknown problem retrieving Realm data - please try again.",
