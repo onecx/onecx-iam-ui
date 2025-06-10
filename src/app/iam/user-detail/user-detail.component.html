@@ -248,16 +248,16 @@
           <input
             pInputText
             type="text"
-            id="iam_detail_field_creation_date"
+            id="iam_detail_field_provider"
             class="w-full pt-3 pb-2 text-responsive"
             [disabled]="true"
-            [value]="idmUser?.createdTimestamp | date: datetimeFormat : ''"
-            [attr.aria-label]="'INTERNAL.CREATION_DATE' | translate"
-            [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
+            [value]="idmUser?.domain"
+            [attr.aria-label]="'USER.PROVIDER' | translate"
+            [pTooltip]="'USER.TOOLTIPS.PROVIDER' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           />
-          <label for="iam_detail_field_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
+          <label for="iam_detail_field_provider">{{ 'USER.PROVIDER' | translate }}</label>
         </span>
         <span class="p-float-label">
           <input
@@ -288,6 +288,21 @@
             tooltipEvent="hover"
           />
           <label for="iam_detail_field_origin">{{ 'USER.ORIGIN' | translate }}</label>
+        </span>
+        <span class="p-float-label">
+          <input
+            pInputText
+            type="text"
+            id="iam_detail_field_creation_date"
+            class="w-full pt-3 pb-2 text-responsive"
+            [disabled]="true"
+            [value]="idmUser?.createdTimestamp | date: datetimeFormat : ''"
+            [attr.aria-label]="'INTERNAL.CREATION_DATE' | translate"
+            [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          />
+          <label for="iam_detail_field_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
         </span>
       </div>
     </p-tabPanel>

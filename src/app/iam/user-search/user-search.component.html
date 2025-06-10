@@ -22,14 +22,14 @@
             optionLabel="displayName"
             [autoDisplayFirst]="true"
             [showClear]="true"
-            [ariaLabel]="'USER.PROVIDER' | translate"
-            [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.PROVIDER' | translate"
+            [ariaLabel]="'DIALOG.SEARCH.CRITERIA.PROVIDER' | translate"
+            [pTooltip]="'DIALOG.SEARCH.CRITERIA.TOOLTIPS.PROVIDER' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           >
           </p-dropdown>
           <label class="ocx-required-label" for="iam_user_search_criteria_provider">
-            {{ 'USER.PROVIDER' | translate }}
+            {{ 'DIALOG.SEARCH.CRITERIA.PROVIDER' | translate }}
           </label>
         </span>
         <span class="p-float-label">
@@ -43,15 +43,15 @@
             optionValue="issuer"
             optionLabel="displayName"
             [showClear]="true"
-            [emptyMessage]="'DIALOG.SEARCH.USER.CRITERIA.NO_PROVIDER' | translate"
-            [ariaLabel]="'USER.DOMAIN' | translate"
-            [pTooltip]="'DIALOG.SEARCH.USER.CRITERIA.DOMAIN' | translate"
+            [emptyMessage]="'DIALOG.SEARCH.CRITERIA.NO_PROVIDER' | translate"
+            [ariaLabel]="'DIALOG.SEARCH.CRITERIA.DOMAIN' | translate"
+            [pTooltip]="'DIALOG.SEARCH.CRITERIA.TOOLTIPS.DOMAIN' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           >
           </p-dropdown>
           <label class="ocx-required-label" for="iam_user_search_criteria_issuer">
-            {{ 'USER.DOMAIN' | translate }}
+            {{ 'DIALOG.SEARCH.CRITERIA.DOMAIN' | translate }}
           </label>
         </span>
       </ng-container>
@@ -150,7 +150,7 @@
       id="iam_user_search_hint_select_provider_first"
       severity="info"
       styleClass="m-3"
-      [text]="'DIALOG.SEARCH.SELECT_ISSUER_FIRST' | translate"
+      [text]="'DIALOG.SEARCH.CRITERIA.SELECT_ISSUER_FIRST' | translate"
     ></p-message>
     <p-dataView
       *ngIf="(users$ | async)?.sort() as users"

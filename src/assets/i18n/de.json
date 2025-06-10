@@ -83,7 +83,16 @@
   },
   "DIALOG": {
     "SEARCH": {
-      "SELECT_ISSUER_FIRST": "Um die Suche starten zu können bitte zuerst IDM und Domain wählen.",
+      "CRITERIA": {
+        "DOMAIN": "Domain",
+        "PROVIDER": "IDM",
+        "NO_PROVIDER": "Zuerst IDM wählen",
+        "SELECT_ISSUER_FIRST": "Um die Suche starten zu können bitte zuerst IDM und Domain wählen.",
+        "TOOLTIPS": {
+          "PROVIDER": "IDM Provider",
+          "DOMAIN": "Domain - Bereich im IDM in dem Benutzer, Rollen etc. verwaltet werden (Keycloak = Realm)"
+        }
+      },
       "ROLE": {
         "HEADER": "IDM Rollen",
         "SUBHEADER": "Rollen im Identity Management (IDM)",
@@ -95,16 +104,12 @@
         "SUBHEADER": "Benutzer im Identity Management (IDM) suchen und verwalten",
         "LABEL": "Benutzer",
         "TOOLTIP": "Benutzer im Identity Management (IDM)",
-        "PROVIDER": "IDM",
         "CRITERIA": {
           "ID": "Benutzer ID - Wenn benutzt, dann werden alle anderen Suchkriterien ausser IDM und Domain ignoriert",
           "USERNAME": "Benutzername, Suche nach Namensteil unterstützt",
           "LASTNAME": "Nachname, Suche nach Namensteil unterstützt",
           "FIRSTNAME": "Vorname, Suche nach Namensteil unterstützt",
-          "EMAIL": "E-Mail Adresse, Suche nach Adressteil unterstützt",
-          "PROVIDER": "IDM Provider",
-          "NO_PROVIDER": "Zuerst IDM wählen",
-          "DOMAIN": "Domain - Bereich im IDM in dem Benutzer, Rollen etc. verwaltet werden (Keycloak = Realm)"
+          "EMAIL": "E-Mail Adresse, Suche nach Adressteil unterstützt"
         }
       }
     },
