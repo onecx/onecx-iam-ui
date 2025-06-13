@@ -85,12 +85,12 @@
     "SEARCH": {
       "CRITERIA": {
         "DOMAIN": "Domain",
-        "PROVIDER": "IDM",
-        "NO_PROVIDER": "Select Provider first",
-        "SELECT_ISSUER_FIRST": "To start the search please first select IDM and domain.",
+        "PROVIDER": "IDM Provider",
+        "NO_PROVIDER": "Select IDM Provider first",
+        "SELECT_ISSUER_FIRST": "To start the search please first select IDM Provider and Domain.",
         "TOOLTIPS": {
           "PROVIDER": "IDM Provider",
-          "DOMAIN": "IDM Domain - space within IDM where users, roles etc. are manage (Keycloak = Realm)"
+          "DOMAIN": "IDM Domain - space within IDM where users, roles etc. are managed (Keycloak = Realm)"
         }
       },
       "ROLE": {
