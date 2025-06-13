@@ -85,9 +85,9 @@
     "SEARCH": {
       "CRITERIA": {
         "DOMAIN": "Domain",
-        "PROVIDER": "IDM",
-        "NO_PROVIDER": "Zuerst IDM wählen",
-        "SELECT_ISSUER_FIRST": "Um die Suche starten zu können bitte zuerst IDM und Domain wählen.",
+        "PROVIDER": "IDM Provider",
+        "NO_PROVIDER": "Zuerst IDM Provider wählen",
+        "SELECT_ISSUER_FIRST": "Um die Suche starten zu können bitte zuerst IDM Provider und Domain wählen.",
         "TOOLTIPS": {
           "PROVIDER": "IDM Provider",
           "DOMAIN": "Domain - Bereich im IDM in dem Benutzer, Rollen etc. verwaltet werden (Keycloak = Realm)"
@@ -105,7 +105,7 @@
         "LABEL": "Benutzer",
         "TOOLTIP": "Benutzer im Identity Management (IDM)",
         "CRITERIA": {
-          "ID": "Benutzer ID - Wenn benutzt, dann werden alle anderen Suchkriterien ausser IDM und Domain ignoriert",
+          "ID": "Benutzer ID - Wenn benutzt, dann werden alle anderen Suchkriterien ausser IDM Provider und Domain ignoriert",
           "USERNAME": "Benutzername, Suche nach Namensteil unterstützt",
           "LASTNAME": "Nachname, Suche nach Namensteil unterstützt",
           "FIRSTNAME": "Vorname, Suche nach Namensteil unterstützt",
