@@ -7,6 +7,7 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, ReplaySubject, throwError } from 'rxjs'
 
 import { BASE_URL, RemoteComponentConfig } from '@onecx/angular-remote-components'
+import { UserService } from '@onecx/angular-integration-interface'
 
 import { AdminInternalAPIService, RolePageResult, UserRolesResponse } from 'src/app/shared/generated'
 import { OneCXIamUserRolesComponent } from './iam-user-roles.component'
@@ -145,6 +146,15 @@ describe('OneCXIamUserRolesComponent', () => {
   })
 
   describe('getting all roles', () => {
+    beforeEach(() => {
+      const userService = TestBed.inject(UserService)
+      const profile = {
+        organization: 'orgId',
+        issuer: 'issuer-link'
+      }
+      spyOn(userService.profile$, 'asObservable').and.returnValue(of(profile) as any)
+    })
+
     it('should get roles - successful with data', () => {
       const { component } = setUp()
       component.userId = '$$ocx-iam-roles-search-all-indicator$$'
