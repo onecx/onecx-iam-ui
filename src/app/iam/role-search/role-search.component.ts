@@ -3,8 +3,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { finalize, map, of, Observable, catchError } from 'rxjs'
-import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 import { DataView } from 'primeng/dataview'
+
+import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 
 import {
   AdminInternalAPIService,
@@ -15,7 +16,6 @@ import {
   RolePageResult,
   RoleSearchCriteria
 } from 'src/app/shared/generated'
-
 import { sortItemsByDisplayName } from 'src/app/shared/utils'
 
 export interface RoleSearchCriteriaForm {

@@ -137,8 +137,8 @@
     "FIRSTNAME": "First name",
     "EMAIL": "E-Mail",
     "ATTRIBUTES": "Attributes",
-    "DOMAIN": "Realm",
-    "PROVIDER": "Provider",
+    "DOMAIN": "IDM Domain",
+    "PROVIDER": "IDM Provider",
     "ORIGIN": "Origin",
     "TOOLTIPS": {
       "ID": "User ID, used as reference within Permission Mgmt and User Profile Mgmt",
@@ -148,7 +148,7 @@
       "EMAIL": "E-Mail address",
       "ATTRIBUTES": "Within IDM defined Attributes",
       "DOMAIN": "Area in IDM in which the user is managed (Keycloak = Realm)",
-      "PROVIDER": "IDM which managed the User",
+      "PROVIDER": "Provides basis services for User identification",
       "ORIGIN": "Additional information that can be set, for example, when importing the User."
     }
   },

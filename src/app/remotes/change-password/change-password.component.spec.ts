@@ -13,13 +13,12 @@ import { RippleModule } from 'primeng/ripple'
 import { ButtonModule } from 'primeng/button'
 
 import { BASE_URL, RemoteComponentConfig } from '@onecx/angular-remote-components'
-import {
-  IfPermissionDirective,
-  PortalDialogService,
-  PortalMessageService,
-  HAS_PERMISSION_CHECKER
-} from '@onecx/portal-integration-angular'
-import { MockUserService } from '@onecx/angular-integration-interface/mocks'
+import { PortalMessageService } from '@onecx/angular-integration-interface'
+import { IfPermissionDirective } from '@onecx/angular-accelerator'
+import { HAS_PERMISSION_CHECKER } from '@onecx/angular-utils'
+
+import { PortalDialogService } from '@onecx/portal-integration-angular'
+import { provideUserServiceMock, UserServiceMock } from '@onecx/angular-integration-interface/mocks'
 
 import { UserInternalAPIService } from 'src/app/shared/generated'
 import { OneCXChangePasswordComponent } from './change-password.component'
@@ -71,8 +70,9 @@ describe('ChangePasswordComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideUserServiceMock(),
         { provide: BASE_URL, useValue: baseUrlSubject },
-        { provide: HAS_PERMISSION_CHECKER, useClass: MockUserService }
+        { provide: HAS_PERMISSION_CHECKER, useClass: UserServiceMock }
       ]
     })
       .overrideComponent(OneCXChangePasswordComponent, {

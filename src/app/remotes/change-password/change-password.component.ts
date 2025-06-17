@@ -14,12 +14,11 @@ import {
   provideTranslateServiceForRoot,
   ocxRemoteWebcomponent
 } from '@onecx/angular-remote-components'
-import { UserService } from '@onecx/angular-integration-interface'
+import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 import {
   DialogState,
   PortalCoreModule,
   PortalDialogService,
-  PortalMessageService,
   createRemoteComponentTranslateLoader,
   providePortalDialogService
 } from '@onecx/portal-integration-angular'

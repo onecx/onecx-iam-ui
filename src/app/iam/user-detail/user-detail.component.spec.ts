@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { BehaviorSubject, of, throwError } from 'rxjs'
 
-import { UserService } from '@onecx/portal-integration-angular'
+import { UserService } from '@onecx/angular-integration-interface'
 
 import { AdminInternalAPIService, Role, User, UserRolesResponse } from 'src/app/shared/generated'
 import { UserDetailComponent } from './user-detail.component'
