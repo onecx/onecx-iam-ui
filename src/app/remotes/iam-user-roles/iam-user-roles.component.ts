@@ -13,7 +13,6 @@ import {
   ocxRemoteWebcomponent,
   provideTranslateServiceForRoot
 } from '@onecx/angular-remote-components'
-import { UserProfile } from '@onecx/integration-interface'
 import { UserService } from '@onecx/angular-integration-interface'
 import { createRemoteComponentTranslateLoader } from '@onecx/angular-accelerator'
 import { PortalCoreModule } from '@onecx/portal-integration-angular'
