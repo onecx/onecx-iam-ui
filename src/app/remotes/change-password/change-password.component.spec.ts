@@ -13,12 +13,11 @@ import { RippleModule } from 'primeng/ripple'
 import { ButtonModule } from 'primeng/button'
 
 import { BASE_URL, RemoteComponentConfig } from '@onecx/angular-remote-components'
-import {
-  IfPermissionDirective,
-  PortalDialogService,
-  PortalMessageService,
-  HAS_PERMISSION_CHECKER
-} from '@onecx/portal-integration-angular'
+import { PortalMessageService } from '@onecx/angular-integration-interface'
+import { IfPermissionDirective } from '@onecx/angular-accelerator'
+import { HAS_PERMISSION_CHECKER } from '@onecx/angular-utils'
+
+import { PortalDialogService } from '@onecx/portal-integration-angular'
 import { MockUserService } from '@onecx/angular-integration-interface/mocks'
 
 import { UserInternalAPIService } from 'src/app/shared/generated'

@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Inject, Input, OnChanges } from '@angular/core'
 import { CommonModule, Location } from '@angular/common'
 import { HttpClient } from '@angular/common/http'
-import { UntilDestroy } from '@ngneat/until-destroy'
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
-import { catchError, finalize, map, Observable, of, ReplaySubject } from 'rxjs'
+import { catchError, finalize, filter, map, mergeMap, Observable, of, ReplaySubject } from 'rxjs'
 
 import {
   AngularRemoteComponentsModule,
@@ -13,7 +13,10 @@ import {
   ocxRemoteWebcomponent,
   provideTranslateServiceForRoot
 } from '@onecx/angular-remote-components'
-import { PortalCoreModule, UserService, createRemoteComponentTranslateLoader } from '@onecx/portal-integration-angular'
+import { UserProfile } from '@onecx/integration-interface'
+import { UserService } from '@onecx/angular-integration-interface'
+import { createRemoteComponentTranslateLoader } from '@onecx/angular-accelerator'
+import { PortalCoreModule } from '@onecx/portal-integration-angular'
 
 import {
   Configuration,
@@ -77,20 +80,30 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
   public ngOnChanges(): void {
     let roles: Role[] = []
     if (this.userId === '$$ocx-iam-roles-search-all-indicator$$') {
-      this.adminApi
-        .searchRolesByCriteria({ roleSearchCriteria: { pageSize: 1000 } as RoleSearchCriteria })
-        .pipe(
-          map((response: RolePageResult) => {
-            roles = response.stream?.sort(this.sortByRoleName) ?? []
-            return roles
-          }),
-          catchError((err) => {
-            console.error('iam.searchRolesByCriteria', err)
-            return of([])
-          }),
-          finalize(() => this.roleList.emit(roles))
+      this.iamRoles$ = this.userService.profile$.pipe(
+        filter((x) => x !== undefined),
+        untilDestroyed(this),
+        mergeMap((profile) =>
+          this.adminApi
+            .searchRolesByCriteria({
+              roleSearchCriteria: { issuer: profile.issuer, pageSize: 1000 } as RoleSearchCriteria
+            })
+            .pipe(
+              map((response: RolePageResult) => {
+                roles = response.stream?.sort(this.sortByRoleName) ?? []
+                return roles
+              }),
+              catchError((err) => {
+                console.error('iam.searchRolesByCriteria', err)
+                return of([])
+              }),
+              finalize(() => {
+                this.roleList.emit(roles)
+              })
+            )
         )
-        .subscribe()
+      )
+      this.iamRoles$.subscribe()
     } else if (this.userId) {
       this.adminApi
         .getUserRoles({ userId: this.userId })
