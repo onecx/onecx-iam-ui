@@ -31,7 +31,6 @@ export interface UserSearchCriteriaForm {
   provider: FormControl<string | null>
   issuer: FormControl<string | null>
 }
-
 @Component({
   selector: 'app-user-search',
   templateUrl: './user-search.component.html',
@@ -56,7 +55,7 @@ export class UserSearchComponent implements OnInit {
   public users$: Observable<User[]> | undefined
   public provider$: Observable<Provider[]> | undefined
   public idmUser: User | undefined = undefined
-  public idmUserIssuer: string | undefined = undefined
+  public provider: Provider | undefined
   public permissionsSlotName = 'onecx-iam-user-permissions'
   public isComponentDefined$: Observable<boolean>
 
@@ -118,15 +117,20 @@ export class UserSearchComponent implements OnInit {
     provider
       .filter((p) => p.name === name)
       .forEach((p) => {
+        this.provider = p
         p.domains?.forEach((d) => {
           this.domains.push({ ...d, displayName: d.displayName ?? d.name })
         })
       })
     this.domains.sort(sortItemsByDisplayName)
-    this.users$ = of([])
   }
   public onChangeDomain() {
     this.users$ = of([])
+    let issuer: string | undefined
+    if (this.searchCriteriaForm?.controls['issuer'].value !== null)
+      issuer = this.searchCriteriaForm?.controls['issuer'].value
+    // provider + domain (incl. issuer)
+    this.provider = { ...this.provider, domains: this.domains.filter((d) => d.issuer === issuer) }
   }
 
   /* SEARCH
@@ -250,18 +254,15 @@ export class UserSearchComponent implements OnInit {
     this.users$ = of([])
   }
 
+  public onHideDetailDialog(): void {
+    this.displayDetailDialog = false
+  }
   public onDetail(ev: Event, user: User): void {
     ev.stopPropagation()
     if (this.userViewPermission) {
       this.idmUser = user
-      this.idmUserIssuer = undefined
-      if (this.searchCriteriaForm?.controls['issuer'].value !== null)
-        this.idmUserIssuer = this.searchCriteriaForm?.controls['issuer'].value
       this.displayDetailDialog = true
     }
-  }
-  public onHideDetailDialog(): void {
-    this.displayDetailDialog = false
   }
 
   public onUserPermissions(ev: Event, user: User): void {
@@ -271,7 +272,12 @@ export class UserSearchComponent implements OnInit {
         'DIALOG.PERMISSIONS.HEADER',
         {
           type: UserPermissionsComponent,
-          inputs: { id: user.id, userId: user.id, displayName: user.username }
+          inputs: {
+            id: user.id,
+            userId: user.id,
+            displayName: user.username,
+            issuer: this.provider?.domains?.at(0)?.issuer
+          }
         },
         {
           id: 'iam_user_permissions_action_close',

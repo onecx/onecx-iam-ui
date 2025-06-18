@@ -116,12 +116,12 @@
     "DETAIL": {
       "HEADER": "IDM Benutzer Details",
       "TABS": {
-        "ATTRIBUTES": "Eigenschaften",
-        "ATTRIBUTES.TOOLTIP": "Im IDM definierte Eigenschaften",
-        "PROPS": "Primäre",
-        "PROPS.TOOLTIP": "Primäre IDM Benutzereigenschaften",
+        "ATTRIBUTES": "Attribute",
+        "ATTRIBUTES.TOOLTIP": "Zusätzliche Eigenschaften (Schlüssel-Wert Paare)",
+        "PROPS": "Eigenschaften",
+        "PROPS.TOOLTIP": "Primäre Benutzereigenschaften",
         "ROLES": "Rollen",
-        "ROLES.TOOLTIP": "Liste der IDM Benutzerrollen"
+        "ROLES.TOOLTIP": "Zugewiesene Benutzerrollen"
       }
     },
     "PERMISSIONS": {
@@ -137,9 +137,15 @@
     "FIRSTNAME": "Vorname",
     "EMAIL": "E-Mail",
     "ATTRIBUTES": "Attribute",
-    "PROVIDER": "IDM Anbieter",
-    "DOMAIN": "IDM Domain",
     "ORIGIN": "Herkunft",
+    "IDM": {
+      "PROVIDER": "IDM Anbieter",
+      "DOMAIN": "IDM Domain",
+      "ISSUER": "IDM Aussteller",
+      "PROVIDER.TOOLTIP": "IDM Provider, bietet Basisdienste zur Identitätsprüfung von Benutzern",
+      "DOMAIN.TOOLTIP": "Bereich im IDM in dem der Benutzer verwaltet wird (Keycloak = Realm)",
+      "ISSUER.TOOLTIP": "IDM Aussteller"
+    },
     "TOOLTIPS": {
       "ID": "User ID, wird als Referenz im Permission und User Profile Mgmt benutzt",
       "USERNAME": "Benutzernamen",
@@ -147,8 +153,6 @@
       "FIRSTNAME": "Vorname",
       "EMAIL": "E-Mail Adresse",
       "ATTRIBUTES": "Im IDM definierte Eigenschaften",
-      "DOMAIN": "Bereich im IDM in dem der Benutzer verwaltet wird (Keycloak = Realm)",
-      "PROVIDER": "IDM Provider, bietet Basisdienste zur Identitätsprüfung von Benutzern",
       "ORIGIN": "Zusätzliche Information die z.b. beim Import des Benutzers gesetzt werden kann"
     }
   },

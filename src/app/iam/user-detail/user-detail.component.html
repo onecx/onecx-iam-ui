@@ -251,13 +251,13 @@
             id="iam_detail_field_provider"
             class="w-full pt-3 pb-2 text-responsive"
             [disabled]="true"
-            [value]="idmUser?.domain"
-            [attr.aria-label]="'USER.PROVIDER' | translate"
-            [pTooltip]="'USER.TOOLTIPS.PROVIDER' | translate"
+            [value]="provider?.displayName ? provider?.displayName + ' (' + provider?.name + ')' : provider?.name"
+            [attr.aria-label]="'USER.IDM.PROVIDER' | translate"
+            [pTooltip]="'USER.IDM.PROVIDER.TOOLTIP' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           />
-          <label for="iam_detail_field_provider">{{ 'USER.PROVIDER' | translate }}</label>
+          <label for="iam_detail_field_provider">{{ 'USER.IDM.PROVIDER' | translate }}</label>
         </span>
         <span class="p-float-label">
           <input
@@ -266,13 +266,28 @@
             id="iam_detail_field_domain"
             class="w-full pt-3 pb-2 text-responsive"
             [disabled]="true"
-            [value]="idmUser?.domain"
-            [attr.aria-label]="'USER.DOMAIN' | translate"
-            [pTooltip]="'USER.TOOLTIPS.DOMAIN' | translate"
+            [value]="domain?.displayName ? domain?.displayName + ' (' + domain?.name + ')' : domain?.name"
+            [attr.aria-label]="'USER.IDM.DOMAIN' | translate"
+            [pTooltip]="'USER.IDM.DOMAIN.TOOLTIP' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           />
-          <label for="iam_detail_field_domain">{{ 'USER.DOMAIN' | translate }}</label>
+          <label for="iam_detail_field_domain">{{ 'USER.IDM.DOMAIN' | translate }}</label>
+        </span>
+        <span class="p-float-label">
+          <input
+            pInputText
+            type="text"
+            id="iam_detail_field_issuer"
+            class="w-full pt-3 pb-2 text-responsive"
+            [disabled]="true"
+            [value]="domain?.issuer"
+            [attr.aria-label]="'USER.IDM.ISSUER' | translate"
+            [pTooltip]="'USER.IDM.ISSUER.TOOLTIP' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          />
+          <label for="iam_detail_field_issuer">{{ 'USER.IDM.ISSUER' | translate }}</label>
         </span>
         <span class="p-float-label">
           <input
