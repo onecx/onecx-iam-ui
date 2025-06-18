@@ -376,6 +376,11 @@ describe('UserSearchComponent', () => {
     })
 
     it('should reset search results', (done) => {
+      const provs = [provider1, provider2]
+
+      component.onChangeProvider(provider2.name, provs)
+
+      component.searchCriteriaForm.controls['issuer'].setValue(domain1.issuer!)
       component.onChangeDomain()
 
       component.users$?.subscribe({

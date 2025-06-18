@@ -51,6 +51,7 @@ import { environment } from 'src/environments/environment'
 @UntilDestroy()
 export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemoteWebcomponent, OnChanges {
   @Input() userId: string | undefined = undefined
+  @Input() issuer: string | undefined = undefined
   @Input() refresh: boolean | undefined = false // on any change here a reload is triggered
   @Input() roleList = new EventEmitter<Role[]>() // provided in slot (output)
 
@@ -103,9 +104,9 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
         )
       )
       this.iamRoles$.subscribe()
-    } else if (this.userId) {
+    } else if (this.userId && this.issuer) {
       this.adminApi
-        .getUserRoles({ userId: this.userId })
+        .getUserRoles({ userId: this.userId, searchUserRolesRequest: { issuer: this.issuer } })
         .pipe(
           map((response: UserRolesResponse) => {
             roles = response.roles?.sort(this.sortByRoleName) ?? []

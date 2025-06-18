@@ -4,7 +4,7 @@ import { catchError, finalize, map, Observable, of } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
 
-import { Role, AdminInternalAPIService, User, UserRolesResponse } from 'src/app/shared/generated'
+import { Domain, Provider, Role, AdminInternalAPIService, User, UserRolesResponse } from 'src/app/shared/generated'
 import { copyToClipboard, sortByLocale } from 'src/app/shared/utils'
 
 @Component({
@@ -15,7 +15,7 @@ import { copyToClipboard, sortByLocale } from 'src/app/shared/utils'
 export class UserDetailComponent implements OnChanges {
   @Input() public displayDialog = false
   @Input() public idmUser: User | undefined
-  @Input() public issuer: string | undefined
+  @Input() public provider: Provider | undefined
   @Output() public hideDialog = new EventEmitter<boolean>()
 
   public loading = false
@@ -24,6 +24,7 @@ export class UserDetailComponent implements OnChanges {
   public userRoles$: Observable<string[]> = of()
   public userAttributes: string | undefined = undefined
   public copyToClipboard = copyToClipboard
+  public domain: Domain | undefined
 
   constructor(
     private readonly adminApi: AdminInternalAPIService,
@@ -35,6 +36,7 @@ export class UserDetailComponent implements OnChanges {
 
   public ngOnChanges() {
     if (!this.displayDialog) return
+    this.domain = this.provider?.domains?.at(0)
     this.prepareQuery()
   }
 
@@ -42,12 +44,12 @@ export class UserDetailComponent implements OnChanges {
    * READING data
    */
   private prepareQuery(): void {
-    if (!this.idmUser?.id || !this.issuer) return
+    if (!this.idmUser?.id || !this.domain?.issuer) return
     this.userAttributes = JSON.stringify(this.idmUser.attributes, undefined, 2)
     this.loading = true
     this.exceptionKey = undefined
     this.userRoles$ = this.adminApi
-      .getUserRoles({ userId: this.idmUser.id, searchUserRolesRequest: { issuer: this.issuer } })
+      .getUserRoles({ userId: this.idmUser.id, searchUserRolesRequest: { issuer: this.domain.issuer } })
       .pipe(
         map((response: UserRolesResponse) => {
           const roles: Role[] = response.roles ?? []
