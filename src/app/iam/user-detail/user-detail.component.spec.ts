@@ -5,7 +5,7 @@ import { BehaviorSubject, of, throwError } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
 
-import { AdminInternalAPIService, Role, User, UserRolesResponse } from 'src/app/shared/generated'
+import { AdminInternalAPIService, Provider, Role, User, UserRolesResponse } from 'src/app/shared/generated'
 import { UserDetailComponent } from './user-detail.component'
 
 const user1: User = {
@@ -21,6 +21,11 @@ const roles1: Role[] = [
   { name: 'role 2', description: 'Role 2' }
 ]
 const urResponse: UserRolesResponse = { roles: roles1 }
+const provider: Provider = {
+  name: 'prov1',
+  displayName: 'Provider 1',
+  domains: [{ name: 'dom1', displayName: 'Provider 1', issuer: 'http://issuer' }]
+}
 
 describe('UserDetailComponent', () => {
   let component: UserDetailComponent
@@ -64,7 +69,7 @@ describe('UserDetailComponent', () => {
   afterEach(() => {
     adminApiSpy.getUserRoles.calls.reset()
     translateServiceSpy.get.calls.reset()
-    component.issuer = undefined
+    component.provider = undefined
     component.idmUser = undefined
   })
 
@@ -86,10 +91,10 @@ describe('UserDetailComponent', () => {
       component.ngOnChanges()
     })
 
-    it('should ignore any action if no issuer', () => {
+    it('should ignore any action if no provider', () => {
       component.displayDialog = true
       component.idmUser = user1
-      component.issuer = undefined
+      component.provider = undefined
 
       component.ngOnChanges()
     })
@@ -97,7 +102,7 @@ describe('UserDetailComponent', () => {
     it('should call get user roles', (done) => {
       component.displayDialog = true
       component.idmUser = user1
-      component.issuer = 'issuer'
+      component.provider = provider
       adminApiSpy.getUserRoles.and.returnValue(of(urResponse))
 
       component.ngOnChanges()
@@ -113,7 +118,7 @@ describe('UserDetailComponent', () => {
     it('should call get empty role array if user does not have role', (done) => {
       component.displayDialog = true
       component.idmUser = user1
-      component.issuer = 'issuer'
+      component.provider = provider
       adminApiSpy.getUserRoles.and.returnValue(of({}))
 
       component.ngOnChanges()
@@ -132,7 +137,7 @@ describe('UserDetailComponent', () => {
     it('should call get empty role array if user does not have role', (done) => {
       component.displayDialog = true
       component.idmUser = user1
-      component.issuer = 'issuer'
+      component.provider = provider
       adminApiSpy.getUserRoles.and.returnValue(throwError(() => errorResponse))
       const errorResponse = { status: 404, statusText: 'Not Found' }
       spyOn(console, 'error')

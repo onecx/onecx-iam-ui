@@ -79,7 +79,6 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
 
   public ngOnChanges(): void {
     let roles: Role[] = []
-    console.log('onecx-iam-user-roles   issuer', this.issuer)
     if (this.userId === '$$ocx-iam-roles-search-all-indicator$$') {
       this.iamRoles$ = this.userService.profile$.pipe(
         filter((x) => x !== undefined),

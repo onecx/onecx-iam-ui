@@ -97,6 +97,7 @@ describe('OneCXIamUserRolesComponent', () => {
     it('should get roles - successful with data', () => {
       const { component } = setUp()
       component.userId = 'user'
+      component.issuer = 'issuer'
       const mockResponse: UserRolesResponse = { roles: [{ name: 'role1' }, { name: 'role2' }] }
       roleApiSpy.getUserRoles.and.returnValue(of(mockResponse))
       spyOn(component.roleList, 'emit')
@@ -109,6 +110,7 @@ describe('OneCXIamUserRolesComponent', () => {
     it('should get roles - successful without data', () => {
       const { component } = setUp()
       component.userId = 'user'
+      component.issuer = 'issuer'
       const mockResponse: string[] = []
       roleApiSpy.getUserRoles.and.returnValue(of(mockResponse))
       spyOn(component.roleList, 'emit')
@@ -121,6 +123,7 @@ describe('OneCXIamUserRolesComponent', () => {
     it('should get roles - failed', () => {
       const { component } = setUp()
       component.userId = 'user'
+      component.issuer = 'issuer'
       const errorResponse = { status: 400, statusText: 'Error on getting roles' }
       roleApiSpy.getUserRoles.and.returnValue(throwError(() => errorResponse))
       spyOn(component.roleList, 'emit')
@@ -158,6 +161,7 @@ describe('OneCXIamUserRolesComponent', () => {
     it('should get roles - successful with data', () => {
       const { component } = setUp()
       component.userId = '$$ocx-iam-roles-search-all-indicator$$'
+      component.issuer = 'issuer'
       const mockResponse: RolePageResult = { stream: [{ name: 'role1' }, { name: 'role2' }] }
       roleApiSpy.searchRolesByCriteria.and.returnValue(of(mockResponse))
       spyOn(component.roleList, 'emit')
@@ -170,6 +174,7 @@ describe('OneCXIamUserRolesComponent', () => {
     it('should get roles - successful without data', () => {
       const { component } = setUp()
       component.userId = '$$ocx-iam-roles-search-all-indicator$$'
+      component.issuer = 'issuer'
       const mockResponse: RolePageResult = { stream: [] }
       roleApiSpy.searchRolesByCriteria.and.returnValue(of(mockResponse))
       spyOn(component.roleList, 'emit')
@@ -182,6 +187,7 @@ describe('OneCXIamUserRolesComponent', () => {
     it('should get roles - successful without stream', () => {
       const { component } = setUp()
       component.userId = '$$ocx-iam-roles-search-all-indicator$$'
+      component.issuer = 'issuer'
       const mockResponse: RolePageResult = { stream: undefined }
       roleApiSpy.searchRolesByCriteria.and.returnValue(of(mockResponse))
       spyOn(component.roleList, 'emit')
@@ -194,6 +200,7 @@ describe('OneCXIamUserRolesComponent', () => {
     it('should get roles- failed', () => {
       const { component } = setUp()
       component.userId = '$$ocx-iam-roles-search-all-indicator$$'
+      component.issuer = 'issuer'
       const errorResponse = { status: 400, statusText: 'Error on getting roles' }
       roleApiSpy.searchRolesByCriteria.and.returnValue(throwError(() => errorResponse))
       spyOn(component.roleList, 'emit')
