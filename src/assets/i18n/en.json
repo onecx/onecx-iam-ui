@@ -118,7 +118,7 @@
       "TABS": {
         "ATTRIBUTES": "Attributes",
         "ATTRIBUTES.TOOLTIP": "Additional properties (Key-Value pairs)",
-        "PROPS": "Eigenschaften",
+        "PROPS": "Properties",
         "PROPS.TOOLTIP": "Primary User properties",
         "ROLES": "Roles",
         "ROLES.TOOLTIP": "Assigned Roles"
