@@ -98,7 +98,9 @@ export class UserSearchComponent implements OnInit {
     this.provider$ = this.iamAdminApi.getAllProviders().pipe(
       map((response: ProvidersResponse) => {
         const provs: Provider[] = []
-        response.providers?.forEach((p) => provs.push({ ...p, displayName: p.displayName ?? p.name }))
+        response.providers?.forEach((p) =>
+          provs.push({ ...p, displayName: p.displayName && p.displayName !== '' ? p.displayName : p.name })
+        )
         return provs.sort(sortItemsByDisplayName)
       }),
       catchError((err) => {
@@ -119,7 +121,7 @@ export class UserSearchComponent implements OnInit {
       .forEach((p) => {
         this.provider = p
         p.domains?.forEach((d) => {
-          this.domains.push({ ...d, displayName: d.displayName ?? d.name })
+          this.domains.push({ ...d, displayName: d.displayName && d.displayName !== '' ? d.displayName : d.name })
         })
       })
     this.domains.sort(sortItemsByDisplayName)
