@@ -17,7 +17,7 @@
 
   <p-tabView *ngIf="!exceptionKey">
     <p-tabPanel
-      id="iam_detail_props"
+      id="iam_user_detail_props"
       [header]="'DIALOG.DETAIL.TABS.PROPS' | translate"
       [attr.aria-label]="'DIALOG.DETAIL.TABS.PROPS' | translate"
       [tooltip]="'DIALOG.DETAIL.TABS.PROPS.TOOLTIP' | translate"
@@ -31,7 +31,7 @@
               #iamUserId
               pInputText
               type="text"
-              id="iam_detail_field_id"
+              id="iam_user_detail_item_id"
               class="w-full pt-3 pb-2 text-responsive"
               [disabled]="true"
               [value]="idmUser?.id"
@@ -40,21 +40,22 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             />
-            <label for="iam_detail_field_id">{{ 'USER.ID' | translate }}</label>
+            <label for="iam_user_detail_item_id">{{ 'USER.ID' | translate }}</label>
           </span>
-          <a
-            tabindex="0"
-            id="ws_detail_props_item_rssFeedUrl_link"
+          <button
+            pButton
+            pRipple
+            id="iam_user_detail_item_id_copy"
             class="p-inputgroup-addon bg-primary pseudo-button"
             [ngClass]="iamUserId.value ? 'cursor-pointer' : 'p-disabled'"
             (click)="copyToClipboard(iamUserId.value)"
             [attr.aria-label]="'ACTIONS.COPY.CLIPBOARD' | translate"
             [pTooltip]="'ACTIONS.COPY.CLIPBOARD' | translate"
-            tooltipPosition="right"
+            tooltipPosition="top"
             tooltipEvent="hover"
           >
-            <span class="pi pi-copy"></span>
-          </a>
+            <span class="pi pi-copy" aria-hidden="true"></span>
+          </button>
         </div>
 
         <div class="p-inputgroup" controlErrorAnchor>
@@ -63,7 +64,7 @@
               #iamUserName
               pInputText
               type="text"
-              id="iam_detail_field_user_name"
+              id="iam_user_detail_item_user_name"
               class="w-full pt-3 pb-2 text-responsive"
               [disabled]="true"
               [value]="idmUser?.username"
@@ -72,11 +73,11 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             />
-            <label for="iam_detail_field_user_name"> {{ 'USER.USERNAME' | translate }} </label>
+            <label for="iam_user_detail_item_user_name"> {{ 'USER.USERNAME' | translate }} </label>
           </span>
           <a
             tabindex="0"
-            id="ws_detail_props_item_rssFeedUrl_link"
+            id="iam_user_detail_item_user_name_copy"
             class="p-inputgroup-addon bg-primary pseudo-button"
             [ngClass]="iamUserName.value ? 'cursor-pointer' : 'p-disabled'"
             (click)="copyToClipboard(iamUserName.value)"
@@ -95,7 +96,7 @@
               #iamUserEmail
               pInputText
               type="text"
-              id="iam_detail_field_user_email"
+              id="iam_user_detail_item_user_email"
               class="w-full pt-3 pb-2 text-responsive"
               [disabled]="true"
               [value]="idmUser?.email"
@@ -104,11 +105,11 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             />
-            <label for="iam_detail_field_user_email"> {{ 'USER.EMAIL' | translate }} </label>
+            <label for="iam_user_detail_item_user_email"> {{ 'USER.EMAIL' | translate }} </label>
           </span>
           <a
             tabindex="0"
-            id="ws_detail_props_item_rssFeedUrl_link"
+            id="iam_user_detail_item_user_email_copy"
             class="p-inputgroup-addon bg-primary pseudo-button"
             [ngClass]="iamUserEmail.value ? 'cursor-pointer' : 'p-disabled'"
             (click)="copyToClipboard(iamUserEmail.value)"
@@ -127,7 +128,7 @@
               #iamUserFirstName
               pInputText
               type="text"
-              id="iam_detail_field_first_name"
+              id="iam_user_detail_item_first_name"
               class="w-full pt-3 pb-2 text-responsive"
               [disabled]="true"
               [value]="idmUser?.firstName"
@@ -136,11 +137,11 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             />
-            <label for="iam_detail_field_first_name"> {{ 'USER.FIRSTNAME' | translate }} </label>
+            <label for="iam_user_detail_item_first_name"> {{ 'USER.FIRSTNAME' | translate }} </label>
           </span>
           <a
             tabindex="0"
-            id="ws_detail_props_item_rssFeedUrl_link"
+            id="iam_user_detail_item_first_name_copy"
             class="p-inputgroup-addon bg-primary pseudo-button"
             [ngClass]="iamUserFirstName.value ? 'cursor-pointer' : 'p-disabled'"
             (click)="copyToClipboard(iamUserFirstName.value)"
@@ -159,7 +160,7 @@
               #iamUserLastName
               pInputText
               type="text"
-              id="iam_detail_field_last_name"
+              id="iam_user_detail_item_last_name"
               class="w-full pt-3 pb-2 text-responsive"
               [disabled]="true"
               [value]="idmUser?.lastName"
@@ -168,11 +169,11 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             />
-            <label for="iam_detail_field_last_name"> {{ 'USER.LASTNAME' | translate }} </label>
+            <label for="iam_user_detail_item_last_name"> {{ 'USER.LASTNAME' | translate }} </label>
           </span>
           <a
             tabindex="0"
-            id="ws_detail_props_item_rssFeedUrl_link"
+            id="iam_user_detail_item_last_name_copy"
             class="p-inputgroup-addon bg-primary pseudo-button"
             [ngClass]="iamUserLastName.value ? 'cursor-pointer' : 'p-disabled'"
             (click)="copyToClipboard(iamUserLastName.value)"
@@ -188,7 +189,7 @@
     </p-tabPanel>
 
     <p-tabPanel
-      id="iam_detail_attributes"
+      id="iam_user_detail_attributes"
       [header]="'DIALOG.DETAIL.TABS.ATTRIBUTES' | translate"
       [attr.aria-label]="'DIALOG.DETAIL.TABS.ATTRIBUTES' | translate"
       [tooltip]="'DIALOG.DETAIL.TABS.ATTRIBUTES.TOOLTIP' | translate"
@@ -201,20 +202,20 @@
             class="w-full"
             pInputTextarea
             rows="15"
-            id="iam_detail_attributes_content"
+            id="iam_user_detail_attributes_content"
             [(ngModel)]="userAttributes"
             [attr.aria-label]="'USER.ATTRIBUTES' | translate"
             [pTooltip]="'USER.TOOLTIPS.ATTRIBUTES' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           ></textarea>
-          <label for="iam_detail_attributes_content">{{ 'USER.ATTRIBUTES' | translate }}</label>
+          <label for="iam_user_detail_attributes_content">{{ 'USER.ATTRIBUTES' | translate }}</label>
         </span>
       </div>
     </p-tabPanel>
 
     <p-tabPanel
-      id="iam_detail_roles"
+      id="iam_user_detail_roles"
       [header]="'DIALOG.DETAIL.TABS.ROLES' | translate"
       [attr.aria-label]="'DIALOG.DETAIL.TABS.ROLES' | translate"
       [tooltip]="'DIALOG.DETAIL.TABS.ROLES.TOOLTIP' | translate"
@@ -248,7 +249,7 @@
           <input
             pInputText
             type="text"
-            id="iam_detail_field_provider"
+            id="iam_user_detail_item_provider"
             class="w-full pt-3 pb-2 text-responsive"
             [disabled]="true"
             [value]="provider?.displayName ? provider?.displayName + ' (' + provider?.name + ')' : provider?.name"
@@ -257,13 +258,13 @@
             tooltipPosition="top"
             tooltipEvent="hover"
           />
-          <label for="iam_detail_field_provider">{{ 'USER.IDM.PROVIDER' | translate }}</label>
+          <label for="iam_user_detail_item_provider">{{ 'USER.IDM.PROVIDER' | translate }}</label>
         </span>
         <span class="p-float-label">
           <input
             pInputText
             type="text"
-            id="iam_detail_field_domain"
+            id="iam_user_detail_item_domain"
             class="w-full pt-3 pb-2 text-responsive"
             [disabled]="true"
             [value]="domain?.displayName ? domain?.displayName + ' (' + domain?.name + ')' : domain?.name"
@@ -272,13 +273,13 @@
             tooltipPosition="top"
             tooltipEvent="hover"
           />
-          <label for="iam_detail_field_domain">{{ 'USER.IDM.DOMAIN' | translate }}</label>
+          <label for="iam_user_detail_item_domain">{{ 'USER.IDM.DOMAIN' | translate }}</label>
         </span>
         <span class="p-float-label">
           <input
             pInputText
             type="text"
-            id="iam_detail_field_issuer"
+            id="iam_user_detail_item_issuer"
             class="w-full pt-3 pb-2 text-responsive"
             [disabled]="true"
             [value]="domain?.issuer"
@@ -287,13 +288,13 @@
             tooltipPosition="top"
             tooltipEvent="hover"
           />
-          <label for="iam_detail_field_issuer">{{ 'USER.IDM.ISSUER' | translate }}</label>
+          <label for="iam_user_detail_item_issuer">{{ 'USER.IDM.ISSUER' | translate }}</label>
         </span>
         <span class="p-float-label">
           <input
             pInputText
             type="text"
-            id="iam_detail_field_origin"
+            id="iam_user_detail_item_origin"
             class="w-full pt-3 pb-2 text-responsive"
             [disabled]="true"
             [value]="idmUser?.origin"
@@ -302,13 +303,13 @@
             tooltipPosition="top"
             tooltipEvent="hover"
           />
-          <label for="iam_detail_field_origin">{{ 'USER.ORIGIN' | translate }}</label>
+          <label for="iam_user_detail_item_origin">{{ 'USER.ORIGIN' | translate }}</label>
         </span>
         <span class="p-float-label">
           <input
             pInputText
             type="text"
-            id="iam_detail_field_creation_date"
+            id="iam_user_detail_item_creation_date"
             class="w-full pt-3 pb-2 text-responsive"
             [disabled]="true"
             [value]="idmUser?.createdTimestamp | date: datetimeFormat : ''"
@@ -317,7 +318,7 @@
             tooltipPosition="top"
             tooltipEvent="hover"
           />
-          <label for="iam_detail_field_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
+          <label for="iam_user_detail_item_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
         </span>
       </div>
     </p-tabPanel>
