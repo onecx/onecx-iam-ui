@@ -133,6 +133,9 @@
         background: var(--button-hover-bg) !important;
       }
     }
+    .p-inputgroup button {
+      min-width: unset !important;
+    }
   }
 }
 

@@ -51,7 +51,7 @@
             (click)="copyToClipboard(iamUserId.value)"
             [attr.aria-label]="'ACTIONS.COPY.CLIPBOARD' | translate"
             [pTooltip]="'ACTIONS.COPY.CLIPBOARD' | translate"
-            tooltipPosition="top"
+            tooltipPosition="right"
             tooltipEvent="hover"
           >
             <span class="pi pi-copy" aria-hidden="true"></span>
@@ -75,8 +75,9 @@
             />
             <label for="iam_user_detail_item_user_name"> {{ 'USER.USERNAME' | translate }} </label>
           </span>
-          <a
-            tabindex="0"
+          <button
+            pButton
+            pRipple
             id="iam_user_detail_item_user_name_copy"
             class="p-inputgroup-addon bg-primary pseudo-button"
             [ngClass]="iamUserName.value ? 'cursor-pointer' : 'p-disabled'"
@@ -86,8 +87,8 @@
             tooltipPosition="right"
             tooltipEvent="hover"
           >
-            <span class="pi pi-copy"></span>
-          </a>
+            <span class="pi pi-copy" aria-hidden="true"></span>
+          </button>
         </div>
 
         <div class="p-inputgroup" controlErrorAnchor>
@@ -107,8 +108,9 @@
             />
             <label for="iam_user_detail_item_user_email"> {{ 'USER.EMAIL' | translate }} </label>
           </span>
-          <a
-            tabindex="0"
+          <button
+            pButton
+            pRipple
             id="iam_user_detail_item_user_email_copy"
             class="p-inputgroup-addon bg-primary pseudo-button"
             [ngClass]="iamUserEmail.value ? 'cursor-pointer' : 'p-disabled'"
@@ -118,8 +120,8 @@
             tooltipPosition="right"
             tooltipEvent="hover"
           >
-            <span class="pi pi-copy"></span>
-          </a>
+            <span class="pi pi-copy" aria-hidden="true"></span>
+          </button>
         </div>
 
         <div class="p-inputgroup" controlErrorAnchor>
@@ -139,8 +141,9 @@
             />
             <label for="iam_user_detail_item_first_name"> {{ 'USER.FIRSTNAME' | translate }} </label>
           </span>
-          <a
-            tabindex="0"
+          <button
+            pButton
+            pRipple
             id="iam_user_detail_item_first_name_copy"
             class="p-inputgroup-addon bg-primary pseudo-button"
             [ngClass]="iamUserFirstName.value ? 'cursor-pointer' : 'p-disabled'"
@@ -150,8 +153,8 @@
             tooltipPosition="right"
             tooltipEvent="hover"
           >
-            <span class="pi pi-copy"></span>
-          </a>
+            <span class="pi pi-copy" aria-hidden="true"></span>
+          </button>
         </div>
 
         <div class="p-inputgroup" controlErrorAnchor>
@@ -171,8 +174,9 @@
             />
             <label for="iam_user_detail_item_last_name"> {{ 'USER.LASTNAME' | translate }} </label>
           </span>
-          <a
-            tabindex="0"
+          <button
+            pButton
+            pRipple
             id="iam_user_detail_item_last_name_copy"
             class="p-inputgroup-addon bg-primary pseudo-button"
             [ngClass]="iamUserLastName.value ? 'cursor-pointer' : 'p-disabled'"
@@ -182,8 +186,8 @@
             tooltipPosition="right"
             tooltipEvent="hover"
           >
-            <span class="pi pi-copy"></span>
-          </a>
+            <span class="pi pi-copy" aria-hidden="true"></span>
+          </button>
         </div>
       </div>
     </p-tabPanel>
