@@ -197,12 +197,13 @@
       <ng-template let-users pTemplate="listItem">
         <section class="p-grid p-nogutter grid grid-nogutter" [attr.aria-label]="'DIALOG.SEARCH.RESULTS' | translate">
           <article
-            *ngFor="let idmUser of users; index as i"
+            *ngFor="let user of users; index as i"
             [id]="'iam_user_search_data_list_' + i"
             class="relative col-12 sm:col-6 h-3rem md:h-3-5rem py-1 md:py-2 pl-6 pr-3 flex flex-column justify-content-between"
             [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewPermission }"
-            (click)="onDetail($event, idmUser)"
-            [pTooltip]="idmUser.username.length < 50 ? '' : idmUser.username"
+            (click)="onDetail($event, user)"
+            [attr.aria-label]="('BREADCRUMBS.USER' | translate) + ': ' + user.username"
+            [pTooltip]="user.username.length < 50 ? '' : user.username"
             tooltipPosition="top"
             tooltipEvent="hover"
           >
@@ -213,7 +214,7 @@
                 tabindex="0"
                 [id]="'iam_user_search_data_grid_' + i + '_action_permissions'"
                 class="card-badge-left badge-position pi pi-lock button-icon-only"
-                (click)="onUserPermissions($event, idmUser)"
+                (click)="onUserPermissions($event, user)"
                 [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
                 [pTooltip]="'DIALOG.PERMISSIONS.TOOLTIP' | translate"
                 tooltipPosition="top"
@@ -226,10 +227,10 @@
               class="font-bold text-responsive"
               aria-hidden="true"
             >
-              {{ idmUser.username }}
+              {{ user.username }}
             </div>
             <div [id]="'iam_user_search_data_list_' + i + '_name'" class="text-xs text-responsive" role="note">
-              {{ prepareDisplayName(idmUser, 30, 150) }}
+              {{ prepareDisplayName(user, 30, 150) }}
             </div>
           </article>
         </section>
@@ -249,7 +250,7 @@
               class="card block relative h-3rem md:h-3-5rem py-1 md:py-2 px-4 text-center flex flex-column justify-content-between"
               [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewPermission }"
               (click)="onDetail($event, user)"
-              [attr.aria-label]="('BREADCRUMBS.USERS' | translate) + ': ' + user.username"
+              [attr.aria-label]="('BREADCRUMBS.USER' | translate) + ': ' + user.username"
               [pTooltip]="user.username.length < 24 ? '' : user.username"
               tooltipPosition="top"
               tooltipEvent="hover"

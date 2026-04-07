@@ -64,7 +64,9 @@
     }
   },
   "BREADCRUMBS": {
+    "ROLE": "Role",
     "ROLES": "Roles",
+    "USER": "User",
     "USERS": "Users"
   },
   "INTERNAL": {
