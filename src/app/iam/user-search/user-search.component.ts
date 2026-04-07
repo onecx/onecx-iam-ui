@@ -111,6 +111,7 @@ export class UserSearchComponent implements OnInit {
       finalize(() => (this.loading = false))
     )
   }
+
   // load appId dropdown with app ids from product
   public onChangeProvider(name: string | undefined, provider: Provider[]) {
     this.domains = []
@@ -126,6 +127,7 @@ export class UserSearchComponent implements OnInit {
       })
     this.domains.sort(sortItemsByDisplayName)
   }
+
   public onChangeDomain() {
     this.users$ = of([])
     let issuer: string | undefined
@@ -137,7 +139,7 @@ export class UserSearchComponent implements OnInit {
 
   /* SEARCH
    */
-  public searchUsers(): void {
+  private searchUsers(): void {
     this.exceptionKey = undefined
     // create criteria but exclude nulls and non-existings
     let usc: UserSearchCriteria = {

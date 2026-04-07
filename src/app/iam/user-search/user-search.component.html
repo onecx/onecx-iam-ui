@@ -133,7 +133,7 @@
 
   <ocx-page-content>
     <p-message
-      *ngIf="loading"
+      *ngIf="loading && !exceptionKey"
       id="iam_user_search_loading"
       severity="info"
       styleClass="m-3"
@@ -161,8 +161,8 @@
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
       [paginator]="true"
       [alwaysShowPaginator]="true"
-      [rowsPerPageOptions]="[20, 40, 100]"
-      [rows]="20"
+      [rowsPerPageOptions]="[40, 100, 500]"
+      [rows]="40"
       filterBy="username,firstName,lastName"
       [sortField]="sortField"
       [sortOrder]="sortOrder"
@@ -195,14 +195,16 @@
 
       <!-- LIST -->
       <ng-template let-users pTemplate="listItem">
-        <div class="p-grid p-nogutter grid grid-nogutter">
-          <a
-            *ngFor="let idmUser of users; index as i"
+        <section class="p-grid p-nogutter grid grid-nogutter" [attr.aria-label]="'DIALOG.SEARCH.RESULTS' | translate">
+          <article
+            *ngFor="let user of users; index as i"
             [id]="'iam_user_search_data_list_' + i"
             class="relative col-12 sm:col-6 h-3rem md:h-3-5rem py-1 md:py-2 pl-6 pr-3 flex flex-column justify-content-between"
             [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewPermission }"
-            (click)="onDetail($event, idmUser)"
-            [pTooltip]="idmUser.username.length < 50 ? '' : idmUser.username"
+            (click)="onDetail($event, user)"
+            (keydown.enter)="onDetail($event, user)"
+            [attr.aria-label]="('BREADCRUMBS.USER' | translate) + ': ' + user.username"
+            [pTooltip]="user.username.length < 50 ? '' : user.username"
             tooltipPosition="top"
             tooltipEvent="hover"
           >
@@ -213,38 +215,44 @@
                 tabindex="0"
                 [id]="'iam_user_search_data_grid_' + i + '_action_permissions'"
                 class="card-badge-left badge-position pi pi-lock button-icon-only"
-                (click)="onUserPermissions($event, idmUser)"
+                (click)="onUserPermissions($event, user)"
                 [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
                 [pTooltip]="'DIALOG.PERMISSIONS.TOOLTIP' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
+                role="link"
               ></a>
             </ng-container>
-            <div [id]="'iam_user_search_data_list_' + i + '_user_name'" class="font-bold text-responsive">
-              {{ idmUser.username }}
+            <div
+              [id]="'iam_user_search_data_list_' + i + '_user_name'"
+              class="font-bold text-responsive"
+              aria-hidden="true"
+            >
+              {{ user.username }}
             </div>
-            <div [id]="'iam_user_search_data_list_' + i + '_name'" class="text-xs text-responsive">
-              {{ prepareDisplayName(idmUser, 30, 150) }}
+            <div [id]="'iam_user_search_data_list_' + i + '_name'" class="text-xs text-responsive" role="note">
+              {{ prepareDisplayName(user, 30, 150) }}
             </div>
-          </a>
-        </div>
+          </article>
+        </section>
       </ng-template>
 
       <!-- GRID -->
       <ng-template let-users pTemplate="gridItem">
-        <div class="p-grid p-nogutter grid grid-nogutter">
+        <section class="p-grid p-nogutter grid grid-nogutter" [attr.aria-label]="'DIALOG.SEARCH.RESULTS' | translate">
           <div
             *ngFor="let user of users; index as i"
             [id]="'iam_user_search_data_grid_' + i"
             class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 px-2 sm:px-3 py-1 md:py-2"
           >
-            <a
+            <article
               [tabIndex]="0"
               [id]="'iam_user_search_data_grid_anchor_' + i"
               class="card block relative h-3rem md:h-3-5rem py-1 md:py-2 px-4 text-center flex flex-column justify-content-between"
               [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewPermission }"
               (click)="onDetail($event, user)"
-              [attr.aria-label]="user.username"
+              (keydown.enter)="onDetail($event, user)"
+              [attr.aria-label]="('BREADCRUMBS.USER' | translate) + ': ' + user.username"
               [pTooltip]="user.username.length < 24 ? '' : user.username"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -261,17 +269,22 @@
                   [pTooltip]="'DIALOG.PERMISSIONS.TOOLTIP' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
+                  role="link"
                 ></a>
               </ng-container>
-              <div [id]="'iam_user_search_data_grid_' + i + '_user_name'" class="font-bold text-responsive">
+              <div
+                [id]="'iam_user_search_data_grid_' + i + '_user_name'"
+                class="font-bold text-responsive"
+                aria-hidden="true"
+              >
                 {{ user.username }}
               </div>
-              <div [id]="'iam_user_search_data_grid_' + i + '_name'" class="text-xs text-responsive">
+              <div [id]="'iam_user_search_data_grid_' + i + '_name'" class="text-xs text-responsive" role="note">
                 {{ prepareDisplayName(user, 20, 42) }}
               </div>
-            </a>
+            </article>
           </div>
-        </div>
+        </section>
       </ng-template>
     </p-dataView>
   </ocx-page-content>

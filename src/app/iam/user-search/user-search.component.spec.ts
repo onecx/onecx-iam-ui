@@ -197,7 +197,7 @@ describe('UserSearchComponent', () => {
       adminApiSpy.searchUsersByCriteria.and.returnValue(of(userPageResult1))
 
       component.ngOnInit()
-      component.searchUsers()
+      component['searchUsers']()
 
       component.users$?.subscribe({
         next: (users) => {
@@ -216,7 +216,7 @@ describe('UserSearchComponent', () => {
       adminApiSpy.searchUsersByCriteria.and.returnValue(of(userPageResult1))
 
       component.ngOnInit()
-      component.searchUsers()
+      component['searchUsers']()
 
       component.users$?.subscribe({
         next: (users) => {
@@ -234,7 +234,7 @@ describe('UserSearchComponent', () => {
       adminApiSpy.searchUsersByCriteria.and.returnValue(of({}))
 
       component.ngOnInit()
-      component.searchUsers()
+      component['searchUsers']()
 
       component.users$?.subscribe({
         next: (users) => {
@@ -251,7 +251,7 @@ describe('UserSearchComponent', () => {
       adminApiSpy.searchUsersByCriteria.and.returnValue(of(userPageResult2))
 
       component.ngOnInit()
-      component.searchUsers()
+      component['searchUsers']()
 
       component.users$?.subscribe({
         next: (users) => {
@@ -280,7 +280,7 @@ describe('UserSearchComponent', () => {
       spyOn(console, 'error')
 
       component.ngOnInit()
-      component.searchUsers()
+      component['searchUsers']()
 
       component.users$?.subscribe({
         next: (users) => {
@@ -300,7 +300,7 @@ describe('UserSearchComponent', () => {
       component.searchCriteriaForm.controls['issuer'].setValue(domain1.issuer!)
 
       component.ngOnInit()
-      component.searchOnlyById('id')
+      component['searchOnlyById']('id')
 
       expect(component.searchCriteriaForm.controls['userName'].disable).toBeTruthy()
     })
