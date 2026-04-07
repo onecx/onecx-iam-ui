@@ -139,7 +139,7 @@ export class UserSearchComponent implements OnInit {
 
   /* SEARCH
    */
-  public searchUsers(): void {
+  private searchUsers(): void {
     this.exceptionKey = undefined
     // create criteria but exclude nulls and non-existings
     let usc: UserSearchCriteria = {
