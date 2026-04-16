@@ -11,6 +11,7 @@ import { MessageModule } from 'primeng/message'
 import { TextareaModule } from 'primeng/textarea'
 import { ListboxModule } from 'primeng/listbox'
 import { TabViewModule } from 'primeng/tabview'
+import { FloatLabelModule } from 'primeng/floatlabel'
 import { ToastModule } from 'primeng/toast'
 import { TooltipModule } from 'primeng/tooltip'
 
@@ -40,6 +41,7 @@ export function apiConfigProvider(configService: ConfigurationService, appStateS
     DialogModule,
     DropdownModule,
     FormsModule,
+    FloatLabelModule,
     InputTextModule,
     MessageModule,
     TextareaModule,
@@ -59,6 +61,7 @@ export function apiConfigProvider(configService: ConfigurationService, appStateS
     DialogModule,
     DropdownModule,
     FormsModule,
+    FloatLabelModule,
     InputTextModule,
     MessageModule,
     TextareaModule,

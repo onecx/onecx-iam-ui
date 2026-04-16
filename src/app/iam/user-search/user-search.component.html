@@ -9,7 +9,7 @@
   >
     <div id="iam_user_search_criteria" [formGroup]="searchCriteriaForm" class="flex flex-wrap gap-3">
       <ng-container *ngIf="provider$ | async as provider">
-        <span class="p-float-label">
+        <p-floatlabel>
           <p-dropdown
             id="iam_user_search_criteria_provider"
             styleClass="w-full input-field-correction"
@@ -31,8 +31,8 @@
           <label class="ocx-required-label" for="iam_user_search_criteria_provider">
             {{ 'DIALOG.SEARCH.CRITERIA.PROVIDER' | translate }}
           </label>
-        </span>
-        <span class="p-float-label">
+        </p-floatlabel>
+        <p-floatlabel>
           <p-dropdown
             id="iam_user_search_criteria_issuer"
             styleClass="w-full input-field-correction"
@@ -54,9 +54,9 @@
           <label class="ocx-required-label" for="iam_user_search_criteria_issuer">
             {{ 'DIALOG.SEARCH.CRITERIA.DOMAIN' | translate }}
           </label>
-        </span>
+        </p-floatlabel>
       </ng-container>
-      <span class="p-float-label">
+      <p-floatlabel>
         <input
           id="iam_user_search_criteria_user_name"
           pInputText
@@ -69,8 +69,8 @@
           tooltipEvent="hover"
         />
         <label for="iam_user_search_criteria_user_name">{{ 'USER.USERNAME' | translate }}</label>
-      </span>
-      <span *ocxAdvanced class="p-float-label">
+      </p-floatlabel>
+      <p-floatlabel *ocxAdvanced>
         <input
           #userId
           id="iam_user_search_criteria_user_id"
@@ -85,8 +85,8 @@
           tooltipEvent="hover"
         />
         <label for="iam_user_search_criteria_user_id">{{ 'USER.ID' | translate }}</label>
-      </span>
-      <span *ocxAdvanced class="p-float-label">
+      </p-floatlabel>
+      <p-floatlabel *ocxAdvanced>
         <input
           id="iam_user_search_criteria_first_name"
           pInputText
@@ -99,8 +99,8 @@
           tooltipEvent="hover"
         />
         <label for="iam_user_search_criteria_first_name">{{ 'USER.FIRSTNAME' | translate }}</label>
-      </span>
-      <span *ocxAdvanced class="p-float-label">
+      </p-floatlabel>
+      <p-floatlabel *ocxAdvanced>
         <input
           id="iam_user_search_criteria_last_name"
           pInputText
@@ -113,8 +113,8 @@
           tooltipEvent="hover"
         />
         <label for="iam_user_search_criteria_last_name">{{ 'USER.LASTNAME' | translate }}</label>
-      </span>
-      <span *ocxAdvanced class="p-float-label">
+      </p-floatlabel>
+      <p-floatlabel *ocxAdvanced>
         <input
           id="iam_user_search_criteria_email"
           pInputText
@@ -127,7 +127,7 @@
           tooltipEvent="hover"
         />
         <label for="iam_user_search_criteria_email">{{ 'USER.EMAIL' | translate }}</label>
-      </span>
+      </p-floatlabel>
     </div>
   </ocx-search-header>
 

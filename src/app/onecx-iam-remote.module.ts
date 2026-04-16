@@ -59,6 +59,8 @@ const routes: Routes = [
     }),
     { provide: SLOT_SERVICE, useExisting: SlotService },
     provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
+    provideTranslationPathFromMeta(import.meta.url, 'onecx-angular-accelerator/assets/i18n/'),
+    provideTranslationPathFromMeta(import.meta.url, 'onecx-angular-accelerator/assets/i18n/primeng/'),
     provideTranslationConnectionService(),
     provideHttpClient(withInterceptorsFromDi()),
     providePortalDialogService(),

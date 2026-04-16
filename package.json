@@ -57,6 +57,7 @@
     "@onecx/angular-auth": "6.19.0",
     "@onecx/angular-integration-interface": "6.19.0",
     "@onecx/angular-remote-components": "6.19.0",
+    "@onecx/angular-standalone-shell": "^6.19.0",
     "@onecx/angular-testing": "6.19.0",
     "@onecx/angular-utils": "6.19.0",
     "@onecx/angular-webcomponents": "6.19.0",

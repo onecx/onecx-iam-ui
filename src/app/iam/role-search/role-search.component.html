@@ -9,7 +9,7 @@
   >
     <div id="iam_role_search_criteria" [formGroup]="searchCriteriaForm" class="flex flex-wrap gap-4 row-gap-3">
       <ng-container *ngIf="provider$ | async as provider">
-        <span class="p-float-label">
+        <p-floatlabel>
           <p-dropdown
             id="iam_role_search_criteria_provider"
             styleClass="w-full input-field-correction"
@@ -31,8 +31,8 @@
           <label class="ocx-required-label" for="iam_role_search_criteria_provider">
             {{ 'DIALOG.SEARCH.CRITERIA.PROVIDER' | translate }}
           </label>
-        </span>
-        <span class="p-float-label">
+        </p-floatlabel>
+        <p-floatlabel>
           <p-dropdown
             id="iam_role_search_criteria_issuer"
             styleClass="w-full input-field-correction"
@@ -54,9 +54,9 @@
           <label class="ocx-required-label" for="iam_role_search_criteria_issuer">
             {{ 'DIALOG.SEARCH.CRITERIA.DOMAIN' | translate }}
           </label>
-        </span>
+        </p-floatlabel>
       </ng-container>
-      <span class="p-float-label">
+      <p-floatlabel>
         <input
           id="iam_role_search_criteria_role_name"
           pInputText
@@ -69,7 +69,7 @@
           tooltipEvent="hover"
         />
         <label for="iam_role_search_criteria_role_name">{{ 'ROLE.CRITERIA' | translate }}</label>
-      </span>
+      </p-floatlabel>
     </div>
   </ocx-search-header>
 

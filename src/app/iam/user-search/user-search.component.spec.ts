@@ -441,6 +441,7 @@ describe('UserSearchComponent', () => {
   describe('UI actions', () => {
     it('should call detail dialog', () => {
       component.searchCriteriaForm.controls['issuer'].setValue(domain1.issuer!)
+      component.userViewPermission = true
       const mockEvent = new MouseEvent('click')
 
       component.onDetail(mockEvent, user1)
