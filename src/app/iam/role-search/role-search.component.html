@@ -101,6 +101,8 @@
       [data]="$any(roles)"
       [layout]="viewMode"
       [supportedViewLayouts]="['grid', 'list']"
+      [columns]="sortColumns"
+      [displayedColumnKeys]="sortColumnKeys"
       [emptyResultsMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
       [clientSideFiltering]="true"
       [clientSideSorting]="true"

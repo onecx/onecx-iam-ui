@@ -114,6 +114,11 @@
           "LASTNAME": "Nachname, Suche nach Namensteil unterstützt",
           "FIRSTNAME": "Vorname, Suche nach Namensteil unterstützt",
           "EMAIL": "E-Mail Adresse, Suche nach Adressteil unterstützt"
+        },
+        "FILTER": {
+          "PLACEHOLDER": "Filtern",
+          "TOOLTIP": "Angezeigte Ergebnisse filtern",
+          "CLEAR": "Filter löschen"
         }
       }
     },

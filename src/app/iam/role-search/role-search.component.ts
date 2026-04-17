@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core'
 import { finalize, map, of, Observable, catchError } from 'rxjs'
 import { DataView } from 'primeng/dataview'
 
-import { Action, DataSortDirection } from '@onecx/angular-accelerator'
+import { Action, ColumnType, DataSortDirection, DataTableColumn } from '@onecx/angular-accelerator'
 
 import {
   AdminInternalAPIService,
@@ -43,6 +43,8 @@ export class RoleSearchComponent implements OnInit {
   public filter: string | undefined
   public sortField = 'name'
   public sortOrder = 1
+  public sortColumns: DataTableColumn[] = []
+  public sortColumnKeys: string[] = []
   public searchCriteriaForm: FormGroup<RoleSearchCriteriaForm>
   public domains: Domain[] = []
   public provider$: Observable<Provider[]> | undefined
@@ -66,6 +68,15 @@ export class RoleSearchComponent implements OnInit {
       provider: new FormControl<string | null>(null, [Validators.required]),
       issuer: new FormControl<string | null>(null, [Validators.required])
     })
+    this.sortColumns = [
+      {
+        columnType: ColumnType.STRING,
+        nameKey: 'ROLE.NAME',
+        id: 'name',
+        sortable: true
+      }
+    ]
+    this.sortColumnKeys = this.sortColumns.map((c) => c.id)
   }
 
   ngOnInit(): void {

@@ -114,6 +114,11 @@
           "LASTNAME": "Last name, Search by part of name supported",
           "FIRSTNAME": "First name, Search by part of name supported",
           "EMAIL": "E-Mail Adresse, Search by part of address supported"
+        },
+        "FILTER": {
+          "PLACEHOLDER": "Filter",
+          "TOOLTIP": "Filter displayed results",
+          "CLEAR": "Clear filter"
         }
       }
     },

@@ -369,17 +369,121 @@ describe('UserSearchComponent', () => {
     })
   })
 
-  describe('filter', () => {
-    it('should update filter and and sort Field', () => {
-      const filter = 'testFilter'
+  describe('global filter', () => {
+    it('should update filterText on onGlobalFilter', () => {
+      const filterValue = 'testFilter'
 
-      component.onFilterChange(filter)
+      component['rawSearchResults'] = [user1, user2]
+      component.onGlobalFilter(filterValue)
 
-      expect(component.filter).toBe(filter)
+      expect(component.filterText).toBe(filterValue)
+    })
 
-      component.onSortChange('field')
+    it('should filter users by username on onGlobalFilter', (done) => {
+      component['rawSearchResults'] = [user1, user2]
 
-      expect(component.sortField).toBe('field')
+      component.onGlobalFilter('username1')
+
+      component.users$?.subscribe({
+        next: (users) => {
+          expect(users.length).toBe(1)
+          expect(users[0]).toBe(user1)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should filter users by firstName on onGlobalFilter', (done) => {
+      component['rawSearchResults'] = [user1, user2]
+
+      component.onGlobalFilter('first2')
+
+      component.users$?.subscribe({
+        next: (users) => {
+          expect(users.length).toBe(1)
+          expect(users[0]).toBe(user2)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should filter users by lastName on onGlobalFilter', (done) => {
+      component['rawSearchResults'] = [user1, user2]
+
+      component.onGlobalFilter('last1')
+
+      component.users$?.subscribe({
+        next: (users) => {
+          expect(users.length).toBe(1)
+          expect(users[0]).toBe(user1)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should filter users by email on onGlobalFilter', (done) => {
+      component['rawSearchResults'] = [user1, user2]
+
+      component.onGlobalFilter('em@ail2')
+
+      component.users$?.subscribe({
+        next: (users) => {
+          expect(users.length).toBe(1)
+          expect(users[0]).toBe(user2)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should perform case-insensitive filtering', (done) => {
+      component['rawSearchResults'] = [user1, user2]
+
+      component.onGlobalFilter('USERNAME1')
+
+      component.users$?.subscribe({
+        next: (users) => {
+          expect(users.length).toBe(1)
+          expect(users[0]).toBe(user1)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should return all users on empty filter string', (done) => {
+      component['rawSearchResults'] = [user1, user2]
+
+      component.onGlobalFilter('')
+
+      component.users$?.subscribe({
+        next: (users) => {
+          expect(users.length).toBe(2)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should clear filter and restore all results on onClearGlobalFilter', (done) => {
+      component['rawSearchResults'] = [user1, user2]
+      component.filterText = 'username1'
+
+      component.onClearGlobalFilter()
+
+      expect(component.filterText).toBe('')
+      component.users$?.subscribe({
+        next: (users) => {
+          expect(users.length).toBe(2)
+          expect(users[0]).toBe(user1)
+          expect(users[1]).toBe(user2)
+          done()
+        },
+        error: done.fail
+      })
     })
 
     it('should update viewMode onLayoutChange', () => {
@@ -388,16 +492,38 @@ describe('UserSearchComponent', () => {
       expect(component.viewMode).toBe('grid')
     })
 
-    it('should update filter and call dv.filter onFilterChange', () => {
-      const filter = 'testFilter'
+    it('should not change viewMode on invalid layout', () => {
+      component.viewMode = 'list'
 
-      component.onFilterChange(filter)
+      component.onLayoutChange('table' as any)
 
-      expect(component.filter).toBe(filter)
+      expect(component.viewMode).toBe('list')
     })
   })
 
   describe('sort', () => {
+    it('should update sortField from string parameter', () => {
+      component.onSortChange('firstName')
+
+      expect(component.sortField).toBe('firstName')
+    })
+
+    it('should update sortField from sort object with field property', () => {
+      const sortObj = { field: 'email', order: 1 }
+
+      component.onSortChange(sortObj)
+
+      expect(component.sortField).toBe('email')
+    })
+
+    it('should default to username when sort object has no field', () => {
+      const sortObj = { order: 1 }
+
+      component.onSortChange(sortObj)
+
+      expect(component.sortField).toBe('username')
+    })
+
     it('should update sortOrder based on asc boolean onSortDirChange', () => {
       component.onSortDirChange(true)
       expect(component.sortOrder).toBe(-1)
@@ -414,13 +540,17 @@ describe('UserSearchComponent', () => {
       expect(routerSpy.navigate).toHaveBeenCalledWith(['./roles'], { relativeTo: routeMock })
     })
 
-    it('should reset roleSearchCriteriaGroup onSearchReset is called', () => {
+    it('should reset search criteria, filter, and results on onSearchReset', () => {
       component.searchCriteriaForm = searchForm
+      component.filterText = 'testFilter'
+      component['rawSearchResults'] = [user1, user2]
       spyOn(searchForm, 'reset').and.callThrough()
 
       component.onSearchReset()
 
       expect(component.searchCriteriaForm.reset).toHaveBeenCalled()
+      expect(component.filterText).toBe('')
+      expect(component['rawSearchResults']).toBeUndefined()
     })
 
     it('should prepare action buttons with translated labels and tooltips', () => {

@@ -1,14 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
-import { finalize, map, of, Observable, Subject, catchError } from 'rxjs'
+import { finalize, map, of, Observable, Subject, catchError, tap } from 'rxjs'
 import { PrimeIcons } from 'primeng/api'
-import { DataView } from 'primeng/dataview'
 
 import { SlotService } from '@onecx/angular-remote-components'
 import { UserService } from '@onecx/angular-integration-interface'
-import { Action, DataSortDirection, PortalDialogService } from '@onecx/angular-accelerator'
+import { Action, DataSortDirection, PortalDialogService, DataTableColumn, ColumnType } from '@onecx/angular-accelerator'
 
 import { limitText, sortItemsByDisplayName } from 'src/app/shared/utils'
 import {
@@ -44,13 +43,16 @@ export class UserSearchComponent implements OnInit {
   public exceptionKey: string | undefined
   public displayDetailDialog = false
   public viewMode: 'list' | 'grid' = 'grid'
-  public filter: string | undefined
+  public filterText = ''
+  private rawSearchResults: User[] | undefined = undefined
   public sortField = 'username'
   public sortOrder = 1
   public searchCriteriaForm: FormGroup<UserSearchCriteriaForm>
   public domains: Domain[] = []
   public limitText = limitText
   public userViewPermission = false // view permission?
+  public sortColumns: DataTableColumn[] = []
+  public sortColumnKeys: string[] = []
   // data
   public actions$: Observable<Action[]> | undefined
   public users$: Observable<User[]> | undefined
@@ -59,8 +61,6 @@ export class UserSearchComponent implements OnInit {
   public provider: Provider | undefined
   public permissionsSlotName = 'onecx-iam-user-permissions'
   public isComponentDefined$: Observable<boolean>
-
-  @ViewChild(DataView) dv: DataView | undefined
 
   get sortDirectionEnum(): DataSortDirection {
     if (this.sortOrder === -1) return DataSortDirection.ASCENDING
@@ -90,6 +90,28 @@ export class UserSearchComponent implements OnInit {
       provider: new FormControl<string | null>(null, [Validators.required]),
       issuer: new FormControl<string | null>(null, [Validators.required])
     })
+    // Initialize sort columns for users
+    this.sortColumns = [
+      {
+        columnType: ColumnType.STRING,
+        nameKey: 'USER.FIRSTNAME',
+        id: 'firstName',
+        sortable: true
+      },
+      {
+        columnType: ColumnType.STRING,
+        nameKey: 'USER.LASTNAME',
+        id: 'lastName',
+        sortable: true
+      },
+      {
+        columnType: ColumnType.STRING,
+        nameKey: 'USER.USERNAME',
+        id: 'username',
+        sortable: true
+      }
+    ]
+    this.sortColumnKeys = this.sortColumns.map((c) => c.id)
   }
 
   ngOnInit(): void {
@@ -163,9 +185,14 @@ export class UserSearchComponent implements OnInit {
     // shrink criteria if user id is used
     if (usc.userId) usc = { userId: usc.userId, issuer: usc.issuer, pageSize: usc.pageSize }
 
+    this.filterText = ''
+    this.rawSearchResults = undefined
     this.loading = true
     this.users$ = this.iamAdminApi.searchUsersByCriteria({ userSearchCriteria: usc }).pipe(
       map((response: UserPageResult) => response.stream ?? []),
+      tap((users) => {
+        this.rawSearchResults = users
+      }),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.USER'
         console.error('searchUsersByCriteria', err)
@@ -211,10 +238,30 @@ export class UserSearchComponent implements OnInit {
     if (viewMode === 'table') return
     this.viewMode = viewMode
   }
-  public onFilterChange(filters: any): void {
-    // filters is now Filter[] from InteractiveDataViewComponent
-    // The component handles filtering internally, so we just need to update state if needed
-    this.filter = filters?.toString() || ''
+  public onGlobalFilter(value: string): void {
+    this.filterText = value
+    if (this.rawSearchResults !== undefined) {
+      this.users$ = of(this.applyFilter(this.rawSearchResults, value))
+    }
+  }
+
+  public onClearGlobalFilter(): void {
+    this.filterText = ''
+    if (this.rawSearchResults !== undefined) {
+      this.users$ = of(this.rawSearchResults)
+    }
+  }
+
+  private applyFilter(users: User[], filter: string): User[] {
+    if (!filter) return users
+    const f = filter.toLowerCase()
+    return users.filter(
+      (u) =>
+        u.username?.toLowerCase().includes(f) ||
+        u.firstName?.toLowerCase().includes(f) ||
+        u.lastName?.toLowerCase().includes(f) ||
+        u.email?.toLowerCase().includes(f)
+    )
   }
   public onSortChange(sort: any): void {
     // sort can be a string (from old tests) or Sort object from InteractiveDataViewComponent { field, order }
@@ -222,6 +269,19 @@ export class UserSearchComponent implements OnInit {
       this.sortField = sort
     } else {
       this.sortField = sort?.field || 'username'
+    }
+  }
+  public onSortColumnChange(columnId: string): void {
+    this.sortField = columnId
+  }
+  public onSortDirectionChange(direction: DataSortDirection): void {
+    // Map DataSortDirection to sortOrder: ASCENDING = -1, DESCENDING = 1, NONE = 1
+    if (direction === DataSortDirection.ASCENDING) {
+      this.sortOrder = -1
+    } else if (direction === DataSortDirection.DESCENDING) {
+      this.sortOrder = 1
+    } else {
+      this.sortOrder = 1
     }
   }
   public onSortDirChange(asc: boolean): void {
@@ -245,6 +305,8 @@ export class UserSearchComponent implements OnInit {
     this.searchCriteriaForm.reset()
     this.searchCriteriaForm.enable()
     this.users$ = of([])
+    this.rawSearchResults = undefined
+    this.filterText = ''
   }
 
   public onHideDetailDialog(): void {
