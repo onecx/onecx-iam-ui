@@ -101,7 +101,11 @@
         "HEADER": "IDM Roles",
         "SUBHEADER": "Roles in Identity Management (IDM)",
         "LABEL": "Roles",
-        "TOOLTIP": "Search Roles in Identity Management (IDM)"
+        "TOOLTIP": "Search Roles in Identity Management (IDM)",
+        "FILTER": {
+          "PLACEHOLDER": "Filter",
+          "CLEAR": "Clear filter"
+        }
       },
       "USER": {
         "HEADER": "IDM Users",
@@ -117,7 +121,7 @@
         },
         "FILTER": {
           "PLACEHOLDER": "Filter",
-          "TOOLTIP": "Filter displayed results",
+          "TOOLTIP": "Filter for User name, Last name, First name",
           "CLEAR": "Clear filter"
         }
       }

@@ -424,10 +424,10 @@ describe('UserSearchComponent', () => {
       })
     })
 
-    it('should filter users by email on onGlobalFilter', (done) => {
+    it('should filter users by username on onGlobalFilter', (done) => {
       component['rawSearchResults'] = [user1, user2]
 
-      component.onGlobalFilter('em@ail2')
+      component.onGlobalFilter('username2')
 
       component.users$?.subscribe({
         next: (users) => {

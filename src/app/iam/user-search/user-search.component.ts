@@ -38,6 +38,7 @@ export interface UserSearchCriteriaForm {
 })
 export class UserSearchComponent implements OnInit {
   private readonly destroy$ = new Subject()
+  private readonly filterFieldLabelKeys = ['USER.USERNAME', 'USER.LASTNAME', 'USER.FIRSTNAME']
   // dialog
   public loading = true
   public exceptionKey: string | undefined
@@ -53,6 +54,7 @@ export class UserSearchComponent implements OnInit {
   public userViewPermission = false // view permission?
   public sortColumns: DataTableColumn[] = []
   public sortColumnKeys: string[] = []
+  public filterTooltip$: Observable<string>
   // data
   public actions$: Observable<Action[]> | undefined
   public users$: Observable<User[]> | undefined
@@ -78,6 +80,12 @@ export class UserSearchComponent implements OnInit {
     private readonly iamAdminApi: AdminInternalAPIService
   ) {
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.permissionsSlotName)
+    this.filterTooltip$ = this.translate.stream(['ACTIONS.DATAVIEW.FILTER_OF', ...this.filterFieldLabelKeys]).pipe(
+      map((translations) => {
+        const fields = this.filterFieldLabelKeys.map((key) => translations[key]).join(', ')
+        return `${translations['ACTIONS.DATAVIEW.FILTER_OF']}${fields}`
+      })
+    )
     user.hasPermission('USER#VIEW').then((hasPermission) => {
       this.userViewPermission = hasPermission
     })
@@ -259,8 +267,7 @@ export class UserSearchComponent implements OnInit {
       (u) =>
         u.username?.toLowerCase().includes(f) ||
         u.firstName?.toLowerCase().includes(f) ||
-        u.lastName?.toLowerCase().includes(f) ||
-        u.email?.toLowerCase().includes(f)
+        u.lastName?.toLowerCase().includes(f)
     )
   }
   public onSortChange(sort: any): void {

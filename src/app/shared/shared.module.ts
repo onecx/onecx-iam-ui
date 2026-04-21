@@ -5,7 +5,7 @@ import { TranslateModule } from '@ngx-translate/core'
 
 import { DialogModule } from 'primeng/dialog'
 import { ButtonModule } from 'primeng/button'
-import { DropdownModule } from 'primeng/dropdown'
+import { SelectModule } from 'primeng/select'
 import { InputTextModule } from 'primeng/inputtext'
 import { MessageModule } from 'primeng/message'
 import { TextareaModule } from 'primeng/textarea'
@@ -14,6 +14,10 @@ import { TabViewModule } from 'primeng/tabview'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { ToastModule } from 'primeng/toast'
 import { TooltipModule } from 'primeng/tooltip'
+import { BadgeModule } from 'primeng/badge'
+import { CardModule } from 'primeng/card'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 
 import { AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
 import {
@@ -37,11 +41,15 @@ export function apiConfigProvider(configService: ConfigurationService, appStateS
   declarations: [],
   imports: [
     CommonModule,
+    BadgeModule,
     ButtonModule,
+    CardModule,
     DialogModule,
-    DropdownModule,
+    SelectModule,
     FormsModule,
     FloatLabelModule,
+    InputGroupModule,
+    InputGroupAddonModule,
     InputTextModule,
     MessageModule,
     TextareaModule,
@@ -57,11 +65,15 @@ export function apiConfigProvider(configService: ConfigurationService, appStateS
   ],
   exports: [
     CommonModule,
+    BadgeModule,
     ButtonModule,
+    CardModule,
     DialogModule,
-    DropdownModule,
+    SelectModule,
     FormsModule,
     FloatLabelModule,
+    InputGroupModule,
+    InputGroupAddonModule,
     InputTextModule,
     MessageModule,
     TextareaModule,

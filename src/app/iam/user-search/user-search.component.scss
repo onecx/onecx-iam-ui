@@ -5,34 +5,22 @@
 @include correct-search-criteria;
 @include displaying-text-responsive;
 @include media-md-h-3-5;
+@include dataview-grid-layout-fix;
+@include dataview-card-hover('p-card.cursor-pointer');
+@include dataview-list-split-zebra-rows('section');
 
 :host ::ng-deep {
   .card-badge-left.badge-position {
     top: 13px;
     left: 10px;
   }
-}
 
-@media screen and (min-width: 768px) {
-  :host ::ng-deep {
-    .p-dataview-list .p-dataview-content .p-grid > div {
-      &:nth-child(4n + 1),
-      &:nth-child(4n + 2) {
-        background-color: #f8f9fa;
-      }
-      &:nth-child(4n + 1),
-      &:nth-child(4n + 3) {
-        border-right: var(--data-view-list-item-border);
-      }
-    }
+  .p-badge-dot {
+    padding: var(--onecx-iam-onecx-iam-ui-badge-padding);
+    border-radius: var(--onecx-iam-onecx-iam-ui-badge-border-radius);
   }
-}
-@media screen and (max-width: 768px) {
-  :host ::ng-deep {
-    .p-dataview-list .p-dataview-content .p-grid > div {
-      &:nth-child(odd) {
-        background-color: #f8f9fa;
-      }
-    }
+  .p-badge {
+    align-items: center;
+    background: transparent;
   }
 }

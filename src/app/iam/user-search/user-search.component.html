@@ -9,8 +9,8 @@
   >
     <div id="iam_user_search_criteria" [formGroup]="searchCriteriaForm" class="flex flex-wrap gap-3">
       <ng-container *ngIf="provider$ | async as provider">
-        <p-floatlabel>
-          <p-dropdown
+        <p-floatlabel variant="on" class="min-w-min w-full w-11rem">
+          <p-select
             id="iam_user_search_criteria_provider"
             styleClass="w-full input-field-correction"
             formControlName="provider"
@@ -27,13 +27,13 @@
             tooltipPosition="top"
             tooltipEvent="hover"
           >
-          </p-dropdown>
+          </p-select>
           <label class="ocx-required-label" for="iam_user_search_criteria_provider">
             {{ 'DIALOG.SEARCH.CRITERIA.PROVIDER' | translate }}
           </label>
         </p-floatlabel>
-        <p-floatlabel>
-          <p-dropdown
+        <p-floatlabel variant="on" class="min-w-min w-full w-8rem">
+          <p-select
             id="iam_user_search_criteria_issuer"
             styleClass="w-full input-field-correction"
             formControlName="issuer"
@@ -50,13 +50,13 @@
             tooltipPosition="top"
             tooltipEvent="hover"
           >
-          </p-dropdown>
+          </p-select>
           <label class="ocx-required-label" for="iam_user_search_criteria_issuer">
             {{ 'DIALOG.SEARCH.CRITERIA.DOMAIN' | translate }}
           </label>
         </p-floatlabel>
       </ng-container>
-      <p-floatlabel>
+      <p-floatlabel variant="on">
         <input
           id="iam_user_search_criteria_user_name"
           pInputText
@@ -70,7 +70,7 @@
         />
         <label for="iam_user_search_criteria_user_name">{{ 'USER.USERNAME' | translate }}</label>
       </p-floatlabel>
-      <p-floatlabel *ocxAdvanced>
+      <p-floatlabel variant="on" *ocxAdvanced>
         <input
           #userId
           id="iam_user_search_criteria_user_id"
@@ -86,7 +86,7 @@
         />
         <label for="iam_user_search_criteria_user_id">{{ 'USER.ID' | translate }}</label>
       </p-floatlabel>
-      <p-floatlabel *ocxAdvanced>
+      <p-floatlabel variant="on" *ocxAdvanced>
         <input
           id="iam_user_search_criteria_first_name"
           pInputText
@@ -100,7 +100,7 @@
         />
         <label for="iam_user_search_criteria_first_name">{{ 'USER.FIRSTNAME' | translate }}</label>
       </p-floatlabel>
-      <p-floatlabel *ocxAdvanced>
+      <p-floatlabel variant="on" *ocxAdvanced>
         <input
           id="iam_user_search_criteria_last_name"
           pInputText
@@ -114,7 +114,7 @@
         />
         <label for="iam_user_search_criteria_last_name">{{ 'USER.LASTNAME' | translate }}</label>
       </p-floatlabel>
-      <p-floatlabel *ocxAdvanced>
+      <p-floatlabel variant="on" *ocxAdvanced>
         <input
           id="iam_user_search_criteria_email"
           pInputText
@@ -173,11 +173,11 @@
     >
       <!-- GLOBAL FILTER -->
       <ng-template #topCenter>
-        <div class="p-inputgroup w-auto" style="display: flex; align-items: center">
-          <span class="p-inputgroup-addon">
+        <p-inputgroup class="w-auto">
+          <p-inputgroup-addon>
             <i class="pi pi-filter" aria-hidden="true"></i>
-          </span>
-          <p-floatlabel>
+          </p-inputgroup-addon>
+          <p-floatlabel variant="on">
             <input
               #dvFilterInput
               id="iam_user_search_filter"
@@ -185,7 +185,7 @@
               pInputText
               [value]="filterText"
               (input)="onGlobalFilter(dvFilterInput.value)"
-              [pTooltip]="'DIALOG.SEARCH.USER.FILTER.TOOLTIP' | translate"
+              [pTooltip]="(filterTooltip$ | async) ?? ''"
               tooltipPosition="top"
               tooltipEvent="hover"
               [attr.aria-label]="'DIALOG.SEARCH.USER.FILTER.PLACEHOLDER' | translate"
@@ -194,74 +194,63 @@
               {{ 'DIALOG.SEARCH.USER.FILTER.PLACEHOLDER' | translate }}
             </label>
           </p-floatlabel>
-          <button
-            type="button"
-            class="p-inputgroup-addon pseudo-button bg-primary cursor-pointer"
+          <p-button
+            icon="pi pi-filter-slash"
             (click)="dvFilterInput.value = ''; onClearGlobalFilter()"
             [attr.aria-label]="'DIALOG.SEARCH.USER.FILTER.CLEAR' | translate"
-            style="border: 1px solid var(--surface-border-color)"
-          >
-            <i class="pi pi-filter-slash" aria-hidden="true"></i>
-          </button>
-        </div>
+          />
+        </p-inputgroup>
       </ng-template>
       <!-- LIST -->
       <ng-template let-user pTemplate="listItem">
-        <section class="col-12 md:col-6 p-0" [attr.aria-label]="'DIALOG.SEARCH.RESULTS' | translate">
-          <article
-            [id]="'iam_user_search_data_list_0'"
-            class="relative w-full h-3rem md:h-3-5rem py-1 md:py-2 pl-6 pr-3 flex flex-column justify-content-between"
-            [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewPermission }"
-            (click)="onDetail($event, user)"
-            (keydown.enter)="onDetail($event, user)"
-            [attr.aria-label]="('BREADCRUMBS.USER' | translate) + ': ' + user.username"
-            [pTooltip]="user.username.length < 50 ? '' : user.username"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          >
-            <!-- BADGES -->
-            <ng-container *ngIf="isComponentDefined$ | async">
-              <a
-                *ocxIfPermission="'PERMISSION#VIEW'"
-                tabindex="0"
-                [id]="'iam_user_search_data_list_0_action_permissions'"
-                class="card-badge-left badge-position pi pi-lock button-icon-only"
-                (click)="onUserPermissions($event, user)"
-                [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
-                [pTooltip]="'DIALOG.PERMISSIONS.TOOLTIP' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-                role="link"
-              ></a>
-            </ng-container>
-            <div [id]="'iam_user_search_data_list_0_user_name'" class="font-bold text-responsive" aria-hidden="true">
-              {{ user.username }}
-            </div>
-            <div [id]="'iam_user_search_data_list_0_name'" class="text-xs text-responsive" role="note">
-              {{ prepareDisplayName(user, 30, 150) }}
-            </div>
-          </article>
-        </section>
+        <article
+          [id]="'iam_user_search_data_list_0'"
+          class="relative col-12 sm:col-6 h-3rem md:h-3-5rem py-1 md:py-2 pl-6 pr-3 flex flex-column justify-content-between"
+          [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewPermission }"
+          (click)="onDetail($event, user)"
+          (keydown.enter)="onDetail($event, user)"
+          [attr.aria-label]="('BREADCRUMBS.USER' | translate) + ': ' + user.username"
+          [pTooltip]="user.username.length < 50 ? '' : user.username"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        >
+          <!-- BADGES -->
+          <ng-container *ngIf="isComponentDefined$ | async">
+            <a
+              *ocxIfPermission="'PERMISSION#VIEW'"
+              tabindex="0"
+              [id]="'iam_user_search_data_list_0_action_permissions'"
+              class="card-badge-left badge-position"
+              (click)="onUserPermissions($event, user)"
+              [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
+              [pTooltip]="'DIALOG.PERMISSIONS.TOOLTIP' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+              role="link"
+            >
+              <p-badge severity="secondary" styleClass="pi pi-lock" />
+            </a>
+          </ng-container>
+          <div [id]="'iam_user_search_data_list_0_user_name'" class="font-bold text-responsive" aria-hidden="true">
+            {{ user.username }}
+          </div>
+          <div [id]="'iam_user_search_data_list_0_name'" class="text-xs text-responsive" role="note">
+            {{ prepareDisplayName(user, 30, 150) }}
+          </div>
+        </article>
       </ng-template>
 
       <!-- GRID -->
       <ng-template let-user pTemplate="gridItem">
-        <section
-          [id]="'iam_user_search_data_grid_0'"
-          class="col-12 sm:col-6 lg:col-3 xl:col-3 px-2 sm:px-3 py-1 md:py-2"
-          [attr.aria-label]="'DIALOG.SEARCH.RESULTS' | translate"
-        >
-          <article
-            [tabIndex]="0"
+        <div [id]="'iam_user_search_data_grid_0'" class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-2">
+          <p-card
             [id]="'iam_user_search_data_grid_anchor_0'"
-            class="card relative w-full h-3rem md:h-3-5rem py-1 md:py-2 flex flex-column justify-content-between"
-            [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewPermission }"
+            [ngClass]="{ 'cursor-pointer': userViewPermission }"
+            styleClass="w-full h-full relative"
+            [attr.tabindex]="0"
             (click)="onDetail($event, user)"
             (keydown.enter)="onDetail($event, user)"
             [attr.aria-label]="('BREADCRUMBS.USER' | translate) + ': ' + user.username"
-            [pTooltip]="user.username.length < 24 ? '' : user.username"
-            tooltipPosition="top"
-            tooltipEvent="hover"
           >
             <!-- BADGES -->
             <ng-container *ngIf="isComponentDefined$ | async">
@@ -269,23 +258,34 @@
                 *ocxIfPermission="'PERMISSION#VIEW'"
                 tabindex="0"
                 [id]="'iam_user_search_data_grid_0_action_permissions'"
-                class="card-badge-right badge-1 pi pi-lock button-icon-only"
+                class="card-badge-right badge-1"
                 (click)="onUserPermissions($event, user)"
                 [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
                 [pTooltip]="'DIALOG.PERMISSIONS.TOOLTIP' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
                 role="link"
-              ></a>
+              >
+                <p-badge severity="secondary" styleClass="pi pi-lock" />
+              </a>
             </ng-container>
-            <div [id]="'iam_user_search_data_grid_0_user_name'" class="font-bold text-responsive" aria-hidden="true">
-              {{ user.username }}
+            <div class="flex flex-column gap-2 text-center justify-content-between h-full">
+              <div
+                [id]="'iam_user_search_data_grid_0_user_name'"
+                class="font-bold text-responsive"
+                aria-hidden="true"
+                [pTooltip]="user.username.length < 24 ? '' : user.username"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                {{ user.username }}
+              </div>
+              <div [id]="'iam_user_search_data_grid_0_name'" class="text-xs text-responsive" role="note">
+                {{ prepareDisplayName(user, 20, 42) }}
+              </div>
             </div>
-            <div [id]="'iam_user_search_data_grid_0_name'" class="text-xs text-responsive" role="note">
-              {{ prepareDisplayName(user, 20, 42) }}
-            </div>
-          </article>
-        </section>
+          </p-card>
+        </div>
       </ng-template>
     </ocx-interactive-data-view>
   </ocx-content>
