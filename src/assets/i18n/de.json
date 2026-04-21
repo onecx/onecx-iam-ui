@@ -121,7 +121,6 @@
         },
         "FILTER": {
           "PLACEHOLDER": "Filter",
-          "TOOLTIP": "Filter für Benutzername, Nachname, Vorname",
           "CLEAR": "Filter löschen"
         }
       }

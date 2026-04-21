@@ -121,7 +121,6 @@
         },
         "FILTER": {
           "PLACEHOLDER": "Filter",
-          "TOOLTIP": "Filter for User name, Last name, First name",
           "CLEAR": "Clear filter"
         }
       }

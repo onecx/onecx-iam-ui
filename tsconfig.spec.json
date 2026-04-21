@@ -8,6 +8,6 @@
     "useDefineForClassFields": false
   },
   "files": ["src/test.ts", "src/polyfills.ts"],
-  "exclude": ["src/app/shared/generated/**/*", "node_modules", "v5-libs", "v6-libs"],
+  "exclude": ["src/app/shared/generated/**/*", "node_modules"],
   "include": ["**/*.spec.ts", "**/*.d.ts"]
 }
