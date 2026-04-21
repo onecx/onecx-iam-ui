@@ -4,14 +4,23 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule } from '@ngx-translate/core'
 
 import { DialogModule } from 'primeng/dialog'
+import { ButtonModule } from 'primeng/button'
+import { DropdownModule } from 'primeng/dropdown'
 import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
 import { TextareaModule } from 'primeng/textarea'
 import { ListboxModule } from 'primeng/listbox'
 import { TabViewModule } from 'primeng/tabview'
 import { ToastModule } from 'primeng/toast'
+import { TooltipModule } from 'primeng/tooltip'
 
 import { AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
-import { PortalApiConfiguration, provideThemeConfig } from '@onecx/angular-utils'
+import {
+  PortalApiConfiguration,
+  PortalPageComponent,
+  providePermissionService,
+  provideThemeConfig
+} from '@onecx/angular-utils'
 import { AngularRemoteComponentsModule } from '@onecx/angular-remote-components'
 import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
@@ -27,35 +36,46 @@ export function apiConfigProvider(configService: ConfigurationService, appStateS
   declarations: [],
   imports: [
     CommonModule,
+    ButtonModule,
     DialogModule,
+    DropdownModule,
     FormsModule,
     InputTextModule,
+    MessageModule,
     TextareaModule,
     ListboxModule,
     ReactiveFormsModule,
     TabViewModule,
     ToastModule,
+    TooltipModule,
     TranslateModule,
+    PortalPageComponent,
     AngularRemoteComponentsModule,
     AngularAcceleratorModule
   ],
   exports: [
     CommonModule,
+    ButtonModule,
     DialogModule,
+    DropdownModule,
     FormsModule,
     InputTextModule,
+    MessageModule,
     TextareaModule,
     ListboxModule,
     ReactiveFormsModule,
     TabViewModule,
     ToastModule,
+    TooltipModule,
     TranslateModule,
+    PortalPageComponent,
     AngularRemoteComponentsModule,
     AngularAcceleratorModule
   ],
   providers: [
     LabelResolver,
     { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] },
+    ...providePermissionService(),
     provideThemeConfig()
   ]
 })
