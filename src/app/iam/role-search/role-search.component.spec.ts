@@ -8,6 +8,7 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
+import { DataSortDirection } from '@onecx/angular-accelerator'
 
 import {
   AdminInternalAPIService,
@@ -250,7 +251,7 @@ describe('RoleSearchComponent', () => {
       })
     })
 
-    it('should search providers - successful without data', (done) => {
+    it('should search providers - error response', (done) => {
       const errorResponse = { status: 404, statusText: 'Not Found' }
       adminApiSpy.getAllProviders.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
@@ -318,12 +319,125 @@ describe('RoleSearchComponent', () => {
       expect(component.viewMode).toBe('list')
     })
 
+    it('should not change viewMode on table layout', () => {
+      component.viewMode = 'grid'
+
+      component.onLayoutChange('table' as any)
+
+      expect(component.viewMode).toBe('grid')
+    })
+
     it('should update filter and call dv.filter onFilterChange', () => {
       const filter = 'testFilter'
 
       component.onFilterChange(filter)
 
       expect(component.filter).toBe(filter)
+    })
+
+    it('should set filterText from onFilterChange when filterText is empty', () => {
+      component.filterText = ''
+
+      component.onFilterChange('newFilter')
+
+      expect(component.filter).toBe('newFilter')
+      expect(component.filterText).toBe('newFilter')
+    })
+
+    it('should not overwrite filterText from onFilterChange when filterText is set', () => {
+      component.filterText = 'existingFilter'
+
+      component.onFilterChange('newFilter')
+
+      expect(component.filter).toBe('newFilter')
+      expect(component.filterText).toBe('existingFilter')
+    })
+  })
+
+  describe('global filter', () => {
+    it('should filter roles by name on onGlobalFilter', (done) => {
+      component['rawSearchResults'] = [role1, role2]
+
+      component.onGlobalFilter('name1')
+
+      expect(component.filterText).toBe('name1')
+      expect(component.filter).toBe('name1')
+      component.roles$?.subscribe({
+        next: (roles) => {
+          expect(roles.length).toBe(1)
+          expect(roles[0]).toBe(role1)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should filter roles by description on onGlobalFilter', (done) => {
+      component['rawSearchResults'] = [role1, role2]
+
+      component.onGlobalFilter('descr2')
+
+      component.roles$?.subscribe({
+        next: (roles) => {
+          expect(roles.length).toBe(1)
+          expect(roles[0]).toBe(role2)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should return all roles on empty filter string', (done) => {
+      component['rawSearchResults'] = [role1, role2]
+
+      component.onGlobalFilter('')
+
+      component.roles$?.subscribe({
+        next: (roles) => {
+          expect(roles.length).toBe(2)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should not update roles$ when rawSearchResults is undefined', () => {
+      component['rawSearchResults'] = undefined
+      component.roles$ = undefined
+
+      component.onGlobalFilter('test')
+
+      expect(component.filterText).toBe('test')
+      expect(component.roles$).toBeUndefined()
+    })
+
+    it('should clear filter and restore all results on onClearGlobalFilter', (done) => {
+      component['rawSearchResults'] = [role1, role2]
+      component.filterText = 'name1'
+
+      component.onClearGlobalFilter()
+
+      expect(component.filterText).toBe('')
+      expect(component.filter).toBe('')
+      component.roles$?.subscribe({
+        next: (roles) => {
+          expect(roles.length).toBe(2)
+          expect(roles[0]).toBe(role1)
+          expect(roles[1]).toBe(role2)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should not update roles$ on onClearGlobalFilter when rawSearchResults is undefined', () => {
+      component['rawSearchResults'] = undefined
+      component.roles$ = undefined
+
+      component.onClearGlobalFilter()
+
+      expect(component.filterText).toBe('')
+      expect(component.roles$).toBeUndefined()
     })
   })
 
@@ -336,13 +450,65 @@ describe('RoleSearchComponent', () => {
       expect(component.sortOrder).toBe(1)
     })
 
-    it('should reset searchCriteriaForm onSearchReset is called', () => {
+    it('should update sortField from sort object with field property', () => {
+      const sortObj = { field: 'description', order: 1 }
+
+      component.onSortChange(sortObj)
+
+      expect(component.sortField).toBe('description')
+    })
+
+    it('should default to name when sort object has no field', () => {
+      const sortObj = { order: 1 }
+
+      component.onSortChange(sortObj)
+
+      expect(component.sortField).toBe('name')
+    })
+
+    it('should reset searchCriteriaForm, filter, and rawSearchResults on onSearchReset', () => {
       component.searchCriteriaForm = form
+      component.filterText = 'testFilter'
+      component.filter = 'testFilter'
+      component['rawSearchResults'] = [role1, role2]
       spyOn(form, 'reset').and.callThrough()
 
       component.onSearchReset()
 
       expect(component.searchCriteriaForm.reset).toHaveBeenCalled()
+      expect(component.filterText).toBe('')
+      expect(component.filter).toBe('')
+      expect(component['rawSearchResults']).toBeUndefined()
+    })
+  })
+
+  describe('sortDirectionEnum', () => {
+    it('should return ASCENDING when sortOrder is -1', () => {
+      component.sortOrder = -1
+      expect(component.sortDirectionEnum).toBe(DataSortDirection.ASCENDING)
+    })
+
+    it('should return DESCENDING when sortOrder is 1', () => {
+      component.sortOrder = 1
+      expect(component.sortDirectionEnum).toBe(DataSortDirection.DESCENDING)
+    })
+
+    it('should return NONE when sortOrder is 0', () => {
+      component.sortOrder = 0
+      expect(component.sortDirectionEnum).toBe(DataSortDirection.NONE)
+    })
+  })
+
+  describe('filterTooltip$', () => {
+    it('should emit a tooltip string with translated field names', (done) => {
+      component.filterTooltip$.subscribe({
+        next: (tooltip) => {
+          expect(tooltip).toBeTruthy()
+          expect(typeof tooltip).toBe('string')
+          done()
+        },
+        error: done.fail
+      })
     })
   })
 

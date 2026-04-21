@@ -9,7 +9,7 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
-import { PortalDialogService } from '@onecx/angular-accelerator'
+import { DataSortDirection, PortalDialogService } from '@onecx/angular-accelerator'
 
 import {
   AdminInternalAPIService,
@@ -315,7 +315,7 @@ describe('UserSearchComponent', () => {
       })
     })
 
-    it('should search providers - successful without data', (done) => {
+    it('should search providers - error response', (done) => {
       const errorResponse = { status: 404, statusText: 'Not Found' }
       adminApiSpy.getAllProviders.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
@@ -424,7 +424,7 @@ describe('UserSearchComponent', () => {
       })
     })
 
-    it('should filter users by username on onGlobalFilter', (done) => {
+    it('should filter users by username2 on onGlobalFilter', (done) => {
       component['rawSearchResults'] = [user1, user2]
 
       component.onGlobalFilter('username2')
@@ -530,6 +530,60 @@ describe('UserSearchComponent', () => {
 
       component.onSortDirChange(false)
       expect(component.sortOrder).toBe(1)
+    })
+
+    it('should update sortField via onSortColumnChange', () => {
+      component.onSortColumnChange('lastName')
+
+      expect(component.sortField).toBe('lastName')
+    })
+
+    it('should set sortOrder to -1 for ASCENDING direction', () => {
+      component.onSortDirectionChange(DataSortDirection.ASCENDING)
+
+      expect(component.sortOrder).toBe(-1)
+    })
+
+    it('should set sortOrder to 1 for DESCENDING direction', () => {
+      component.onSortDirectionChange(DataSortDirection.DESCENDING)
+
+      expect(component.sortOrder).toBe(1)
+    })
+
+    it('should set sortOrder to 1 for NONE direction', () => {
+      component.onSortDirectionChange(DataSortDirection.NONE)
+
+      expect(component.sortOrder).toBe(1)
+    })
+  })
+
+  describe('sortDirectionEnum', () => {
+    it('should return ASCENDING when sortOrder is -1', () => {
+      component.sortOrder = -1
+      expect(component.sortDirectionEnum).toBe(DataSortDirection.ASCENDING)
+    })
+
+    it('should return DESCENDING when sortOrder is 1', () => {
+      component.sortOrder = 1
+      expect(component.sortDirectionEnum).toBe(DataSortDirection.DESCENDING)
+    })
+
+    it('should return NONE when sortOrder is 0', () => {
+      component.sortOrder = 0
+      expect(component.sortDirectionEnum).toBe(DataSortDirection.NONE)
+    })
+  })
+
+  describe('filterTooltip$', () => {
+    it('should emit a tooltip string with translated field names', (done) => {
+      component.filterTooltip$.subscribe({
+        next: (tooltip) => {
+          expect(tooltip).toBeTruthy()
+          expect(typeof tooltip).toBe('string')
+          done()
+        },
+        error: done.fail
+      })
     })
   })
 
