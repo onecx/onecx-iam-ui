@@ -171,7 +171,7 @@
       (sorted)="onSortChange($event)"
     >
       <!-- LIST -->
-      <ng-template let-user="row" pTemplate="listItem">
+      <ng-template let-user pTemplate="listItem">
         <section class="p-grid p-nogutter grid grid-nogutter" [attr.aria-label]="'DIALOG.SEARCH.RESULTS' | translate">
           <article
             [id]="'iam_user_search_data_list_0'"
@@ -210,7 +210,7 @@
       </ng-template>
 
       <!-- GRID -->
-      <ng-template let-user="row" pTemplate="gridItem">
+      <ng-template let-user pTemplate="gridItem">
         <section class="p-grid p-nogutter grid grid-nogutter" [attr.aria-label]="'DIALOG.SEARCH.RESULTS' | translate">
           <div
             [id]="'iam_user_search_data_grid_0'"
