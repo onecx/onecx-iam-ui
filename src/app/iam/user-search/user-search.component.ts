@@ -8,8 +8,7 @@ import { DataView } from 'primeng/dataview'
 
 import { SlotService } from '@onecx/angular-remote-components'
 import { UserService } from '@onecx/angular-integration-interface'
-import { Action, DataViewControlTranslations, PortalDialogService } from '@onecx/portal-integration-angular'
-import { DataSortDirection } from '@onecx/angular-accelerator'
+import { Action, DataSortDirection, PortalDialogService } from '@onecx/angular-accelerator'
 
 import { limitText, sortItemsByDisplayName } from 'src/app/shared/utils'
 import {
@@ -35,7 +34,8 @@ export interface UserSearchCriteriaForm {
 @Component({
   selector: 'app-user-search',
   templateUrl: './user-search.component.html',
-  styleUrls: ['./user-search.component.scss']
+  styleUrls: ['./user-search.component.scss'],
+  standalone: false
 })
 export class UserSearchComponent implements OnInit {
   private readonly destroy$ = new Subject()
@@ -61,7 +61,6 @@ export class UserSearchComponent implements OnInit {
   public isComponentDefined$: Observable<boolean>
 
   @ViewChild(DataView) dv: DataView | undefined
-  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
 
   get sortDirectionEnum(): DataSortDirection {
     if (this.sortOrder === -1) return DataSortDirection.ASCENDING
@@ -79,7 +78,9 @@ export class UserSearchComponent implements OnInit {
     private readonly iamAdminApi: AdminInternalAPIService
   ) {
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.permissionsSlotName)
-    this.userViewPermission = user.hasPermission('USER#VIEW')
+    user.hasPermission('USER#VIEW').then((hasPermission) => {
+      this.userViewPermission = hasPermission
+    })
     this.searchCriteriaForm = new FormGroup<UserSearchCriteriaForm>({
       userId: new FormControl<string | null>(null),
       userName: new FormControl<string | null>(null),
@@ -92,7 +93,6 @@ export class UserSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.prepareDialogTranslations()
     this.prepareActionButtons()
     this.searchProviders()
   }
@@ -178,32 +178,6 @@ export class UserSearchComponent implements OnInit {
   /**
    * DIALOG
    */
-  private prepareDialogTranslations(): void {
-    this.dataViewControlsTranslations$ = this.translate
-      .get([
-        'USER.USERNAME',
-        'USER.LASTNAME',
-        'USER.FIRSTNAME',
-        'ACTIONS.DATAVIEW.FILTER_OF',
-        'ACTIONS.DATAVIEW.SORT_BY'
-      ])
-      .pipe(
-        map((data) => {
-          return {
-            filterInputTooltip:
-              data['ACTIONS.DATAVIEW.FILTER_OF'] +
-              data['USER.USERNAME'] +
-              ', ' +
-              data['USER.LASTNAME'] +
-              ', ' +
-              data['USER.FIRSTNAME'],
-            sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY'],
-            sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY']
-          } as DataViewControlTranslations
-        })
-      )
-  }
-
   private prepareActionButtons(): void {
     this.actions$ = this.translate.get(['DIALOG.SEARCH.ROLE.LABEL', 'DIALOG.SEARCH.ROLE.TOOLTIP']).pipe(
       map((data) => {

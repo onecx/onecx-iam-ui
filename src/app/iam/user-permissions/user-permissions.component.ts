@@ -5,7 +5,8 @@ import { SlotService } from '@onecx/angular-remote-components'
 
 @Component({
   selector: 'app-user-permissions',
-  templateUrl: './user-permissions.component.html'
+  templateUrl: './user-permissions.component.html',
+  standalone: false
 })
 export class UserPermissionsComponent {
   @Input() id: string | undefined = 'undefined' // why ever this is required

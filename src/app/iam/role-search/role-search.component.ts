@@ -5,8 +5,7 @@ import { TranslateService } from '@ngx-translate/core'
 import { finalize, map, of, Observable, catchError } from 'rxjs'
 import { DataView } from 'primeng/dataview'
 
-import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
-import { DataSortDirection } from '@onecx/angular-accelerator'
+import { Action, DataSortDirection } from '@onecx/angular-accelerator'
 
 import {
   AdminInternalAPIService,
@@ -28,7 +27,8 @@ export interface RoleSearchCriteriaForm {
 @Component({
   selector: 'app-role-search',
   templateUrl: './role-search.component.html',
-  styleUrls: ['./role-search.component.scss']
+  styleUrls: ['./role-search.component.scss'],
+  standalone: false
 })
 export class RoleSearchComponent implements OnInit {
   // detail
@@ -47,7 +47,6 @@ export class RoleSearchComponent implements OnInit {
   public domains: Domain[] = []
   public provider$: Observable<Provider[]> | undefined
 
-  public dataViewControlsTranslations: DataViewControlTranslations = {}
   @ViewChild(DataView) dv: DataView | undefined
 
   get sortDirectionEnum(): DataSortDirection {
@@ -70,7 +69,6 @@ export class RoleSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.prepareDialogTranslations()
     this.prepareActionButtons()
     this.searchProviders()
   }
@@ -137,25 +135,6 @@ export class RoleSearchComponent implements OnInit {
       }),
       finalize(() => (this.loading = false))
     )
-  }
-
-  /**
-   * DIALOG
-   */
-  private prepareDialogTranslations() {
-    this.translate
-      .get(['ROLE.NAME', 'ROLE.DESCRIPTION', 'ACTIONS.DATAVIEW.FILTER_OF', 'ACTIONS.DATAVIEW.SORT_BY'])
-      .pipe(
-        map((data) => {
-          this.dataViewControlsTranslations = {
-            filterInputTooltip:
-              data['ACTIONS.DATAVIEW.FILTER_OF'] + data['ROLE.NAME'] + ', ' + data['ROLE.DESCRIPTION'],
-            sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY'],
-            sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY']
-          }
-        })
-      )
-      .subscribe()
   }
 
   private prepareActionButtons(): void {

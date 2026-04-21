@@ -5,14 +5,13 @@ import { TranslateModule } from '@ngx-translate/core'
 
 import { DialogModule } from 'primeng/dialog'
 import { InputTextModule } from 'primeng/inputtext'
-import { InputTextareaModule } from 'primeng/inputtextarea'
+import { TextareaModule } from 'primeng/textarea'
 import { ListboxModule } from 'primeng/listbox'
 import { TabViewModule } from 'primeng/tabview'
 import { ToastModule } from 'primeng/toast'
 
 import { AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
-import { PortalCoreModule } from '@onecx/portal-integration-angular'
-import { PortalApiConfiguration } from '@onecx/angular-utils'
+import { PortalApiConfiguration, provideThemeConfig } from '@onecx/angular-utils'
 import { AngularRemoteComponentsModule } from '@onecx/angular-remote-components'
 import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
@@ -21,18 +20,17 @@ import { environment } from 'src/environments/environment'
 import { LabelResolver } from './label.resolver'
 
 export function apiConfigProvider(configService: ConfigurationService, appStateService: AppStateService) {
-  return new PortalApiConfiguration(Configuration, environment.apiPrefix, configService, appStateService)
+  return new PortalApiConfiguration(Configuration, environment.apiPrefix)
 }
 
 @NgModule({
   declarations: [],
   imports: [
-    PortalCoreModule.forMicroFrontend(),
     CommonModule,
     DialogModule,
     FormsModule,
     InputTextModule,
-    InputTextareaModule,
+    TextareaModule,
     ListboxModule,
     ReactiveFormsModule,
     TabViewModule,
@@ -46,7 +44,7 @@ export function apiConfigProvider(configService: ConfigurationService, appStateS
     DialogModule,
     FormsModule,
     InputTextModule,
-    InputTextareaModule,
+    TextareaModule,
     ListboxModule,
     ReactiveFormsModule,
     TabViewModule,
@@ -57,7 +55,8 @@ export function apiConfigProvider(configService: ConfigurationService, appStateS
   ],
   providers: [
     LabelResolver,
-    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] }
+    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] },
+    provideThemeConfig()
   ]
 })
 export class SharedModule {}

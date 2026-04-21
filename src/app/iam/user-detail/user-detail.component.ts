@@ -10,7 +10,8 @@ import { copyToClipboard, sortByLocale } from 'src/app/shared/utils'
 @Component({
   selector: 'app-user-detail',
   templateUrl: './user-detail.component.html',
-  styleUrls: ['./user-detail.component.scss']
+  styleUrls: ['./user-detail.component.scss'],
+  standalone: false
 })
 export class UserDetailComponent implements OnChanges {
   @Input() public displayDialog = false

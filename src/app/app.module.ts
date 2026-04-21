@@ -7,9 +7,8 @@ import { RouterModule, Routes } from '@angular/router'
 import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core'
 
 import { AngularAuthModule } from '@onecx/angular-auth'
-import { createTranslateLoader, provideTranslationPathFromMeta } from '@onecx/angular-utils'
+import { createTranslateLoader, provideThemeConfig, provideTranslationPathFromMeta } from '@onecx/angular-utils'
 import { APP_CONFIG } from '@onecx/angular-integration-interface'
-import { PortalCoreModule } from '@onecx/portal-integration-angular'
 import { AngularAcceleratorMissingTranslationHandler } from '@onecx/angular-accelerator'
 
 import { environment } from 'src/environments/environment'
@@ -24,7 +23,6 @@ const routes: Routes = [{ path: '', pathMatch: 'full' }]
     BrowserModule,
     BrowserAnimationsModule,
     AngularAuthModule,
-    PortalCoreModule.forRoot('onecx-iam-ui'),
     RouterModule.forRoot(routes, {
       initialNavigation: 'enabledBlocking',
       enableTracing: true
@@ -41,7 +39,8 @@ const routes: Routes = [{ path: '', pathMatch: 'full' }]
   providers: [
     { provide: APP_CONFIG, useValue: environment },
     provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
-    provideHttpClient(withInterceptorsFromDi())
+    provideHttpClient(withInterceptorsFromDi()),
+    provideThemeConfig()
   ]
 })
 export class AppModule {

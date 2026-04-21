@@ -9,7 +9,7 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
-import { PortalDialogService } from '@onecx/portal-integration-angular'
+import { PortalDialogService } from '@onecx/angular-accelerator'
 
 import {
   AdminInternalAPIService,
@@ -85,7 +85,7 @@ describe('UserSearchComponent', () => {
   }
   const mockUserService = {
     lang$: { getValue: jasmine.createSpy('getValue') },
-    hasPermission: jasmine.createSpy('hasPermission').and.returnValue(of())
+    hasPermission: jasmine.createSpy('hasPermission').and.returnValue(Promise.resolve(false))
   }
   const mockDialogService = { openDialog: jasmine.createSpy('openDialog').and.returnValue(of({})) }
 
@@ -144,30 +144,6 @@ describe('UserSearchComponent', () => {
         next: (actions) => {
           if (actions) {
             expect(actions[0].label).toEqual('roleLabel')
-          }
-          done()
-        },
-        error: done.fail
-      })
-    })
-
-    it('dataview translations', (done) => {
-      const translationData = {
-        'USER.USERNAME': 'userName',
-        'USER.LASTNAME': 'lastName',
-        'USER.FIRSTNAME': 'firstName',
-        'ACTIONS.DATAVIEW.FILTER_OF': 'filterOf',
-        'ACTIONS.DATAVIEW.SORT_BY': 'sortBy'
-      }
-      const translateService = TestBed.inject(TranslateService)
-      spyOn(translateService, 'get').and.returnValue(of(translationData))
-
-      component.ngOnInit()
-
-      component.dataViewControlsTranslations$?.subscribe({
-        next: (data) => {
-          if (data) {
-            expect(data.sortDropdownTooltip).toEqual('sortBy')
           }
           done()
         },

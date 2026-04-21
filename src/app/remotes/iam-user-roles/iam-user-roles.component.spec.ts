@@ -6,8 +6,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, ReplaySubject, throwError } from 'rxjs'
 
-import { BASE_URL, RemoteComponentConfig } from '@onecx/angular-remote-components'
 import { UserService } from '@onecx/angular-integration-interface'
+import { REMOTE_COMPONENT_CONFIG, RemoteComponentConfig } from '@onecx/angular-utils'
 
 import { AdminInternalAPIService, RolePageResult, UserRolesResponse } from 'src/app/shared/generated'
 import { OneCXIamUserRolesComponent } from './iam-user-roles.component'
@@ -25,9 +25,9 @@ describe('OneCXIamUserRolesComponent', () => {
     return { fixture, component }
   }
 
-  let baseUrlSubject: ReplaySubject<any>
+  let remoteComponentConfigSubject: ReplaySubject<RemoteComponentConfig>
   beforeEach(() => {
-    baseUrlSubject = new ReplaySubject<any>(1)
+    remoteComponentConfigSubject = new ReplaySubject<RemoteComponentConfig>(1)
     TestBed.configureTestingModule({
       declarations: [],
       imports: [
@@ -41,8 +41,8 @@ describe('OneCXIamUserRolesComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         {
-          provide: BASE_URL,
-          useValue: baseUrlSubject
+          provide: REMOTE_COMPONENT_CONFIG,
+          useValue: remoteComponentConfigSubject
         }
       ]
     })
@@ -54,7 +54,7 @@ describe('OneCXIamUserRolesComponent', () => {
       })
       .compileComponents()
 
-    baseUrlSubject.next('base_url_mock')
+    remoteComponentConfigSubject.next({ baseUrl: 'base_url_mock' } as RemoteComponentConfig)
     roleApiSpy.getUserRoles.calls.reset()
     roleApiSpy.searchRolesByCriteria.calls.reset()
   })
@@ -86,8 +86,8 @@ describe('OneCXIamUserRolesComponent', () => {
 
       component.ocxInitRemoteComponent({ baseUrl: 'base_url' } as RemoteComponentConfig)
 
-      baseUrlSubject.asObservable().subscribe((item) => {
-        expect(item).toEqual('base_url')
+      remoteComponentConfigSubject.asObservable().subscribe((item) => {
+        expect(item.baseUrl).toEqual('base_url')
         done()
       })
     })

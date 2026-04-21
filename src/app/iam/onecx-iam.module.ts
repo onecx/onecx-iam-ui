@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
 
-import { addInitializeModuleGuard, InitializeModuleGuard } from '@onecx/angular-integration-interface'
-import { PortalCoreModule } from '@onecx/portal-integration-angular'
+import { provideThemeConfig } from '@onecx/angular-utils'
 
 import { SharedModule } from 'src/app/shared/shared.module'
 import { LabelResolver } from 'src/app/shared/label.resolver'
@@ -53,12 +52,8 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [RoleSearchComponent, UserSearchComponent, UserDetailComponent, UserPermissionsComponent],
-  imports: [
-    PortalCoreModule.forMicroFrontend(),
-    [RouterModule.forChild(addInitializeModuleGuard(routes))],
-    SharedModule
-  ],
-  providers: [InitializeModuleGuard]
+  imports: [[RouterModule.forChild(routes)], SharedModule],
+  providers: [provideThemeConfig()]
 })
 export class IamModule {
   constructor() {

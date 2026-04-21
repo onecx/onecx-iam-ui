@@ -7,7 +7,7 @@ import { MissingTranslationHandler, TranslateLoader } from '@ngx-translate/core'
 
 import { AngularAuthModule } from '@onecx/angular-auth'
 import { bootstrapRemoteComponent } from '@onecx/angular-webcomponents'
-import { createTranslateLoader, provideTranslationPathFromMeta } from '@onecx/angular-utils'
+import { createTranslateLoader, provideThemeConfig, provideTranslationPathFromMeta } from '@onecx/angular-utils'
 import { provideTranslateServiceForRoot } from '@onecx/angular-remote-components'
 import { AngularAcceleratorMissingTranslationHandler } from '@onecx/angular-accelerator'
 
@@ -37,5 +37,6 @@ bootstrapRemoteComponent(OneCXIamUserRolesComponent, 'ocx-iam-user-roles-compone
       provide: MissingTranslationHandler,
       useClass: AngularAcceleratorMissingTranslationHandler
     }
-  })
+  }),
+  provideThemeConfig()
 ])

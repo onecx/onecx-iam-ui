@@ -12,7 +12,7 @@ import { TranslateModule } from '@ngx-translate/core'
 import { InputTextModule } from 'primeng/inputtext'
 import { PasswordModule } from 'primeng/password'
 
-import { DialogPrimaryButtonDisabled, DialogResult } from '@onecx/portal-integration-angular'
+import { DialogPrimaryButtonDisabled, DialogResult } from '@onecx/angular-accelerator'
 
 @Component({
   selector: 'app-ocx-change-password-dialog',

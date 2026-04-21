@@ -5,7 +5,7 @@ import { MissingTranslationHandler, TranslateLoader } from '@ngx-translate/core'
 
 import { bootstrapRemoteComponent } from '@onecx/angular-webcomponents'
 import { AngularAuthModule } from '@onecx/angular-auth'
-import { createTranslateLoader, provideTranslationPathFromMeta } from '@onecx/angular-utils'
+import { createTranslateLoader, provideThemeConfig, provideTranslationPathFromMeta } from '@onecx/angular-utils'
 import { provideTranslateServiceForRoot } from '@onecx/angular-remote-components'
 import { AngularAcceleratorMissingTranslationHandler } from '@onecx/angular-accelerator'
 
@@ -27,5 +27,6 @@ bootstrapRemoteComponent(OneCXChangePasswordComponent, 'ocx-change-password-comp
       provide: MissingTranslationHandler,
       useClass: AngularAcceleratorMissingTranslationHandler
     }
-  })
+  }),
+  provideThemeConfig()
 ])

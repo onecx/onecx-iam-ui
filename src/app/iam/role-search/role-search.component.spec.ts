@@ -69,7 +69,7 @@ describe('RoleSearchComponent', () => {
     getAllProviders: jasmine.createSpy('getAllProviders').and.returnValue(of({})),
     searchRolesByCriteria: jasmine.createSpy('searchRolesByCriteria').and.returnValue(of({}))
   }
-  const userServiceSpy = { hasPermission: jasmine.createSpy('hasPermission').and.returnValue(of()) }
+  const userServiceSpy = { hasPermission: jasmine.createSpy('hasPermission').and.returnValue(Promise.resolve(false)) }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -91,7 +91,7 @@ describe('RoleSearchComponent', () => {
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents()
-    userServiceSpy.hasPermission.and.returnValue(false)
+    userServiceSpy.hasPermission.and.returnValue(Promise.resolve(false))
   }))
 
   beforeEach(() => {
