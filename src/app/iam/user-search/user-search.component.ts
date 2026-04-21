@@ -9,6 +9,7 @@ import { DataView } from 'primeng/dataview'
 import { SlotService } from '@onecx/angular-remote-components'
 import { UserService } from '@onecx/angular-integration-interface'
 import { Action, DataViewControlTranslations, PortalDialogService } from '@onecx/portal-integration-angular'
+import { DataSortDirection } from '@onecx/angular-accelerator'
 
 import { limitText, sortItemsByDisplayName } from 'src/app/shared/utils'
 import {
@@ -61,6 +62,12 @@ export class UserSearchComponent implements OnInit {
 
   @ViewChild(DataView) dv: DataView | undefined
   public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
+
+  get sortDirectionEnum(): DataSortDirection {
+    if (this.sortOrder === -1) return DataSortDirection.ASCENDING
+    if (this.sortOrder === 1) return DataSortDirection.DESCENDING
+    return DataSortDirection.NONE
+  }
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -225,15 +232,23 @@ export class UserSearchComponent implements OnInit {
   /**
    * UI EVENTS
    */
-  public onLayoutChange(viewMode: 'list' | 'grid'): void {
+  public onLayoutChange(viewMode: 'list' | 'grid' | 'table'): void {
+    // Filter out 'table' layout if not supported
+    if (viewMode === 'table') return
     this.viewMode = viewMode
   }
-  public onFilterChange(filter: string): void {
-    this.filter = filter
-    this.dv?.filter(filter, 'contains')
+  public onFilterChange(filters: any): void {
+    // filters is now Filter[] from InteractiveDataViewComponent
+    // The component handles filtering internally, so we just need to update state if needed
+    this.filter = filters?.toString() || ''
   }
-  public onSortChange(field: string): void {
-    this.sortField = field
+  public onSortChange(sort: any): void {
+    // sort can be a string (from old tests) or Sort object from InteractiveDataViewComponent { field, order }
+    if (typeof sort === 'string') {
+      this.sortField = sort
+    } else {
+      this.sortField = sort?.field || 'username'
+    }
   }
   public onSortDirChange(asc: boolean): void {
     this.sortOrder = asc ? -1 : 1

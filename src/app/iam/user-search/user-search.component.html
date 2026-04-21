@@ -131,7 +131,7 @@
     </div>
   </ocx-search-header>
 
-  <ocx-page-content>
+  <ocx-content>
     <p-message
       *ngIf="loading && !exceptionKey"
       id="iam_user_search_loading"
@@ -153,52 +153,28 @@
       styleClass="m-3"
       [text]="'DIALOG.SEARCH.CRITERIA.SELECT_ISSUER_FIRST' | translate"
     ></p-message>
-    <p-dataView
-      *ngIf="(users$ | async)?.sort() as users"
+    <ocx-interactive-data-view
+      *ngIf="users$ | async as users"
       id="iam_user_search_dataview"
-      [value]="users"
+      [data]="$any(users)"
       [layout]="viewMode"
-      [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
-      [paginator]="true"
-      [alwaysShowPaginator]="true"
-      [rowsPerPageOptions]="[40, 100, 500]"
-      [rows]="40"
-      filterBy="username,firstName,lastName"
+      [supportedViewLayouts]="['grid', 'list']"
+      [emptyResultsMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
+      [clientSideFiltering]="true"
+      [clientSideSorting]="true"
       [sortField]="sortField"
-      [sortOrder]="sortOrder"
-      [showCurrentPageReport]="true"
-      currentPageReportTemplate="{first} - {last} {{ 'ACTIONS.SEARCH.OF' | translate }} {totalRecords}"
+      [sortDirection]="sortDirectionEnum"
+      [pageSize]="40"
+      [pageSizes]="[40, 100, 500]"
+      (dataViewLayoutChange)="onLayoutChange($event)"
+      (filtered)="onFilterChange($event)"
+      (sorted)="onSortChange($event)"
     >
-      <ng-template pTemplate="header">
-        <ocx-data-view-controls
-          id="iam_user_search_dataview_controls"
-          [enableFiltering]="true"
-          [enableSorting]="true"
-          [supportedViews]="['grid', 'list']"
-          [initialViewMode]="viewMode"
-          [sortingOptions]="[
-            { label: 'USER.USERNAME' | translate, value: 'username' },
-            { label: 'USER.LASTNAME' | translate, value: 'lastName' },
-            { label: 'USER.FIRSTNAME' | translate, value: 'firstName' }
-          ]"
-          [defaultSortOption]="sortField"
-          [defaultSortDirection]="sortOrder === 1"
-          (dataViewChange)="onLayoutChange($event)"
-          (filterChange)="onFilterChange($event)"
-          [filterColumns]="['USER.USERNAME' | translate, 'USER.FIRSTNAME' | translate, 'USER.LASTNAME' | translate]"
-          (sortChange)="onSortChange($event)"
-          (sortDirectionChange)="onSortDirChange($event)"
-          [translations]="(dataViewControlsTranslations$ | async) ?? {}"
-        >
-        </ocx-data-view-controls
-      ></ng-template>
-
       <!-- LIST -->
-      <ng-template let-users pTemplate="listItem">
+      <ng-template let-user="row" pTemplate="listItem">
         <section class="p-grid p-nogutter grid grid-nogutter" [attr.aria-label]="'DIALOG.SEARCH.RESULTS' | translate">
           <article
-            *ngFor="let user of users; index as i"
-            [id]="'iam_user_search_data_list_' + i"
+            [id]="'iam_user_search_data_list_0'"
             class="relative col-12 sm:col-6 h-3rem md:h-3-5rem py-1 md:py-2 pl-6 pr-3 flex flex-column justify-content-between"
             [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewPermission }"
             (click)="onDetail($event, user)"
@@ -213,7 +189,7 @@
               <a
                 *ocxIfPermission="'PERMISSION#VIEW'"
                 tabindex="0"
-                [id]="'iam_user_search_data_grid_' + i + '_action_permissions'"
+                [id]="'iam_user_search_data_list_0_action_permissions'"
                 class="card-badge-left badge-position pi pi-lock button-icon-only"
                 (click)="onUserPermissions($event, user)"
                 [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
@@ -223,14 +199,10 @@
                 role="link"
               ></a>
             </ng-container>
-            <div
-              [id]="'iam_user_search_data_list_' + i + '_user_name'"
-              class="font-bold text-responsive"
-              aria-hidden="true"
-            >
+            <div [id]="'iam_user_search_data_list_0_user_name'" class="font-bold text-responsive" aria-hidden="true">
               {{ user.username }}
             </div>
-            <div [id]="'iam_user_search_data_list_' + i + '_name'" class="text-xs text-responsive" role="note">
+            <div [id]="'iam_user_search_data_list_0_name'" class="text-xs text-responsive" role="note">
               {{ prepareDisplayName(user, 30, 150) }}
             </div>
           </article>
@@ -238,16 +210,15 @@
       </ng-template>
 
       <!-- GRID -->
-      <ng-template let-users pTemplate="gridItem">
+      <ng-template let-user="row" pTemplate="gridItem">
         <section class="p-grid p-nogutter grid grid-nogutter" [attr.aria-label]="'DIALOG.SEARCH.RESULTS' | translate">
           <div
-            *ngFor="let user of users; index as i"
-            [id]="'iam_user_search_data_grid_' + i"
+            [id]="'iam_user_search_data_grid_0'"
             class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 px-2 sm:px-3 py-1 md:py-2"
           >
             <article
               [tabIndex]="0"
-              [id]="'iam_user_search_data_grid_anchor_' + i"
+              [id]="'iam_user_search_data_grid_anchor_0'"
               class="card block relative h-3rem md:h-3-5rem py-1 md:py-2 px-4 text-center flex flex-column justify-content-between"
               [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewPermission }"
               (click)="onDetail($event, user)"
@@ -262,7 +233,7 @@
                 <a
                   *ocxIfPermission="'PERMISSION#VIEW'"
                   tabindex="0"
-                  [id]="'iam_user_search_data_grid_' + i + '_action_permissions'"
+                  [id]="'iam_user_search_data_grid_0_action_permissions'"
                   class="card-badge-right badge-1 pi pi-lock button-icon-only"
                   (click)="onUserPermissions($event, user)"
                   [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
@@ -272,22 +243,18 @@
                   role="link"
                 ></a>
               </ng-container>
-              <div
-                [id]="'iam_user_search_data_grid_' + i + '_user_name'"
-                class="font-bold text-responsive"
-                aria-hidden="true"
-              >
+              <div [id]="'iam_user_search_data_grid_0_user_name'" class="font-bold text-responsive" aria-hidden="true">
                 {{ user.username }}
               </div>
-              <div [id]="'iam_user_search_data_grid_' + i + '_name'" class="text-xs text-responsive" role="note">
+              <div [id]="'iam_user_search_data_grid_0_name'" class="text-xs text-responsive" role="note">
                 {{ prepareDisplayName(user, 20, 42) }}
               </div>
             </article>
           </div>
         </section>
       </ng-template>
-    </p-dataView>
-  </ocx-page-content>
+    </ocx-interactive-data-view>
+  </ocx-content>
 </ocx-portal-page>
 
 <app-user-detail

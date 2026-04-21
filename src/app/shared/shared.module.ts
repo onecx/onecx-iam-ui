@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule } from '@ngx-translate/core'
 
-import { DataViewModule } from 'primeng/dataview'
 import { DialogModule } from 'primeng/dialog'
 import { InputTextModule } from 'primeng/inputtext'
 import { InputTextareaModule } from 'primeng/inputtextarea'
@@ -12,8 +11,10 @@ import { TabViewModule } from 'primeng/tabview'
 import { ToastModule } from 'primeng/toast'
 
 import { AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
-import { PortalApiConfiguration, PortalCoreModule } from '@onecx/portal-integration-angular'
+import { PortalCoreModule } from '@onecx/portal-integration-angular'
+import { PortalApiConfiguration } from '@onecx/angular-utils'
 import { AngularRemoteComponentsModule } from '@onecx/angular-remote-components'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 import { Configuration } from 'src/app/shared/generated'
 import { environment } from 'src/environments/environment'
@@ -28,7 +29,6 @@ export function apiConfigProvider(configService: ConfigurationService, appStateS
   imports: [
     PortalCoreModule.forMicroFrontend(),
     CommonModule,
-    DataViewModule,
     DialogModule,
     FormsModule,
     InputTextModule,
@@ -38,11 +38,11 @@ export function apiConfigProvider(configService: ConfigurationService, appStateS
     TabViewModule,
     ToastModule,
     TranslateModule,
-    AngularRemoteComponentsModule
+    AngularRemoteComponentsModule,
+    AngularAcceleratorModule
   ],
   exports: [
     CommonModule,
-    DataViewModule,
     DialogModule,
     FormsModule,
     InputTextModule,
@@ -52,7 +52,8 @@ export function apiConfigProvider(configService: ConfigurationService, appStateS
     TabViewModule,
     ToastModule,
     TranslateModule,
-    AngularRemoteComponentsModule
+    AngularRemoteComponentsModule,
+    AngularAcceleratorModule
   ],
   providers: [
     LabelResolver,
