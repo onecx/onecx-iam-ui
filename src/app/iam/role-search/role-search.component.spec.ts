@@ -335,6 +335,12 @@ describe('RoleSearchComponent', () => {
       expect(component.filter).toBe(filter)
     })
 
+    it('should handle null filters in onFilterChange', () => {
+      component.onFilterChange(null)
+
+      expect(component.filter).toBe('')
+    })
+
     it('should set filterText from onFilterChange when filterText is empty', () => {
       component.filterText = ''
 

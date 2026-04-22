@@ -141,6 +141,7 @@
           <p-button
             icon="pi pi-filter-slash"
             (click)="dvFilterInput.value = ''; onClearGlobalFilter()"
+            (keydown.enter)="dvFilterInput.value = ''; onClearGlobalFilter()"
             [attr.aria-label]="'DIALOG.SEARCH.ROLE.FILTER.CLEAR' | translate"
           />
         </p-inputgroup>
