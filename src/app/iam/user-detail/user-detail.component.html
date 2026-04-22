@@ -26,7 +26,7 @@
     >
       <div class="mt-1 mb-2 flex flex-column row-gap-4">
         <div class="p-inputgroup" controlErrorAnchor>
-          <span class="p-float-label">
+          <p-floatlabel variant="on">
             <input
               #iamUserId
               pInputText
@@ -41,7 +41,7 @@
               tooltipEvent="hover"
             />
             <label for="iam_user_detail_item_id">{{ 'USER.ID' | translate }}</label>
-          </span>
+          </p-floatlabel>
           <button
             pButton
             pRipple
@@ -59,7 +59,7 @@
         </div>
 
         <div class="p-inputgroup" controlErrorAnchor>
-          <span class="p-float-label">
+          <p-floatlabel variant="on">
             <input
               #iamUserName
               pInputText
@@ -74,7 +74,7 @@
               tooltipEvent="hover"
             />
             <label for="iam_user_detail_item_user_name"> {{ 'USER.USERNAME' | translate }} </label>
-          </span>
+          </p-floatlabel>
           <button
             pButton
             pRipple
@@ -92,7 +92,7 @@
         </div>
 
         <div class="p-inputgroup" controlErrorAnchor>
-          <span class="p-float-label">
+          <p-floatlabel variant="on">
             <input
               #iamUserEmail
               pInputText
@@ -107,7 +107,7 @@
               tooltipEvent="hover"
             />
             <label for="iam_user_detail_item_user_email"> {{ 'USER.EMAIL' | translate }} </label>
-          </span>
+          </p-floatlabel>
           <button
             pButton
             pRipple
@@ -125,7 +125,7 @@
         </div>
 
         <div class="p-inputgroup" controlErrorAnchor>
-          <span class="p-float-label">
+          <p-floatlabel variant="on">
             <input
               #iamUserFirstName
               pInputText
@@ -140,7 +140,7 @@
               tooltipEvent="hover"
             />
             <label for="iam_user_detail_item_first_name"> {{ 'USER.FIRSTNAME' | translate }} </label>
-          </span>
+          </p-floatlabel>
           <button
             pButton
             pRipple
@@ -158,7 +158,7 @@
         </div>
 
         <div class="p-inputgroup" controlErrorAnchor>
-          <span class="p-float-label">
+          <p-floatlabel variant="on">
             <input
               #iamUserLastName
               pInputText
@@ -173,7 +173,7 @@
               tooltipEvent="hover"
             />
             <label for="iam_user_detail_item_last_name"> {{ 'USER.LASTNAME' | translate }} </label>
-          </span>
+          </p-floatlabel>
           <button
             pButton
             pRipple
@@ -201,7 +201,7 @@
       tooltipEvent="hover"
     >
       <div class="flex flex-column row-gap-1">
-        <span class="p-float-label">
+        <p-floatlabel variant="on">
           <textarea
             class="w-full"
             pInputTextarea
@@ -214,7 +214,7 @@
             tooltipEvent="hover"
           ></textarea>
           <label for="iam_user_detail_attributes_content">{{ 'USER.ATTRIBUTES' | translate }}</label>
-        </span>
+        </p-floatlabel>
       </div>
     </p-tabPanel>
 
@@ -249,7 +249,7 @@
       tooltipEvent="focus|hover"
     >
       <div class="mt-1 mb-2 flex flex-column row-gap-4">
-        <span class="p-float-label">
+        <p-floatlabel variant="on">
           <input
             pInputText
             type="text"
@@ -263,8 +263,8 @@
             tooltipEvent="hover"
           />
           <label for="iam_user_detail_item_provider">{{ 'USER.IDM.PROVIDER' | translate }}</label>
-        </span>
-        <span class="p-float-label">
+        </p-floatlabel>
+        <p-floatlabel variant="on">
           <input
             pInputText
             type="text"
@@ -278,8 +278,8 @@
             tooltipEvent="hover"
           />
           <label for="iam_user_detail_item_domain">{{ 'USER.IDM.DOMAIN' | translate }}</label>
-        </span>
-        <span class="p-float-label">
+        </p-floatlabel>
+        <p-floatlabel variant="on">
           <input
             pInputText
             type="text"
@@ -293,8 +293,8 @@
             tooltipEvent="hover"
           />
           <label for="iam_user_detail_item_issuer">{{ 'USER.IDM.ISSUER' | translate }}</label>
-        </span>
-        <span class="p-float-label">
+        </p-floatlabel>
+        <p-floatlabel variant="on">
           <input
             pInputText
             type="text"
@@ -308,8 +308,8 @@
             tooltipEvent="hover"
           />
           <label for="iam_user_detail_item_origin">{{ 'USER.ORIGIN' | translate }}</label>
-        </span>
-        <span class="p-float-label">
+        </p-floatlabel>
+        <p-floatlabel variant="on">
           <input
             pInputText
             type="text"
@@ -323,7 +323,7 @@
             tooltipEvent="hover"
           />
           <label for="iam_user_detail_item_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
-        </span>
+        </p-floatlabel>
       </div>
     </p-tabPanel>
   </p-tabView>

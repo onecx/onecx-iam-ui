@@ -1,11 +1,16 @@
+import { CommonModule } from '@angular/common'
 import { Component, Input } from '@angular/core'
 import { Observable } from 'rxjs'
+import { TranslateModule } from '@ngx-translate/core'
+import { MessageModule } from 'primeng/message'
 
-import { SlotService } from '@onecx/angular-remote-components'
+import { AngularRemoteComponentsModule, SlotService } from '@onecx/angular-remote-components'
 
 @Component({
   selector: 'app-user-permissions',
-  templateUrl: './user-permissions.component.html'
+  templateUrl: './user-permissions.component.html',
+  standalone: true,
+  imports: [CommonModule, TranslateModule, MessageModule, AngularRemoteComponentsModule]
 })
 export class UserPermissionsComponent {
   @Input() id: string | undefined = 'undefined' // why ever this is required

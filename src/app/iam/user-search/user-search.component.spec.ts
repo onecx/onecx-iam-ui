@@ -1,15 +1,17 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
+import { CommonModule } from '@angular/common'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
 import { provideRouter, Router, ActivatedRoute } from '@angular/router'
-import { TranslateService } from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
-import { of, throwError } from 'rxjs'
+import { of, throwError, BehaviorSubject } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
-import { PortalDialogService } from '@onecx/portal-integration-angular'
+import { DataSortDirection, PortalDialogService } from '@onecx/angular-accelerator'
 
 import {
   AdminInternalAPIService,
@@ -84,21 +86,22 @@ describe('UserSearchComponent', () => {
     searchUsersByCriteria: jasmine.createSpy('searchUsersByCriteria').and.returnValue(of({}))
   }
   const mockUserService = {
-    lang$: { getValue: jasmine.createSpy('getValue') },
-    hasPermission: jasmine.createSpy('hasPermission').and.returnValue(of())
+    lang$: new BehaviorSubject('en'),
+    hasPermission: jasmine.createSpy('hasPermission').and.returnValue(Promise.resolve(false))
   }
   const mockDialogService = { openDialog: jasmine.createSpy('openDialog').and.returnValue(of({})) }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [UserSearchComponent],
       imports: [
+        UserSearchComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       providers: [
+        provideNoopAnimations(),
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([{ path: '', component: UserSearchComponent }]),
@@ -109,7 +112,18 @@ describe('UserSearchComponent', () => {
         { provide: PortalDialogService, useValue: mockDialogService }
       ],
       schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents()
+    })
+      .overrideComponent(UserSearchComponent, {
+        set: {
+          imports: [CommonModule, TranslateModule],
+          schemas: [NO_ERRORS_SCHEMA],
+          providers: [
+            { provide: PortalDialogService, useValue: mockDialogService },
+            { provide: AdminInternalAPIService, useValue: adminApiSpy }
+          ]
+        }
+      })
+      .compileComponents()
     // to spy data: reset
     adminApiSpy.searchUsersByCriteria.calls.reset()
     adminApiSpy.getAllProviders.calls.reset()
@@ -144,30 +158,6 @@ describe('UserSearchComponent', () => {
         next: (actions) => {
           if (actions) {
             expect(actions[0].label).toEqual('roleLabel')
-          }
-          done()
-        },
-        error: done.fail
-      })
-    })
-
-    it('dataview translations', (done) => {
-      const translationData = {
-        'USER.USERNAME': 'userName',
-        'USER.LASTNAME': 'lastName',
-        'USER.FIRSTNAME': 'firstName',
-        'ACTIONS.DATAVIEW.FILTER_OF': 'filterOf',
-        'ACTIONS.DATAVIEW.SORT_BY': 'sortBy'
-      }
-      const translateService = TestBed.inject(TranslateService)
-      spyOn(translateService, 'get').and.returnValue(of(translationData))
-
-      component.ngOnInit()
-
-      component.dataViewControlsTranslations$?.subscribe({
-        next: (data) => {
-          if (data) {
-            expect(data.sortDropdownTooltip).toEqual('sortBy')
           }
           done()
         },
@@ -339,7 +329,7 @@ describe('UserSearchComponent', () => {
       })
     })
 
-    it('should search providers - successful without data', (done) => {
+    it('should search providers - error response', (done) => {
       const errorResponse = { status: 404, statusText: 'Not Found' }
       adminApiSpy.getAllProviders.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
@@ -393,17 +383,121 @@ describe('UserSearchComponent', () => {
     })
   })
 
-  describe('filter', () => {
-    it('should update filter and and sort Field', () => {
-      const filter = 'testFilter'
+  describe('global filter', () => {
+    it('should update filterText on onGlobalFilter', () => {
+      const filterValue = 'testFilter'
 
-      component.onFilterChange(filter)
+      component['rawSearchResults'] = [user1, user2]
+      component.onGlobalFilter(filterValue)
 
-      expect(component.filter).toBe(filter)
+      expect(component.filterText).toBe(filterValue)
+    })
 
-      component.onSortChange('field')
+    it('should filter users by username on onGlobalFilter', (done) => {
+      component['rawSearchResults'] = [user1, user2]
 
-      expect(component.sortField).toBe('field')
+      component.onGlobalFilter('username1')
+
+      component.users$?.subscribe({
+        next: (users) => {
+          expect(users.length).toBe(1)
+          expect(users[0]).toBe(user1)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should filter users by firstName on onGlobalFilter', (done) => {
+      component['rawSearchResults'] = [user1, user2]
+
+      component.onGlobalFilter('first2')
+
+      component.users$?.subscribe({
+        next: (users) => {
+          expect(users.length).toBe(1)
+          expect(users[0]).toBe(user2)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should filter users by lastName on onGlobalFilter', (done) => {
+      component['rawSearchResults'] = [user1, user2]
+
+      component.onGlobalFilter('last1')
+
+      component.users$?.subscribe({
+        next: (users) => {
+          expect(users.length).toBe(1)
+          expect(users[0]).toBe(user1)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should filter users by username2 on onGlobalFilter', (done) => {
+      component['rawSearchResults'] = [user1, user2]
+
+      component.onGlobalFilter('username2')
+
+      component.users$?.subscribe({
+        next: (users) => {
+          expect(users.length).toBe(1)
+          expect(users[0]).toBe(user2)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should perform case-insensitive filtering', (done) => {
+      component['rawSearchResults'] = [user1, user2]
+
+      component.onGlobalFilter('USERNAME1')
+
+      component.users$?.subscribe({
+        next: (users) => {
+          expect(users.length).toBe(1)
+          expect(users[0]).toBe(user1)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should return all users on empty filter string', (done) => {
+      component['rawSearchResults'] = [user1, user2]
+
+      component.onGlobalFilter('')
+
+      component.users$?.subscribe({
+        next: (users) => {
+          expect(users.length).toBe(2)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should clear filter and restore all results on onClearGlobalFilter', (done) => {
+      component['rawSearchResults'] = [user1, user2]
+      component.filterText = 'username1'
+
+      component.onClearGlobalFilter()
+
+      expect(component.filterText).toBe('')
+      component.users$?.subscribe({
+        next: (users) => {
+          expect(users.length).toBe(2)
+          expect(users[0]).toBe(user1)
+          expect(users[1]).toBe(user2)
+          done()
+        },
+        error: done.fail
+      })
     })
 
     it('should update viewMode onLayoutChange', () => {
@@ -412,22 +506,98 @@ describe('UserSearchComponent', () => {
       expect(component.viewMode).toBe('grid')
     })
 
-    it('should update filter and call dv.filter onFilterChange', () => {
-      const filter = 'testFilter'
+    it('should not change viewMode on invalid layout', () => {
+      component.viewMode = 'list'
 
-      component.onFilterChange(filter)
+      component.onLayoutChange('table' as any)
 
-      expect(component.filter).toBe(filter)
+      expect(component.viewMode).toBe('list')
     })
   })
 
   describe('sort', () => {
+    it('should update sortField from string parameter', () => {
+      component.onSortChange('firstName')
+
+      expect(component.sortField).toBe('firstName')
+    })
+
+    it('should update sortField from sort object with field property', () => {
+      const sortObj = { field: 'email', order: 1 }
+
+      component.onSortChange(sortObj)
+
+      expect(component.sortField).toBe('email')
+    })
+
+    it('should default to username when sort object has no field', () => {
+      const sortObj = { order: 1 }
+
+      component.onSortChange(sortObj)
+
+      expect(component.sortField).toBe('username')
+    })
+
     it('should update sortOrder based on asc boolean onSortDirChange', () => {
       component.onSortDirChange(true)
       expect(component.sortOrder).toBe(-1)
 
       component.onSortDirChange(false)
       expect(component.sortOrder).toBe(1)
+    })
+
+    it('should update sortField via onSortColumnChange', () => {
+      component.onSortColumnChange('lastName')
+
+      expect(component.sortField).toBe('lastName')
+    })
+
+    it('should set sortOrder to -1 for ASCENDING direction', () => {
+      component.onSortDirectionChange(DataSortDirection.ASCENDING)
+
+      expect(component.sortOrder).toBe(-1)
+    })
+
+    it('should set sortOrder to 1 for DESCENDING direction', () => {
+      component.onSortDirectionChange(DataSortDirection.DESCENDING)
+
+      expect(component.sortOrder).toBe(1)
+    })
+
+    it('should set sortOrder to 1 for NONE direction', () => {
+      component.onSortDirectionChange(DataSortDirection.NONE)
+
+      expect(component.sortOrder).toBe(1)
+    })
+  })
+
+  describe('sortDirectionEnum', () => {
+    it('should return ASCENDING when sortOrder is -1', () => {
+      component.sortOrder = -1
+      expect(component.sortDirectionEnum).toBe(DataSortDirection.ASCENDING)
+    })
+
+    it('should return DESCENDING when sortOrder is 1', () => {
+      component.sortOrder = 1
+      expect(component.sortDirectionEnum).toBe(DataSortDirection.DESCENDING)
+    })
+
+    it('should return NONE when sortOrder is 0', () => {
+      component.sortOrder = 0
+      expect(component.sortDirectionEnum).toBe(DataSortDirection.NONE)
+    })
+  })
+
+  describe('filterTooltip$', () => {
+    it('should emit a tooltip string with translated field names', (done) => {
+      component.filterTooltip$.subscribe({
+        next: (tooltip) => {
+          expect(tooltip).toBeTruthy()
+          expect(typeof tooltip).toBe('string')
+          done()
+        },
+        error: done.fail
+      })
     })
   })
 
@@ -438,13 +608,17 @@ describe('UserSearchComponent', () => {
       expect(routerSpy.navigate).toHaveBeenCalledWith(['./roles'], { relativeTo: routeMock })
     })
 
-    it('should reset roleSearchCriteriaGroup onSearchReset is called', () => {
+    it('should reset search criteria, filter, and results on onSearchReset', () => {
       component.searchCriteriaForm = searchForm
+      component.filterText = 'testFilter'
+      component['rawSearchResults'] = [user1, user2]
       spyOn(searchForm, 'reset').and.callThrough()
 
       component.onSearchReset()
 
       expect(component.searchCriteriaForm.reset).toHaveBeenCalled()
+      expect(component.filterText).toBe('')
+      expect(component['rawSearchResults']).toBeUndefined()
     })
 
     it('should prepare action buttons with translated labels and tooltips', () => {
@@ -465,6 +639,7 @@ describe('UserSearchComponent', () => {
   describe('UI actions', () => {
     it('should call detail dialog', () => {
       component.searchCriteriaForm.controls['issuer'].setValue(domain1.issuer!)
+      component.userViewPermission = true
       const mockEvent = new MouseEvent('click')
 
       component.onDetail(mockEvent, user1)

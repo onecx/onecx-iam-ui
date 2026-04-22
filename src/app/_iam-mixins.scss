@@ -159,12 +159,17 @@
     .card-badge-left {
       display: inline-block;
       position: absolute;
-      padding: 4px !important;
       &.badge-1 {
         top: 3px;
       }
       &.badge-2 {
         top: 35px;
+      }
+      /* hover effect on the p-badge inside */
+      &:hover .p-badge {
+        background: var(--button-hover-bg);
+        color: var(--onecx-iam-onecx-iam-ui-badge-primary-color);
+        cursor: pointer;
       }
     }
     .card-badge-right {
@@ -183,15 +188,6 @@
           color: inherit;
           background-color: inherit;
         }
-      }
-    }
-    /* clickable icon-only buttons */
-    .button-icon-only {
-      border-radius: var(--border-radius);
-      &:hover {
-        color: var(--primary-color-text);
-        background: var(--button-hover-bg);
-        cursor: pointer;
       }
     }
   }
@@ -282,6 +278,55 @@
       &.p-inputtext:hover,
       &.p-dropdown:hover {
         border-color: rgb(0 0 0 / 30%) !important;
+      }
+    }
+  }
+}
+
+@mixin dataview-grid-layout-fix {
+  :host ::ng-deep {
+    .p-dataview-grid .grid.grid-cols-12 {
+      gap: 0 !important;
+      margin: 0 !important;
+
+      > div {
+        box-sizing: border-box;
+      }
+    }
+  }
+}
+
+@mixin dataview-card-hover($cardSelector: 'p-card') {
+  :host ::ng-deep {
+    #{$cardSelector}:hover .p-card {
+      background-color: var(--p-surface-100);
+    }
+  }
+}
+
+@mixin dataview-list-split-zebra-rows($itemSelector: 'div') {
+  @media screen and (min-width: 768px) {
+    :host ::ng-deep {
+      .p-dataview-list .p-dataview-content .p-grid > #{$itemSelector} {
+        &:nth-child(4n + 1),
+        &:nth-child(4n + 2) {
+          background-color: #f8f9fa;
+        }
+
+        &:nth-child(4n + 1),
+        &:nth-child(4n + 3) {
+          border-right: var(--data-view-list-item-border);
+        }
+      }
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    :host ::ng-deep {
+      .p-dataview-list .p-dataview-content .p-grid > #{$itemSelector} {
+        &:nth-child(odd) {
+          background-color: #f8f9fa;
+        }
       }
     }
   }

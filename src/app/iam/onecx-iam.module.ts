@@ -1,16 +1,21 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
 
-import { addInitializeModuleGuard, InitializeModuleGuard } from '@onecx/angular-integration-interface'
-import { PortalCoreModule } from '@onecx/portal-integration-angular'
+import { AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
+import { PortalApiConfiguration, providePermissionService, provideThemeConfig } from '@onecx/angular-utils'
 
-import { SharedModule } from 'src/app/shared/shared.module'
+import { Configuration } from 'src/app/shared/generated'
+import { environment } from 'src/environments/environment'
 import { LabelResolver } from 'src/app/shared/label.resolver'
 
 import { UserSearchComponent } from './user-search/user-search.component'
 import { RoleSearchComponent } from './role-search/role-search.component'
 import { UserDetailComponent } from './user-detail/user-detail.component'
 import { UserPermissionsComponent } from './user-permissions/user-permissions.component'
+
+export function apiConfigProvider(configService: ConfigurationService, appStateService: AppStateService) {
+  return new PortalApiConfiguration(Configuration, environment.apiPrefix)
+}
 
 const routes: Routes = [
   {
@@ -52,13 +57,20 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [RoleSearchComponent, UserSearchComponent, UserDetailComponent, UserPermissionsComponent],
+  declarations: [],
   imports: [
-    PortalCoreModule.forMicroFrontend(),
-    [RouterModule.forChild(addInitializeModuleGuard(routes))],
-    SharedModule
+    RouterModule.forChild(routes),
+    UserSearchComponent,
+    RoleSearchComponent,
+    UserDetailComponent,
+    UserPermissionsComponent
   ],
-  providers: [InitializeModuleGuard]
+  providers: [
+    LabelResolver,
+    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] },
+    ...providePermissionService(),
+    provideThemeConfig()
+  ]
 })
 export class IamModule {
   constructor() {

@@ -9,17 +9,18 @@ import {
   Validators
 } from '@angular/forms'
 import { TranslateModule } from '@ngx-translate/core'
+import { FloatLabelModule } from 'primeng/floatlabel'
 import { InputTextModule } from 'primeng/inputtext'
 import { PasswordModule } from 'primeng/password'
 
-import { DialogPrimaryButtonDisabled, DialogResult } from '@onecx/portal-integration-angular'
+import { DialogPrimaryButtonDisabled, DialogResult } from '@onecx/angular-accelerator'
 
 @Component({
   selector: 'app-ocx-change-password-dialog',
   standalone: true,
   templateUrl: './change-password-dialog.component.html',
   styleUrls: ['./change-password-dialog.component.scss'],
-  imports: [InputTextModule, PasswordModule, ReactiveFormsModule, TranslateModule],
+  imports: [FloatLabelModule, InputTextModule, PasswordModule, ReactiveFormsModule, TranslateModule],
   providers: [FormBuilder]
 })
 export class ChangePasswordDialogComponent implements DialogPrimaryButtonDisabled, DialogResult<string> {
