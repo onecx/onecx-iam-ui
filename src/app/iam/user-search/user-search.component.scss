@@ -9,6 +9,10 @@
 @include dataview-card-hover('p-card.cursor-pointer');
 @include dataview-list-split-zebra-rows('section');
 
+:host {
+  --onecx-iam-onecx-iam-ui-badge-dot-size: 1.5rem;
+}
+
 :host ::ng-deep {
   .card-badge-left.badge-position {
     top: 13px;
