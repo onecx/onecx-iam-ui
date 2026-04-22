@@ -1,12 +1,14 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
+import { CommonModule } from '@angular/common'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
 import { provideRouter, Router, ActivatedRoute } from '@angular/router'
-import { TranslateService } from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
-import { of, throwError } from 'rxjs'
+import { of, throwError, BehaviorSubject } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
 import { DataSortDirection, PortalDialogService } from '@onecx/angular-accelerator'
@@ -84,21 +86,22 @@ describe('UserSearchComponent', () => {
     searchUsersByCriteria: jasmine.createSpy('searchUsersByCriteria').and.returnValue(of({}))
   }
   const mockUserService = {
-    lang$: { getValue: jasmine.createSpy('getValue') },
+    lang$: new BehaviorSubject('en'),
     hasPermission: jasmine.createSpy('hasPermission').and.returnValue(Promise.resolve(false))
   }
   const mockDialogService = { openDialog: jasmine.createSpy('openDialog').and.returnValue(of({})) }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [UserSearchComponent],
       imports: [
+        UserSearchComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       providers: [
+        provideNoopAnimations(),
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([{ path: '', component: UserSearchComponent }]),
@@ -109,7 +112,18 @@ describe('UserSearchComponent', () => {
         { provide: PortalDialogService, useValue: mockDialogService }
       ],
       schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents()
+    })
+      .overrideComponent(UserSearchComponent, {
+        set: {
+          imports: [CommonModule, TranslateModule],
+          schemas: [NO_ERRORS_SCHEMA],
+          providers: [
+            { provide: PortalDialogService, useValue: mockDialogService },
+            { provide: AdminInternalAPIService, useValue: adminApiSpy }
+          ]
+        }
+      })
+      .compileComponents()
     // to spy data: reset
     adminApiSpy.searchUsersByCriteria.calls.reset()
     adminApiSpy.getAllProviders.calls.reset()

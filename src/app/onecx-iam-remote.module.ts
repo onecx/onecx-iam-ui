@@ -34,8 +34,9 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [AppEntrypointComponent],
+  declarations: [],
   imports: [
+    AppEntrypointComponent,
     AngularAuthModule,
     BrowserModule,
     BrowserAnimationsModule,

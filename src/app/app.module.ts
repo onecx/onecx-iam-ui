@@ -18,8 +18,9 @@ import { AppComponent } from './app.component'
 const routes: Routes = [{ path: '', pathMatch: 'full' }]
 @NgModule({
   bootstrap: [AppComponent],
-  declarations: [AppComponent],
+  declarations: [],
   imports: [
+    AppComponent,
     CommonModule,
     BrowserModule,
     BrowserAnimationsModule,

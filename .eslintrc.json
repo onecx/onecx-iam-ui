@@ -51,7 +51,6 @@
             "style": "kebab-case"
           }
         ],
-        "@angular-eslint/prefer-standalone": "off",
         "deprecation/deprecation": "warn",
         "prettier/prettier": ["error", { "singleQuote": true }],
         "no-unused-vars": "off",

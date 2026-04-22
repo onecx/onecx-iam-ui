@@ -1,11 +1,14 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
+import { CommonModule } from '@angular/common'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
 import { provideRouter, Router, ActivatedRoute } from '@angular/router'
+import { TranslateModule } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
-import { of, throwError } from 'rxjs'
+import { of, throwError, BehaviorSubject } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
 import { DataSortDirection } from '@onecx/angular-accelerator'
@@ -70,18 +73,22 @@ describe('RoleSearchComponent', () => {
     getAllProviders: jasmine.createSpy('getAllProviders').and.returnValue(of({})),
     searchRolesByCriteria: jasmine.createSpy('searchRolesByCriteria').and.returnValue(of({}))
   }
-  const userServiceSpy = { hasPermission: jasmine.createSpy('hasPermission').and.returnValue(Promise.resolve(false)) }
+  const userServiceSpy = {
+    lang$: new BehaviorSubject('en'),
+    hasPermission: jasmine.createSpy('hasPermission').and.returnValue(Promise.resolve(false))
+  }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [RoleSearchComponent],
       imports: [
+        RoleSearchComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       providers: [
+        provideNoopAnimations(),
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([{ path: '', component: RoleSearchComponent }]),
@@ -91,7 +98,15 @@ describe('RoleSearchComponent', () => {
         { provide: ActivatedRoute, useValue: routeMock }
       ],
       schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents()
+    })
+      .overrideComponent(RoleSearchComponent, {
+        set: {
+          imports: [CommonModule, TranslateModule],
+          schemas: [NO_ERRORS_SCHEMA],
+          providers: [{ provide: AdminInternalAPIService, useValue: adminApiSpy }]
+        }
+      })
+      .compileComponents()
     userServiceSpy.hasPermission.and.returnValue(Promise.resolve(false))
   }))
 

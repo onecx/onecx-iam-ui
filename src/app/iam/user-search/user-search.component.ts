@@ -1,13 +1,33 @@
+import { CommonModule } from '@angular/common'
 import { Component, OnInit } from '@angular/core'
-import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
-import { TranslateService } from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { finalize, map, of, Observable, Subject, catchError, tap } from 'rxjs'
 import { PrimeIcons } from 'primeng/api'
 
+import { BadgeModule } from 'primeng/badge'
+import { ButtonModule } from 'primeng/button'
+import { CardModule } from 'primeng/card'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
+import { SelectModule } from 'primeng/select'
+import { TooltipModule } from 'primeng/tooltip'
+
 import { SlotService } from '@onecx/angular-remote-components'
 import { UserService } from '@onecx/angular-integration-interface'
-import { Action, DataSortDirection, PortalDialogService, DataTableColumn, ColumnType } from '@onecx/angular-accelerator'
+import {
+  Action,
+  DataSortDirection,
+  PortalDialogService,
+  DataTableColumn,
+  ColumnType,
+  AngularAcceleratorModule
+} from '@onecx/angular-accelerator'
+import { PortalPageComponent } from '@onecx/angular-utils'
 
 import { limitText, sortItemsByDisplayName } from 'src/app/shared/utils'
 import {
@@ -19,6 +39,7 @@ import {
   UserPageResult,
   UserSearchCriteria
 } from 'src/app/shared/generated'
+import { UserDetailComponent } from '../user-detail/user-detail.component'
 import { UserPermissionsComponent } from '../user-permissions/user-permissions.component'
 
 export interface UserSearchCriteriaForm {
@@ -34,7 +55,25 @@ export interface UserSearchCriteriaForm {
   selector: 'app-user-search',
   templateUrl: './user-search.component.html',
   styleUrls: ['./user-search.component.scss'],
-  standalone: false
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    BadgeModule,
+    ButtonModule,
+    CardModule,
+    FloatLabelModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    InputTextModule,
+    MessageModule,
+    SelectModule,
+    TooltipModule,
+    AngularAcceleratorModule,
+    PortalPageComponent,
+    UserDetailComponent
+  ]
 })
 export class UserSearchComponent implements OnInit {
   private readonly destroy$ = new Subject()

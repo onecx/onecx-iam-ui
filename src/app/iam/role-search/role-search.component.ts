@@ -1,11 +1,29 @@
+import { CommonModule } from '@angular/common'
 import { Component, OnInit, ViewChild } from '@angular/core'
-import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
-import { TranslateService } from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { finalize, map, of, Observable, catchError, tap } from 'rxjs'
 import { DataView } from 'primeng/dataview'
 
-import { Action, ColumnType, DataSortDirection, DataTableColumn } from '@onecx/angular-accelerator'
+import { ButtonModule } from 'primeng/button'
+import { CardModule } from 'primeng/card'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
+import { SelectModule } from 'primeng/select'
+import { TooltipModule } from 'primeng/tooltip'
+
+import {
+  Action,
+  ColumnType,
+  DataSortDirection,
+  DataTableColumn,
+  AngularAcceleratorModule
+} from '@onecx/angular-accelerator'
+import { PortalPageComponent } from '@onecx/angular-utils'
 
 import {
   AdminInternalAPIService,
@@ -28,7 +46,23 @@ export interface RoleSearchCriteriaForm {
   selector: 'app-role-search',
   templateUrl: './role-search.component.html',
   styleUrls: ['./role-search.component.scss'],
-  standalone: false
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    ButtonModule,
+    CardModule,
+    FloatLabelModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    InputTextModule,
+    MessageModule,
+    SelectModule,
+    TooltipModule,
+    AngularAcceleratorModule,
+    PortalPageComponent
+  ]
 })
 export class RoleSearchComponent implements OnInit {
   private readonly filterFieldLabelKeys = ['ROLE.NAME', 'ROLE.DESCRIPTION']

@@ -1,6 +1,19 @@
+import { CommonModule } from '@angular/common'
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
-import { TranslateService } from '@ngx-translate/core'
+import { FormsModule } from '@angular/forms'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { catchError, finalize, map, Observable, of } from 'rxjs'
+
+import { ButtonModule } from 'primeng/button'
+import { DialogModule } from 'primeng/dialog'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputTextModule } from 'primeng/inputtext'
+import { ListboxModule } from 'primeng/listbox'
+import { MessageModule } from 'primeng/message'
+import { RippleModule } from 'primeng/ripple'
+import { TabViewModule } from 'primeng/tabview'
+import { TextareaModule } from 'primeng/textarea'
+import { TooltipModule } from 'primeng/tooltip'
 
 import { UserService } from '@onecx/angular-integration-interface'
 
@@ -11,7 +24,22 @@ import { copyToClipboard, sortByLocale } from 'src/app/shared/utils'
   selector: 'app-user-detail',
   templateUrl: './user-detail.component.html',
   styleUrls: ['./user-detail.component.scss'],
-  standalone: false
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    TranslateModule,
+    ButtonModule,
+    DialogModule,
+    FloatLabelModule,
+    InputTextModule,
+    ListboxModule,
+    MessageModule,
+    RippleModule,
+    TabViewModule,
+    TextareaModule,
+    TooltipModule
+  ]
 })
 export class UserDetailComponent implements OnChanges {
   @Input() public displayDialog = false
