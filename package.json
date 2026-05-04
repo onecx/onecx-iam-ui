@@ -63,7 +63,6 @@
     "@onecx/angular-webcomponents": "^6.19.0",
     "@onecx/integration-interface": "^6.19.0",
     "@onecx/nx-migration-utils": "^6.19.0",
-    "@onecx/nx-plugin": "^6.2.0",
     "@primeng/themes": "^19.0.5",
     "@primeuix/styled": "^0.3.2",
     "@webcomponents/webcomponentsjs": "^2.8.0",
