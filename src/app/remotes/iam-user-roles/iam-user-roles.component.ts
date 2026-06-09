@@ -1,21 +1,16 @@
 import { Component, EventEmitter, Inject, Input, OnChanges } from '@angular/core'
 import { CommonModule, Location } from '@angular/common'
-import { HttpClient } from '@angular/common/http'
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { catchError, finalize, filter, map, mergeMap, Observable, of, ReplaySubject } from 'rxjs'
 
 import {
   AngularRemoteComponentsModule,
-  BASE_URL,
-  RemoteComponentConfig,
   ocxRemoteComponent,
-  ocxRemoteWebcomponent,
-  provideTranslateServiceForRoot
+  ocxRemoteWebcomponent
 } from '@onecx/angular-remote-components'
+import { REMOTE_COMPONENT_CONFIG, RemoteComponentConfig } from '@onecx/angular-utils'
 import { UserService } from '@onecx/angular-integration-interface'
-import { createRemoteComponentTranslateLoader } from '@onecx/angular-accelerator'
-import { PortalCoreModule } from '@onecx/portal-integration-angular'
 
 import {
   Configuration,
@@ -32,20 +27,12 @@ import { environment } from 'src/environments/environment'
   selector: 'app-iam-user-roles',
   templateUrl: './iam-user-roles.component.html',
   standalone: true,
-  imports: [AngularRemoteComponentsModule, CommonModule, PortalCoreModule, TranslateModule, SharedModule],
+  imports: [AngularRemoteComponentsModule, CommonModule, TranslateModule, SharedModule],
   providers: [
     {
-      provide: BASE_URL,
-      useValue: new ReplaySubject<string>(1)
-    },
-    provideTranslateServiceForRoot({
-      isolate: true,
-      loader: {
-        provide: TranslateLoader,
-        useFactory: createRemoteComponentTranslateLoader,
-        deps: [HttpClient, BASE_URL]
-      }
-    })
+      provide: REMOTE_COMPONENT_CONFIG,
+      useValue: new ReplaySubject<RemoteComponentConfig>(1)
+    }
   ]
 })
 @UntilDestroy()
@@ -58,7 +45,7 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
   public iamRoles$: Observable<Role[]> | undefined
 
   constructor(
-    @Inject(BASE_URL) private readonly baseUrl: ReplaySubject<string>,
+    @Inject(REMOTE_COMPONENT_CONFIG) private readonly remoteComponentConfig: ReplaySubject<RemoteComponentConfig>,
     private readonly userService: UserService,
     private readonly translateService: TranslateService,
     private readonly adminApi: AdminInternalAPIService
@@ -71,7 +58,7 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
   }
 
   ocxInitRemoteComponent(remoteComponentConfig: RemoteComponentConfig) {
-    this.baseUrl.next(remoteComponentConfig.baseUrl)
+    this.remoteComponentConfig.next(remoteComponentConfig)
     this.adminApi.configuration = new Configuration({
       basePath: Location.joinWithSlash(remoteComponentConfig.baseUrl, environment.apiPrefix)
     })

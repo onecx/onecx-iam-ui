@@ -101,7 +101,11 @@
         "HEADER": "IDM Rollen",
         "SUBHEADER": "Rollen im Identity Management (IDM)",
         "LABEL": "Rollen",
-        "TOOLTIP": "Rollen im Identity Management (IDM)"
+        "TOOLTIP": "Rollen im Identity Management (IDM)",
+        "FILTER": {
+          "PLACEHOLDER": "Filter",
+          "CLEAR": "Filter löschen"
+        }
       },
       "USER": {
         "HEADER": "IDM Benutzer",
@@ -114,6 +118,10 @@
           "LASTNAME": "Nachname, Suche nach Namensteil unterstützt",
           "FIRSTNAME": "Vorname, Suche nach Namensteil unterstützt",
           "EMAIL": "E-Mail Adresse, Suche nach Adressteil unterstützt"
+        },
+        "FILTER": {
+          "PLACEHOLDER": "Filter",
+          "CLEAR": "Filter löschen"
         }
       }
     },

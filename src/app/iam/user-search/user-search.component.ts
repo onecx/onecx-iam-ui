@@ -1,14 +1,33 @@
-import { Component, OnInit, ViewChild } from '@angular/core'
-import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { CommonModule } from '@angular/common'
+import { Component, OnInit } from '@angular/core'
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
-import { TranslateService } from '@ngx-translate/core'
-import { finalize, map, of, Observable, Subject, catchError } from 'rxjs'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
+import { finalize, map, of, Observable, Subject, catchError, tap } from 'rxjs'
 import { PrimeIcons } from 'primeng/api'
-import { DataView } from 'primeng/dataview'
+
+import { BadgeModule } from 'primeng/badge'
+import { ButtonModule } from 'primeng/button'
+import { CardModule } from 'primeng/card'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
+import { SelectModule } from 'primeng/select'
+import { TooltipModule } from 'primeng/tooltip'
 
 import { SlotService } from '@onecx/angular-remote-components'
 import { UserService } from '@onecx/angular-integration-interface'
-import { Action, DataViewControlTranslations, PortalDialogService } from '@onecx/portal-integration-angular'
+import {
+  Action,
+  DataSortDirection,
+  PortalDialogService,
+  DataTableColumn,
+  ColumnType,
+  AngularAcceleratorModule
+} from '@onecx/angular-accelerator'
+import { PortalPageComponent } from '@onecx/angular-utils'
 
 import { limitText, sortItemsByDisplayName } from 'src/app/shared/utils'
 import {
@@ -20,6 +39,7 @@ import {
   UserPageResult,
   UserSearchCriteria
 } from 'src/app/shared/generated'
+import { UserDetailComponent } from '../user-detail/user-detail.component'
 import { UserPermissionsComponent } from '../user-permissions/user-permissions.component'
 
 export interface UserSearchCriteriaForm {
@@ -34,22 +54,46 @@ export interface UserSearchCriteriaForm {
 @Component({
   selector: 'app-user-search',
   templateUrl: './user-search.component.html',
-  styleUrls: ['./user-search.component.scss']
+  styleUrls: ['./user-search.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    BadgeModule,
+    ButtonModule,
+    CardModule,
+    FloatLabelModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    InputTextModule,
+    MessageModule,
+    SelectModule,
+    TooltipModule,
+    AngularAcceleratorModule,
+    PortalPageComponent,
+    UserDetailComponent
+  ]
 })
 export class UserSearchComponent implements OnInit {
   private readonly destroy$ = new Subject()
+  private readonly filterFieldLabelKeys = ['USER.USERNAME', 'USER.LASTNAME', 'USER.FIRSTNAME']
   // dialog
   public loading = true
   public exceptionKey: string | undefined
   public displayDetailDialog = false
   public viewMode: 'list' | 'grid' = 'grid'
-  public filter: string | undefined
+  public filterText = ''
+  private rawSearchResults: User[] | undefined = undefined
   public sortField = 'username'
   public sortOrder = 1
   public searchCriteriaForm: FormGroup<UserSearchCriteriaForm>
   public domains: Domain[] = []
   public limitText = limitText
   public userViewPermission = false // view permission?
+  public sortColumns: DataTableColumn[] = []
+  public sortColumnKeys: string[] = []
+  public filterTooltip$: Observable<string>
   // data
   public actions$: Observable<Action[]> | undefined
   public users$: Observable<User[]> | undefined
@@ -59,8 +103,11 @@ export class UserSearchComponent implements OnInit {
   public permissionsSlotName = 'onecx-iam-user-permissions'
   public isComponentDefined$: Observable<boolean>
 
-  @ViewChild(DataView) dv: DataView | undefined
-  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
+  get sortDirectionEnum(): DataSortDirection {
+    if (this.sortOrder === -1) return DataSortDirection.ASCENDING
+    if (this.sortOrder === 1) return DataSortDirection.DESCENDING
+    return DataSortDirection.NONE
+  }
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -72,7 +119,15 @@ export class UserSearchComponent implements OnInit {
     private readonly iamAdminApi: AdminInternalAPIService
   ) {
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.permissionsSlotName)
-    this.userViewPermission = user.hasPermission('USER#VIEW')
+    this.filterTooltip$ = this.translate.stream(['ACTIONS.DATAVIEW.FILTER_OF', ...this.filterFieldLabelKeys]).pipe(
+      map((translations) => {
+        const fields = this.filterFieldLabelKeys.map((key) => translations[key]).join(', ')
+        return `${translations['ACTIONS.DATAVIEW.FILTER_OF']}${fields}`
+      })
+    )
+    user.hasPermission('USER#VIEW').then((hasPermission) => {
+      this.userViewPermission = hasPermission
+    })
     this.searchCriteriaForm = new FormGroup<UserSearchCriteriaForm>({
       userId: new FormControl<string | null>(null),
       userName: new FormControl<string | null>(null),
@@ -82,10 +137,31 @@ export class UserSearchComponent implements OnInit {
       provider: new FormControl<string | null>(null, [Validators.required]),
       issuer: new FormControl<string | null>(null, [Validators.required])
     })
+    // Initialize sort columns for users
+    this.sortColumns = [
+      {
+        columnType: ColumnType.STRING,
+        nameKey: 'USER.FIRSTNAME',
+        id: 'firstName',
+        sortable: true
+      },
+      {
+        columnType: ColumnType.STRING,
+        nameKey: 'USER.LASTNAME',
+        id: 'lastName',
+        sortable: true
+      },
+      {
+        columnType: ColumnType.STRING,
+        nameKey: 'USER.USERNAME',
+        id: 'username',
+        sortable: true
+      }
+    ]
+    this.sortColumnKeys = this.sortColumns.map((c) => c.id)
   }
 
   ngOnInit(): void {
-    this.prepareDialogTranslations()
     this.prepareActionButtons()
     this.searchProviders()
   }
@@ -156,9 +232,14 @@ export class UserSearchComponent implements OnInit {
     // shrink criteria if user id is used
     if (usc.userId) usc = { userId: usc.userId, issuer: usc.issuer, pageSize: usc.pageSize }
 
+    this.filterText = ''
+    this.rawSearchResults = undefined
     this.loading = true
     this.users$ = this.iamAdminApi.searchUsersByCriteria({ userSearchCriteria: usc }).pipe(
       map((response: UserPageResult) => response.stream ?? []),
+      tap((users) => {
+        this.rawSearchResults = users
+      }),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.USER'
         console.error('searchUsersByCriteria', err)
@@ -171,32 +252,6 @@ export class UserSearchComponent implements OnInit {
   /**
    * DIALOG
    */
-  private prepareDialogTranslations(): void {
-    this.dataViewControlsTranslations$ = this.translate
-      .get([
-        'USER.USERNAME',
-        'USER.LASTNAME',
-        'USER.FIRSTNAME',
-        'ACTIONS.DATAVIEW.FILTER_OF',
-        'ACTIONS.DATAVIEW.SORT_BY'
-      ])
-      .pipe(
-        map((data) => {
-          return {
-            filterInputTooltip:
-              data['ACTIONS.DATAVIEW.FILTER_OF'] +
-              data['USER.USERNAME'] +
-              ', ' +
-              data['USER.LASTNAME'] +
-              ', ' +
-              data['USER.FIRSTNAME'],
-            sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY'],
-            sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY']
-          } as DataViewControlTranslations
-        })
-      )
-  }
-
   private prepareActionButtons(): void {
     this.actions$ = this.translate.get(['DIALOG.SEARCH.ROLE.LABEL', 'DIALOG.SEARCH.ROLE.TOOLTIP']).pipe(
       map((data) => {
@@ -225,15 +280,55 @@ export class UserSearchComponent implements OnInit {
   /**
    * UI EVENTS
    */
-  public onLayoutChange(viewMode: 'list' | 'grid'): void {
+  public onLayoutChange(viewMode: 'list' | 'grid' | 'table'): void {
+    // Filter out 'table' layout if not supported
+    if (viewMode === 'table') return
     this.viewMode = viewMode
   }
-  public onFilterChange(filter: string): void {
-    this.filter = filter
-    this.dv?.filter(filter, 'contains')
+  public onGlobalFilter(value: string): void {
+    this.filterText = value
+    if (this.rawSearchResults !== undefined) {
+      this.users$ = of(this.applyFilter(this.rawSearchResults, value))
+    }
   }
-  public onSortChange(field: string): void {
-    this.sortField = field
+
+  public onClearGlobalFilter(): void {
+    this.filterText = ''
+    if (this.rawSearchResults !== undefined) {
+      this.users$ = of(this.rawSearchResults)
+    }
+  }
+
+  private applyFilter(users: User[], filter: string): User[] {
+    if (!filter) return users
+    const f = filter.toLowerCase()
+    return users.filter(
+      (u) =>
+        u.username?.toLowerCase().includes(f) ||
+        u.firstName?.toLowerCase().includes(f) ||
+        u.lastName?.toLowerCase().includes(f)
+    )
+  }
+  public onSortChange(sort: any): void {
+    // sort can be a string (from old tests) or Sort object from InteractiveDataViewComponent { field, order }
+    if (typeof sort === 'string') {
+      this.sortField = sort
+    } else {
+      this.sortField = sort?.field || 'username'
+    }
+  }
+  public onSortColumnChange(columnId: string): void {
+    this.sortField = columnId
+  }
+  public onSortDirectionChange(direction: DataSortDirection): void {
+    // Map DataSortDirection to sortOrder: ASCENDING = -1, DESCENDING = 1, NONE = 1
+    if (direction === DataSortDirection.ASCENDING) {
+      this.sortOrder = -1
+    } else if (direction === DataSortDirection.DESCENDING) {
+      this.sortOrder = 1
+    } else {
+      this.sortOrder = 1
+    }
   }
   public onSortDirChange(asc: boolean): void {
     this.sortOrder = asc ? -1 : 1
@@ -256,6 +351,8 @@ export class UserSearchComponent implements OnInit {
     this.searchCriteriaForm.reset()
     this.searchCriteriaForm.enable()
     this.users$ = of([])
+    this.rawSearchResults = undefined
+    this.filterText = ''
   }
 
   public onHideDetailDialog(): void {

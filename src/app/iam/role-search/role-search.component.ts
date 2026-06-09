@@ -1,11 +1,29 @@
+import { CommonModule } from '@angular/common'
 import { Component, OnInit, ViewChild } from '@angular/core'
-import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
-import { TranslateService } from '@ngx-translate/core'
-import { finalize, map, of, Observable, catchError } from 'rxjs'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
+import { finalize, map, of, Observable, catchError, tap } from 'rxjs'
 import { DataView } from 'primeng/dataview'
 
-import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import { ButtonModule } from 'primeng/button'
+import { CardModule } from 'primeng/card'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
+import { SelectModule } from 'primeng/select'
+import { TooltipModule } from 'primeng/tooltip'
+
+import {
+  Action,
+  ColumnType,
+  DataSortDirection,
+  DataTableColumn,
+  AngularAcceleratorModule
+} from '@onecx/angular-accelerator'
+import { PortalPageComponent } from '@onecx/angular-utils'
 
 import {
   AdminInternalAPIService,
@@ -27,9 +45,28 @@ export interface RoleSearchCriteriaForm {
 @Component({
   selector: 'app-role-search',
   templateUrl: './role-search.component.html',
-  styleUrls: ['./role-search.component.scss']
+  styleUrls: ['./role-search.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    ButtonModule,
+    CardModule,
+    FloatLabelModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    InputTextModule,
+    MessageModule,
+    SelectModule,
+    TooltipModule,
+    AngularAcceleratorModule,
+    PortalPageComponent
+  ]
 })
 export class RoleSearchComponent implements OnInit {
+  private readonly filterFieldLabelKeys = ['ROLE.NAME', 'ROLE.DESCRIPTION']
+  private rawSearchResults: Role[] | undefined = undefined
   // detail
   public exceptionKey: string | undefined
   public loading = false
@@ -40,14 +77,23 @@ export class RoleSearchComponent implements OnInit {
   public roles$!: Observable<Role[]> | undefined
   public viewMode: 'list' | 'grid' = 'grid'
   public filter: string | undefined
+  public filterText = ''
   public sortField = 'name'
   public sortOrder = 1
+  public sortColumns: DataTableColumn[] = []
+  public sortColumnKeys: string[] = []
+  public filterTooltip$: Observable<string>
   public searchCriteriaForm: FormGroup<RoleSearchCriteriaForm>
   public domains: Domain[] = []
   public provider$: Observable<Provider[]> | undefined
 
-  public dataViewControlsTranslations: DataViewControlTranslations = {}
   @ViewChild(DataView) dv: DataView | undefined
+
+  get sortDirectionEnum(): DataSortDirection {
+    if (this.sortOrder === -1) return DataSortDirection.ASCENDING
+    if (this.sortOrder === 1) return DataSortDirection.DESCENDING
+    return DataSortDirection.NONE
+  }
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -55,15 +101,29 @@ export class RoleSearchComponent implements OnInit {
     private readonly iamAdminApi: AdminInternalAPIService,
     private readonly translate: TranslateService
   ) {
+    this.filterTooltip$ = this.translate.stream(['ACTIONS.DATAVIEW.FILTER_OF', ...this.filterFieldLabelKeys]).pipe(
+      map((translations) => {
+        const fields = this.filterFieldLabelKeys.map((key) => translations[key]).join(', ')
+        return `${translations['ACTIONS.DATAVIEW.FILTER_OF']}${fields}`
+      })
+    )
     this.searchCriteriaForm = new FormGroup<RoleSearchCriteriaForm>({
       name: new FormControl<string | null>(null),
       provider: new FormControl<string | null>(null, [Validators.required]),
       issuer: new FormControl<string | null>(null, [Validators.required])
     })
+    this.sortColumns = [
+      {
+        columnType: ColumnType.STRING,
+        nameKey: 'ROLE.NAME',
+        id: 'name',
+        sortable: true
+      }
+    ]
+    this.sortColumnKeys = this.sortColumns.map((c) => c.id)
   }
 
   ngOnInit(): void {
-    this.prepareDialogTranslations()
     this.prepareActionButtons()
     this.searchProviders()
   }
@@ -121,8 +181,13 @@ export class RoleSearchComponent implements OnInit {
       this.exceptionKey = 'EXCEPTIONS.MISSING_ISSUER'
       return
     }
+    this.filterText = ''
+    this.rawSearchResults = undefined
     this.roles$ = this.iamAdminApi.searchRolesByCriteria({ roleSearchCriteria: rsc }).pipe(
       map((response: RolePageResult) => response.stream ?? []),
+      tap((roles) => {
+        this.rawSearchResults = roles
+      }),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.ROLES'
         console.error('searchRolesByCriteria', err)
@@ -130,25 +195,6 @@ export class RoleSearchComponent implements OnInit {
       }),
       finalize(() => (this.loading = false))
     )
-  }
-
-  /**
-   * DIALOG
-   */
-  private prepareDialogTranslations() {
-    this.translate
-      .get(['ROLE.NAME', 'ROLE.DESCRIPTION', 'ACTIONS.DATAVIEW.FILTER_OF', 'ACTIONS.DATAVIEW.SORT_BY'])
-      .pipe(
-        map((data) => {
-          this.dataViewControlsTranslations = {
-            filterInputTooltip:
-              data['ACTIONS.DATAVIEW.FILTER_OF'] + data['ROLE.NAME'] + ', ' + data['ROLE.DESCRIPTION'],
-            sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY'],
-            sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY']
-          }
-        })
-      )
-      .subscribe()
   }
 
   private prepareActionButtons(): void {
@@ -178,15 +224,48 @@ export class RoleSearchComponent implements OnInit {
   /**
    * UI EVENTS
    */
-  public onLayoutChange(viewMode: 'list' | 'grid'): void {
+  public onLayoutChange(viewMode: 'list' | 'grid' | 'table'): void {
+    // Filter out 'table' layout if not supported
+    if (viewMode === 'table') return
     this.viewMode = viewMode
   }
-  public onFilterChange(filter: string): void {
-    this.filter = filter
-    this.dv?.filter(filter, 'contains')
+  public onGlobalFilter(value: string): void {
+    this.filterText = value
+    this.filter = value
+    if (this.rawSearchResults !== undefined) {
+      this.roles$ = of(this.applyFilter(this.rawSearchResults, value))
+    }
   }
-  public onSortChange(field: string): void {
-    this.sortField = field
+
+  public onClearGlobalFilter(): void {
+    this.filterText = ''
+    this.filter = ''
+    if (this.rawSearchResults !== undefined) {
+      this.roles$ = of(this.rawSearchResults)
+    }
+  }
+
+  private applyFilter(roles: Role[], filter: string): Role[] {
+    if (!filter) return roles
+    const f = filter.toLowerCase()
+    return roles.filter((r) => r.name?.toLowerCase().includes(f) || r.description?.toLowerCase().includes(f))
+  }
+
+  public onFilterChange(filters: any): void {
+    const currentFilter = filters?.toString() || ''
+    this.filter = currentFilter
+    // kept for compatibility with existing dataview emitted event
+    if (!this.filterText) {
+      this.filterText = currentFilter
+    }
+  }
+  public onSortChange(sort: any): void {
+    // sort can be a string (from old tests) or Sort object from InteractiveDataViewComponent { field, order }
+    if (typeof sort === 'string') {
+      this.sortField = sort
+    } else {
+      this.sortField = sort?.field || 'name'
+    }
   }
   public onSortDirChange(asc: boolean): void {
     this.sortOrder = asc ? -1 : 1
@@ -200,5 +279,9 @@ export class RoleSearchComponent implements OnInit {
   }
   public onSearchReset() {
     this.searchCriteriaForm.reset()
+    this.roles$ = of([])
+    this.rawSearchResults = undefined
+    this.filterText = ''
+    this.filter = ''
   }
 }

@@ -12,12 +12,11 @@ import { TooltipModule } from 'primeng/tooltip'
 import { RippleModule } from 'primeng/ripple'
 import { ButtonModule } from 'primeng/button'
 
-import { BASE_URL, RemoteComponentConfig } from '@onecx/angular-remote-components'
 import { PortalMessageService } from '@onecx/angular-integration-interface'
 import { IfPermissionDirective } from '@onecx/angular-accelerator'
-import { HAS_PERMISSION_CHECKER } from '@onecx/angular-utils'
+import { HAS_PERMISSION_CHECKER, REMOTE_COMPONENT_CONFIG, RemoteComponentConfig } from '@onecx/angular-utils'
 
-import { PortalDialogService } from '@onecx/portal-integration-angular'
+import { PortalDialogService } from '@onecx/angular-accelerator'
 import { provideUserServiceMock, UserServiceMock } from '@onecx/angular-integration-interface/mocks'
 
 import { UserInternalAPIService } from 'src/app/shared/generated'
@@ -44,7 +43,7 @@ describe('ChangePasswordComponent', () => {
   let component: OneCXChangePasswordComponent
   let fixture: ComponentFixture<OneCXChangePasswordComponent>
   let oneCXChangePasswordHarness: OneCXChangePasswordHarness
-  let baseUrlSubject: ReplaySubject<any>
+  let remoteComponentConfigSubject: ReplaySubject<RemoteComponentConfig>
 
   const userApiSpy = jasmine.createSpyObj<UserInternalAPIService>('UserInternalAPIService', ['resetPassword'])
   const messageServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['error', 'success'])
@@ -58,7 +57,7 @@ describe('ChangePasswordComponent', () => {
   }
 
   beforeEach(() => {
-    baseUrlSubject = new ReplaySubject<any>(1)
+    remoteComponentConfigSubject = new ReplaySubject<RemoteComponentConfig>(1)
     TestBed.configureTestingModule({
       declarations: [],
       imports: [
@@ -71,7 +70,7 @@ describe('ChangePasswordComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         provideUserServiceMock(),
-        { provide: BASE_URL, useValue: baseUrlSubject },
+        { provide: REMOTE_COMPONENT_CONFIG, useValue: remoteComponentConfigSubject },
         { provide: HAS_PERMISSION_CHECKER, useClass: UserServiceMock }
       ]
     })
@@ -94,7 +93,7 @@ describe('ChangePasswordComponent', () => {
         }
       })
       .compileComponents()
-    baseUrlSubject.next('base_url_mock')
+    remoteComponentConfigSubject.next(mockConfigWithPermission)
   })
 
   afterEach(() => {
@@ -119,8 +118,8 @@ describe('ChangePasswordComponent', () => {
     it('should init remote component', (done: DoneFn) => {
       expect(component.permissions).toEqual([pwdChangePermission])
       expect(userApiSpy.configuration.basePath).toEqual('base_url/bff')
-      baseUrlSubject.asObservable().subscribe((item) => {
-        expect(item).toEqual('base_url')
+      remoteComponentConfigSubject.asObservable().subscribe((item) => {
+        expect(item.baseUrl).toEqual('base_url')
         done()
       })
     })

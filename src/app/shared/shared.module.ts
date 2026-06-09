@@ -3,60 +3,95 @@ import { CommonModule } from '@angular/common'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule } from '@ngx-translate/core'
 
-import { DataViewModule } from 'primeng/dataview'
 import { DialogModule } from 'primeng/dialog'
+import { ButtonModule } from 'primeng/button'
+import { SelectModule } from 'primeng/select'
 import { InputTextModule } from 'primeng/inputtext'
-import { InputTextareaModule } from 'primeng/inputtextarea'
+import { MessageModule } from 'primeng/message'
+import { TextareaModule } from 'primeng/textarea'
 import { ListboxModule } from 'primeng/listbox'
 import { TabViewModule } from 'primeng/tabview'
+import { FloatLabelModule } from 'primeng/floatlabel'
 import { ToastModule } from 'primeng/toast'
+import { TooltipModule } from 'primeng/tooltip'
+import { BadgeModule } from 'primeng/badge'
+import { CardModule } from 'primeng/card'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 
 import { AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
-import { PortalApiConfiguration, PortalCoreModule } from '@onecx/portal-integration-angular'
+import {
+  PortalApiConfiguration,
+  PortalPageComponent,
+  providePermissionService,
+  provideThemeConfig
+} from '@onecx/angular-utils'
 import { AngularRemoteComponentsModule } from '@onecx/angular-remote-components'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 import { Configuration } from 'src/app/shared/generated'
 import { environment } from 'src/environments/environment'
 import { LabelResolver } from './label.resolver'
 
 export function apiConfigProvider(configService: ConfigurationService, appStateService: AppStateService) {
-  return new PortalApiConfiguration(Configuration, environment.apiPrefix, configService, appStateService)
+  return new PortalApiConfiguration(Configuration, environment.apiPrefix)
 }
 
 @NgModule({
   declarations: [],
   imports: [
-    PortalCoreModule.forMicroFrontend(),
     CommonModule,
-    DataViewModule,
+    BadgeModule,
+    ButtonModule,
+    CardModule,
     DialogModule,
+    SelectModule,
     FormsModule,
+    FloatLabelModule,
+    InputGroupModule,
+    InputGroupAddonModule,
     InputTextModule,
-    InputTextareaModule,
+    MessageModule,
+    TextareaModule,
     ListboxModule,
     ReactiveFormsModule,
     TabViewModule,
     ToastModule,
+    TooltipModule,
     TranslateModule,
-    AngularRemoteComponentsModule
+    PortalPageComponent,
+    AngularRemoteComponentsModule,
+    AngularAcceleratorModule
   ],
   exports: [
     CommonModule,
-    DataViewModule,
+    BadgeModule,
+    ButtonModule,
+    CardModule,
     DialogModule,
+    SelectModule,
     FormsModule,
+    FloatLabelModule,
+    InputGroupModule,
+    InputGroupAddonModule,
     InputTextModule,
-    InputTextareaModule,
+    MessageModule,
+    TextareaModule,
     ListboxModule,
     ReactiveFormsModule,
     TabViewModule,
     ToastModule,
+    TooltipModule,
     TranslateModule,
-    AngularRemoteComponentsModule
+    PortalPageComponent,
+    AngularRemoteComponentsModule,
+    AngularAcceleratorModule
   ],
   providers: [
     LabelResolver,
-    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] }
+    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] },
+    ...providePermissionService(),
+    provideThemeConfig()
   ]
 })
 export class SharedModule {}
