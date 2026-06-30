@@ -1,27 +1,18 @@
 import { Component, Inject, Input } from '@angular/core'
 import { CommonModule, Location } from '@angular/common'
-import { HttpClient } from '@angular/common/http'
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { Observable, ReplaySubject, catchError, mergeMap, of } from 'rxjs'
 import { RippleModule } from 'primeng/ripple'
 import { TooltipModule } from 'primeng/tooltip'
 
 import {
   AngularRemoteComponentsModule,
-  BASE_URL,
-  RemoteComponentConfig,
   ocxRemoteComponent,
-  provideTranslateServiceForRoot,
   ocxRemoteWebcomponent
 } from '@onecx/angular-remote-components'
+import { REMOTE_COMPONENT_CONFIG, RemoteComponentConfig } from '@onecx/angular-utils'
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
-import {
-  DialogState,
-  PortalCoreModule,
-  PortalDialogService,
-  createRemoteComponentTranslateLoader,
-  providePortalDialogService
-} from '@onecx/portal-integration-angular'
+import { DialogState, PortalDialogService, providePortalDialogService } from '@onecx/angular-accelerator'
 
 import { SharedModule } from 'src/app/shared/shared.module'
 import { Configuration, UserInternalAPIService } from 'src/app/shared/generated'
@@ -33,38 +24,22 @@ import { ChangePasswordDialogComponent } from './change-password-dialog/change-p
   selector: 'app-ocx-change-password',
   templateUrl: './change-password.component.html',
   standalone: true,
-  imports: [
-    CommonModule,
-    RippleModule,
-    TooltipModule,
-    TranslateModule,
-    SharedModule,
-    PortalCoreModule,
-    AngularRemoteComponentsModule
-  ],
+  imports: [CommonModule, RippleModule, TooltipModule, TranslateModule, SharedModule, AngularRemoteComponentsModule],
   providers: [
     UserInternalAPIService,
     PortalMessageService,
     providePortalDialogService(),
     {
-      provide: BASE_URL,
-      useValue: new ReplaySubject<string>(1)
-    },
-    provideTranslateServiceForRoot({
-      isolate: true,
-      loader: {
-        provide: TranslateLoader,
-        useFactory: createRemoteComponentTranslateLoader,
-        deps: [HttpClient, BASE_URL]
-      }
-    })
+      provide: REMOTE_COMPONENT_CONFIG,
+      useValue: new ReplaySubject<RemoteComponentConfig>(1)
+    }
   ]
 })
 export class OneCXChangePasswordComponent implements ocxRemoteComponent, ocxRemoteWebcomponent {
   permissions: string[] = []
 
   constructor(
-    @Inject(BASE_URL) private readonly baseUrl: ReplaySubject<string>,
+    @Inject(REMOTE_COMPONENT_CONFIG) private readonly remoteComponentConfig: ReplaySubject<RemoteComponentConfig>,
     private readonly userService: UserService,
     private readonly iamUserService: UserInternalAPIService,
     private readonly portalDialogService: PortalDialogService,
@@ -79,7 +54,7 @@ export class OneCXChangePasswordComponent implements ocxRemoteComponent, ocxRemo
   }
 
   ocxInitRemoteComponent(config: RemoteComponentConfig): void {
-    this.baseUrl.next(config.baseUrl)
+    this.remoteComponentConfig.next(config)
     this.permissions = config.permissions
     this.iamUserService.configuration = new Configuration({
       basePath: Location.joinWithSlash(config.baseUrl, environment.apiPrefix)

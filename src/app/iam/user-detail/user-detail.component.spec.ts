@@ -1,5 +1,11 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import { provideHttpClient } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { FormsModule } from '@angular/forms'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
+import { TranslateModule } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { BehaviorSubject, of, throwError } from 'rxjs'
 
@@ -40,19 +46,30 @@ describe('UserDetailComponent', () => {
   beforeEach(waitForAsync(() => {
     mockUserService = { lang$: new BehaviorSubject('de') }
     TestBed.configureTestingModule({
-      declarations: [UserDetailComponent],
       imports: [
+        UserDetailComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       providers: [
+        provideNoopAnimations(),
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: AdminInternalAPIService, useValue: adminApiSpy },
         { provide: UserService, useValue: mockUserService }
       ],
       schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents()
+    })
+      .overrideComponent(UserDetailComponent, {
+        set: {
+          imports: [CommonModule, FormsModule, TranslateModule],
+          schemas: [NO_ERRORS_SCHEMA],
+          providers: [{ provide: AdminInternalAPIService, useValue: adminApiSpy }]
+        }
+      })
+      .compileComponents()
   }))
 
   function initializeComponent(): void {
@@ -82,6 +99,8 @@ describe('UserDetailComponent', () => {
       component.displayDialog = false
 
       component.ngOnChanges()
+
+      expect(adminApiSpy.getUserRoles).not.toHaveBeenCalled()
     })
 
     it('should ignore any action if no user data', () => {
@@ -89,6 +108,8 @@ describe('UserDetailComponent', () => {
       component.idmUser = undefined
 
       component.ngOnChanges()
+
+      expect(adminApiSpy.getUserRoles).not.toHaveBeenCalled()
     })
 
     it('should ignore any action if no provider', () => {
@@ -97,6 +118,8 @@ describe('UserDetailComponent', () => {
       component.provider = undefined
 
       component.ngOnChanges()
+
+      expect(adminApiSpy.getUserRoles).not.toHaveBeenCalled()
     })
 
     it('should call get user roles', (done) => {
