@@ -1,13 +1,16 @@
-@import 'src/app/_iam-mixins.scss';
+@use 'src/app/_iam-mixins.scss' as *;
 
 @include card-badges;
 @include correct-data-view-control;
-@include correct-search-criteria;
-@include displaying-text-responsive;
+@include ocx-search-criteria-fixes;
+@include ocx-text-responsive;
 @include media-md-h-3-5;
 @include dataview-grid-layout-fix;
 @include dataview-card-hover('p-card.cursor-pointer');
 @include dataview-list-split-zebra-rows('section');
+@include ocx-interactive-data-view-fixes;
+@include ocx-p-message;
+@include ocx-content;
 
 :host {
   --onecx-iam-onecx-iam-ui-badge-dot-size: 1.5rem;

@@ -73,7 +73,7 @@
     </div>
   </ocx-search-header>
 
-  <ocx-content>
+  <ocx-content class="ocx-content">
     <p-message
       *ngIf="loading && !exceptionKey"
       id="iam_role_search_loading"
@@ -98,7 +98,7 @@
     <ocx-interactive-data-view
       *ngIf="roles$ | async as roles"
       id="iam_role_search_dataview"
-      [data]="$any(roles)"
+      [data]="$any(filteredRoles ?? roles)"
       [layout]="viewMode"
       [supportedViewLayouts]="['grid', 'list']"
       [columns]="sortColumns"
@@ -128,7 +128,7 @@
               type="text"
               pInputText
               [value]="filterText"
-              (input)="onGlobalFilter(dvFilterInput.value)"
+              (input)="onGlobalFilter(dvFilterInput.value, roles)"
               [pTooltip]="(filterTooltip$ | async) ?? ''"
               tooltipPosition="top"
               tooltipEvent="hover"

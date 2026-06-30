@@ -62,8 +62,8 @@ describe('ChangePasswordComponent', () => {
       declarations: [],
       imports: [
         TranslateTestingModule.withTranslations({
-          de: require('../../../assets/i18n/de.json'),
-          en: require('../../../assets/i18n/en.json')
+          de: require('src/assets/i18n/de.json'),
+          en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       providers: [

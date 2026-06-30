@@ -99,6 +99,8 @@ describe('UserDetailComponent', () => {
       component.displayDialog = false
 
       component.ngOnChanges()
+
+      expect(adminApiSpy.getUserRoles).not.toHaveBeenCalled()
     })
 
     it('should ignore any action if no user data', () => {
@@ -106,6 +108,8 @@ describe('UserDetailComponent', () => {
       component.idmUser = undefined
 
       component.ngOnChanges()
+
+      expect(adminApiSpy.getUserRoles).not.toHaveBeenCalled()
     })
 
     it('should ignore any action if no provider', () => {
@@ -114,6 +118,8 @@ describe('UserDetailComponent', () => {
       component.provider = undefined
 
       component.ngOnChanges()
+
+      expect(adminApiSpy.getUserRoles).not.toHaveBeenCalled()
     })
 
     it('should call get user roles', (done) => {

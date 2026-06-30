@@ -75,6 +75,7 @@ export class RoleSearchComponent implements OnInit {
   // data
   public actions$: Observable<Action[]> | undefined
   public roles$!: Observable<Role[]> | undefined
+  public filteredRoles: Role[] | undefined
   public viewMode: 'list' | 'grid' = 'grid'
   public filter: string | undefined
   public filterText = ''
@@ -169,20 +170,15 @@ export class RoleSearchComponent implements OnInit {
   public searchRoles() {
     this.loading = true
     this.exceptionKey = undefined
-    // create criteria but exclude nulls and non-existings
-    const rsc: RoleSearchCriteria = {
-      issuer: '',
-      ...Object.fromEntries(
-        Object.entries(this.searchCriteriaForm.value).filter(([n, v]) => n !== 'provider' && v !== null)
-      ),
-      pageSize: 1000
-    }
+    const rsc = this.buildSearchCriteria()
     if (!rsc.issuer) {
       this.exceptionKey = 'EXCEPTIONS.MISSING_ISSUER'
       return
     }
     this.filterText = ''
+    this.filter = ''
     this.rawSearchResults = undefined
+    this.filteredRoles = undefined
     this.roles$ = this.iamAdminApi.searchRolesByCriteria({ roleSearchCriteria: rsc }).pipe(
       map((response: RolePageResult) => response.stream ?? []),
       tap((roles) => {
@@ -195,6 +191,16 @@ export class RoleSearchComponent implements OnInit {
       }),
       finalize(() => (this.loading = false))
     )
+  }
+
+  private buildSearchCriteria(): RoleSearchCriteria {
+    const formValue = this.searchCriteriaForm.getRawValue()
+    const rsc: RoleSearchCriteria = {
+      issuer: formValue.issuer ?? '',
+      pageSize: 1000
+    }
+    if (formValue.name) rsc.name = formValue.name
+    return rsc
   }
 
   private prepareActionButtons(): void {
@@ -229,20 +235,21 @@ export class RoleSearchComponent implements OnInit {
     if (viewMode === 'table') return
     this.viewMode = viewMode
   }
-  public onGlobalFilter(value: string): void {
-    this.filterText = value
-    this.filter = value
-    if (this.rawSearchResults !== undefined) {
-      this.roles$ = of(this.applyFilter(this.rawSearchResults, value))
+  public onGlobalFilter(value?: string, data?: Role[]): void {
+    this.filterText = value ?? ''
+    this.filter = this.filterText
+    const roles = data ?? this.rawSearchResults
+    if (!roles || this.filterText === '') {
+      this.filteredRoles = undefined
+      return
     }
+    this.filteredRoles = this.applyFilter(roles, this.filterText)
   }
 
   public onClearGlobalFilter(): void {
     this.filterText = ''
     this.filter = ''
-    if (this.rawSearchResults !== undefined) {
-      this.roles$ = of(this.rawSearchResults)
-    }
+    this.filteredRoles = undefined
   }
 
   private applyFilter(roles: Role[], filter: string): Role[] {
@@ -281,6 +288,7 @@ export class RoleSearchComponent implements OnInit {
     this.searchCriteriaForm.reset()
     this.roles$ = of([])
     this.rawSearchResults = undefined
+    this.filteredRoles = undefined
     this.filterText = ''
     this.filter = ''
   }

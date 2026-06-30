@@ -393,111 +393,86 @@ describe('UserSearchComponent', () => {
       expect(component.filterText).toBe(filterValue)
     })
 
-    it('should filter users by username on onGlobalFilter', (done) => {
+    it('should filter users by username on onGlobalFilter', () => {
       component['rawSearchResults'] = [user1, user2]
 
       component.onGlobalFilter('username1')
 
-      component.users$?.subscribe({
-        next: (users) => {
-          expect(users.length).toBe(1)
-          expect(users[0]).toBe(user1)
-          done()
-        },
-        error: done.fail
-      })
+      expect(component.filteredUsers?.length).toBe(1)
+      expect(component.filteredUsers?.[0]).toBe(user1)
     })
 
-    it('should filter users by firstName on onGlobalFilter', (done) => {
+    it('should filter users by firstName on onGlobalFilter', () => {
       component['rawSearchResults'] = [user1, user2]
 
       component.onGlobalFilter('first2')
 
-      component.users$?.subscribe({
-        next: (users) => {
-          expect(users.length).toBe(1)
-          expect(users[0]).toBe(user2)
-          done()
-        },
-        error: done.fail
-      })
+      expect(component.filteredUsers?.length).toBe(1)
+      expect(component.filteredUsers?.[0]).toBe(user2)
     })
 
-    it('should filter users by lastName on onGlobalFilter', (done) => {
+    it('should filter users by lastName on onGlobalFilter', () => {
       component['rawSearchResults'] = [user1, user2]
 
       component.onGlobalFilter('last1')
 
-      component.users$?.subscribe({
-        next: (users) => {
-          expect(users.length).toBe(1)
-          expect(users[0]).toBe(user1)
-          done()
-        },
-        error: done.fail
-      })
+      expect(component.filteredUsers?.length).toBe(1)
+      expect(component.filteredUsers?.[0]).toBe(user1)
     })
 
-    it('should filter users by username2 on onGlobalFilter', (done) => {
+    it('should filter users by username2 on onGlobalFilter', () => {
       component['rawSearchResults'] = [user1, user2]
 
       component.onGlobalFilter('username2')
 
-      component.users$?.subscribe({
-        next: (users) => {
-          expect(users.length).toBe(1)
-          expect(users[0]).toBe(user2)
-          done()
-        },
-        error: done.fail
-      })
+      expect(component.filteredUsers?.length).toBe(1)
+      expect(component.filteredUsers?.[0]).toBe(user2)
     })
 
-    it('should perform case-insensitive filtering', (done) => {
+    it('should perform case-insensitive filtering', () => {
       component['rawSearchResults'] = [user1, user2]
 
       component.onGlobalFilter('USERNAME1')
 
-      component.users$?.subscribe({
-        next: (users) => {
-          expect(users.length).toBe(1)
-          expect(users[0]).toBe(user1)
-          done()
-        },
-        error: done.fail
-      })
+      expect(component.filteredUsers?.length).toBe(1)
+      expect(component.filteredUsers?.[0]).toBe(user1)
     })
 
-    it('should return all users on empty filter string', (done) => {
+    it('should return all users on empty filter string', () => {
       component['rawSearchResults'] = [user1, user2]
 
       component.onGlobalFilter('')
 
-      component.users$?.subscribe({
-        next: (users) => {
-          expect(users.length).toBe(2)
-          done()
-        },
-        error: done.fail
-      })
+      expect(component.filteredUsers).toBeUndefined()
     })
 
-    it('should clear filter and restore all results on onClearGlobalFilter', (done) => {
+    it('should handle undefined filter value when data argument is provided', () => {
+      component['rawSearchResults'] = undefined
+
+      component.onGlobalFilter(undefined, [user1, user2])
+
+      expect(component.filterText).toBe('')
+      expect(component.filteredUsers).toBeUndefined()
+    })
+
+    it('should use provided data argument when rawSearchResults is undefined', () => {
+      component['rawSearchResults'] = undefined
+
+      component.onGlobalFilter('username2', [user1, user2])
+
+      expect(component.filteredUsers?.length).toBe(1)
+      expect(component.filteredUsers?.[0]).toBe(user2)
+    })
+
+    it('should clear filter and restore all results on onClearGlobalFilter', () => {
       component['rawSearchResults'] = [user1, user2]
+      component.filteredUsers = [user1]
       component.filterText = 'username1'
 
       component.onClearGlobalFilter()
 
       expect(component.filterText).toBe('')
-      component.users$?.subscribe({
-        next: (users) => {
-          expect(users.length).toBe(2)
-          expect(users[0]).toBe(user1)
-          expect(users[1]).toBe(user2)
-          done()
-        },
-        error: done.fail
-      })
+      expect(component.filteredUsers).toBeUndefined()
     })
 
     it('should update viewMode onLayoutChange', () => {
@@ -571,6 +546,16 @@ describe('UserSearchComponent', () => {
     })
   })
 
+  describe('applyFilter', () => {
+    it('should return original users when filter is empty', () => {
+      const users = [user1, user2]
+
+      const filtered = component['applyFilter'](users, '')
+
+      expect(filtered).toBe(users)
+    })
+  })
+
   describe('sortDirectionEnum', () => {
     it('should return ASCENDING when sortOrder is -1', () => {
       component.sortOrder = -1
@@ -629,6 +614,11 @@ describe('UserSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const firstAction = actions[0]
+          expect(firstAction.actionCallback).toBeDefined()
+          if (!firstAction.actionCallback) {
+            fail('Expected first action callback to be defined')
+            return
+          }
           firstAction.actionCallback()
           expect(component.onGoToRoleSearch).toHaveBeenCalled()
         })

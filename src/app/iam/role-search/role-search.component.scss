@@ -1,9 +1,12 @@
-@import 'src/app/_iam-mixins.scss';
+@use 'src/app/_iam-mixins.scss' as *;
 
 @include correct-data-view-control;
-@include correct-search-criteria;
+@include ocx-search-criteria-fixes;
 @include media-md-h-3-5;
-@include displaying-text-responsive;
+@include ocx-text-responsive;
 @include dataview-grid-layout-fix;
 @include dataview-card-hover;
 @include dataview-list-split-zebra-rows;
+@include ocx-interactive-data-view-fixes;
+@include ocx-p-message;
+@include ocx-content;

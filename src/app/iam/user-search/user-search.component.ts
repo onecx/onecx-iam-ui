@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core'
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
-import { finalize, map, of, Observable, Subject, catchError, tap } from 'rxjs'
+import { finalize, map, of, Observable, catchError, tap } from 'rxjs'
 import { PrimeIcons } from 'primeng/api'
 
 import { BadgeModule } from 'primeng/badge'
@@ -76,7 +76,6 @@ export interface UserSearchCriteriaForm {
   ]
 })
 export class UserSearchComponent implements OnInit {
-  private readonly destroy$ = new Subject()
   private readonly filterFieldLabelKeys = ['USER.USERNAME', 'USER.LASTNAME', 'USER.FIRSTNAME']
   // dialog
   public loading = true
@@ -97,6 +96,7 @@ export class UserSearchComponent implements OnInit {
   // data
   public actions$: Observable<Action[]> | undefined
   public users$: Observable<User[]> | undefined
+  public filteredUsers: User[] | undefined
   public provider$: Observable<Provider[]> | undefined
   public idmUser: User | undefined = undefined
   public provider: Provider | undefined
@@ -217,23 +217,15 @@ export class UserSearchComponent implements OnInit {
    */
   private searchUsers(): void {
     this.exceptionKey = undefined
-    // create criteria but exclude nulls and non-existings
-    let usc: UserSearchCriteria = {
-      issuer: '',
-      ...Object.fromEntries(
-        Object.entries(this.searchCriteriaForm.value).filter(([n, v]) => n !== 'provider' && v !== null)
-      ),
-      pageSize: 1000
-    }
+    const usc = this.buildSearchCriteria()
     if (!usc.issuer) {
       this.exceptionKey = 'EXCEPTIONS.MISSING_ISSUER'
       return
     }
-    // shrink criteria if user id is used
-    if (usc.userId) usc = { userId: usc.userId, issuer: usc.issuer, pageSize: usc.pageSize }
 
     this.filterText = ''
     this.rawSearchResults = undefined
+    this.filteredUsers = undefined
     this.loading = true
     this.users$ = this.iamAdminApi.searchUsersByCriteria({ userSearchCriteria: usc }).pipe(
       map((response: UserPageResult) => response.stream ?? []),
@@ -247,6 +239,26 @@ export class UserSearchComponent implements OnInit {
       }),
       finalize(() => (this.loading = false))
     )
+  }
+
+  private buildSearchCriteria(): UserSearchCriteria {
+    const formValue = this.searchCriteriaForm.getRawValue()
+    const usc: UserSearchCriteria = {
+      issuer: formValue.issuer ?? '',
+      pageSize: 1000
+    }
+
+    if (formValue.userId) {
+      usc.userId = formValue.userId
+      return usc
+    }
+
+    if (formValue.userName) usc.userName = formValue.userName
+    if (formValue.firstName) usc.firstName = formValue.firstName
+    if (formValue.lastName) usc.lastName = formValue.lastName
+    if (formValue.email) usc.email = formValue.email
+
+    return usc
   }
 
   /**
@@ -285,18 +297,19 @@ export class UserSearchComponent implements OnInit {
     if (viewMode === 'table') return
     this.viewMode = viewMode
   }
-  public onGlobalFilter(value: string): void {
-    this.filterText = value
-    if (this.rawSearchResults !== undefined) {
-      this.users$ = of(this.applyFilter(this.rawSearchResults, value))
+  public onGlobalFilter(value?: string, data?: User[]): void {
+    this.filterText = value ?? ''
+    const users = data ?? this.rawSearchResults
+    if (!users || this.filterText === '') {
+      this.filteredUsers = undefined
+      return
     }
+    this.filteredUsers = this.applyFilter(users, this.filterText)
   }
 
   public onClearGlobalFilter(): void {
     this.filterText = ''
-    if (this.rawSearchResults !== undefined) {
-      this.users$ = of(this.rawSearchResults)
-    }
+    this.filteredUsers = undefined
   }
 
   private applyFilter(users: User[], filter: string): User[] {
@@ -352,6 +365,7 @@ export class UserSearchComponent implements OnInit {
     this.searchCriteriaForm.enable()
     this.users$ = of([])
     this.rawSearchResults = undefined
+    this.filteredUsers = undefined
     this.filterText = ''
   }
 

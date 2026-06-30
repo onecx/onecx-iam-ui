@@ -131,7 +131,7 @@
     </div>
   </ocx-search-header>
 
-  <ocx-content>
+  <ocx-content class="ocx-content">
     <p-message
       *ngIf="loading && !exceptionKey"
       id="iam_user_search_loading"
@@ -156,7 +156,7 @@
     <ocx-interactive-data-view
       *ngIf="users$ | async as users"
       id="iam_user_search_dataview"
-      [data]="$any(users)"
+      [data]="$any(filteredUsers ?? users)"
       [layout]="viewMode"
       [supportedViewLayouts]="['grid', 'list']"
       [columns]="sortColumns"
@@ -184,7 +184,7 @@
               type="text"
               pInputText
               [value]="filterText"
-              (input)="onGlobalFilter(dvFilterInput.value)"
+              (input)="onGlobalFilter(dvFilterInput.value, users)"
               [pTooltip]="(filterTooltip$ | async) ?? ''"
               tooltipPosition="top"
               tooltipEvent="hover"

@@ -376,50 +376,51 @@ describe('RoleSearchComponent', () => {
   })
 
   describe('global filter', () => {
-    it('should filter roles by name on onGlobalFilter', (done) => {
+    it('should filter roles by name on onGlobalFilter', () => {
       component['rawSearchResults'] = [role1, role2]
 
       component.onGlobalFilter('name1')
 
       expect(component.filterText).toBe('name1')
       expect(component.filter).toBe('name1')
-      component.roles$?.subscribe({
-        next: (roles) => {
-          expect(roles.length).toBe(1)
-          expect(roles[0]).toBe(role1)
-          done()
-        },
-        error: done.fail
-      })
+      expect(component.filteredRoles?.length).toBe(1)
+      expect(component.filteredRoles?.[0]).toBe(role1)
     })
 
-    it('should filter roles by description on onGlobalFilter', (done) => {
+    it('should filter roles by description on onGlobalFilter', () => {
       component['rawSearchResults'] = [role1, role2]
 
       component.onGlobalFilter('descr2')
 
-      component.roles$?.subscribe({
-        next: (roles) => {
-          expect(roles.length).toBe(1)
-          expect(roles[0]).toBe(role2)
-          done()
-        },
-        error: done.fail
-      })
+      expect(component.filteredRoles?.length).toBe(1)
+      expect(component.filteredRoles?.[0]).toBe(role2)
     })
 
-    it('should return all roles on empty filter string', (done) => {
+    it('should return all roles on empty filter string', () => {
       component['rawSearchResults'] = [role1, role2]
 
       component.onGlobalFilter('')
 
-      component.roles$?.subscribe({
-        next: (roles) => {
-          expect(roles.length).toBe(2)
-          done()
-        },
-        error: done.fail
-      })
+      expect(component.filteredRoles).toBeUndefined()
+    })
+
+    it('should handle undefined filter value when data argument is provided', () => {
+      component['rawSearchResults'] = undefined
+
+      component.onGlobalFilter(undefined, [role1, role2])
+
+      expect(component.filterText).toBe('')
+      expect(component.filter).toBe('')
+      expect(component.filteredRoles).toBeUndefined()
+    })
+
+    it('should use provided data argument when rawSearchResults is undefined', () => {
+      component['rawSearchResults'] = undefined
+
+      component.onGlobalFilter('descr2', [role1, role2])
+
+      expect(component.filteredRoles?.length).toBe(1)
+      expect(component.filteredRoles?.[0]).toBe(role2)
     })
 
     it('should not update roles$ when rawSearchResults is undefined', () => {
@@ -430,25 +431,19 @@ describe('RoleSearchComponent', () => {
 
       expect(component.filterText).toBe('test')
       expect(component.roles$).toBeUndefined()
+      expect(component.filteredRoles).toBeUndefined()
     })
 
-    it('should clear filter and restore all results on onClearGlobalFilter', (done) => {
+    it('should clear filter and restore all results on onClearGlobalFilter', () => {
       component['rawSearchResults'] = [role1, role2]
+      component.filteredRoles = [role1]
       component.filterText = 'name1'
 
       component.onClearGlobalFilter()
 
       expect(component.filterText).toBe('')
       expect(component.filter).toBe('')
-      component.roles$?.subscribe({
-        next: (roles) => {
-          expect(roles.length).toBe(2)
-          expect(roles[0]).toBe(role1)
-          expect(roles[1]).toBe(role2)
-          done()
-        },
-        error: done.fail
-      })
+      expect(component.filteredRoles).toBeUndefined()
     })
 
     it('should not update roles$ on onClearGlobalFilter when rawSearchResults is undefined', () => {
@@ -503,6 +498,16 @@ describe('RoleSearchComponent', () => {
     })
   })
 
+  describe('applyFilter', () => {
+    it('should return original roles when filter is empty', () => {
+      const roles = [role1, role2]
+
+      const filtered = component['applyFilter'](roles, '')
+
+      expect(filtered).toBe(roles)
+    })
+  })
+
   describe('sortDirectionEnum', () => {
     it('should return ASCENDING when sortOrder is -1', () => {
       component.sortOrder = -1
@@ -547,6 +552,11 @@ describe('RoleSearchComponent', () => {
     if (component.actions$) {
       component.actions$.subscribe((actions) => {
         const firstAction = actions[0]
+        expect(firstAction.actionCallback).toBeDefined()
+        if (!firstAction.actionCallback) {
+          fail('Expected first action callback to be defined')
+          return
+        }
         firstAction.actionCallback()
         expect(component.onBack).toHaveBeenCalled()
       })

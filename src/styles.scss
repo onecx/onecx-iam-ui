@@ -1,9 +1,9 @@
 /* global styles */
-@import 'primeicons/primeicons.css';
-@import 'primeflex/primeflex.scss';
+@use 'primeicons/primeicons.css';
+@use 'primeflex/primeflex.scss';
 
 /* portal core styles from onecx libraries */
-@import 'node_modules/@onecx/angular-accelerator/assets/styles.scss';
+@use 'node_modules/@onecx/angular-accelerator/assets/styles.scss';
 
 // disable default settings of dialogs created by portal dialog service
 .buttonDialogScrollableContent {
