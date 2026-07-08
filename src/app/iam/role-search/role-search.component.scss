@@ -1,30 +1,12 @@
-@import 'src/app/_iam-mixins.scss';
+@use 'src/app/_iam-mixins.scss' as *;
 
 @include correct-data-view-control;
-@include correct-search-criteria;
+@include ocx-search-criteria-fixes;
 @include media-md-h-3-5;
-@include displaying-text-responsive;
-
-@media screen and (min-width: 768px) {
-  :host ::ng-deep {
-    .p-dataview-list .p-dataview-content .p-grid > div {
-      &:nth-child(4n + 1),
-      &:nth-child(4n + 2) {
-        background-color: #f8f9fa;
-      }
-      &:nth-child(4n + 1),
-      &:nth-child(4n + 3) {
-        border-right: var(--data-view-list-item-border);
-      }
-    }
-  }
-}
-@media screen and (max-width: 768px) {
-  :host ::ng-deep {
-    .p-dataview-list .p-dataview-content .p-grid > div {
-      &:nth-child(odd) {
-        background-color: #f8f9fa;
-      }
-    }
-  }
-}
+@include ocx-text-responsive;
+@include dataview-grid-layout-fix;
+@include dataview-card-hover;
+@include dataview-list-split-zebra-rows;
+@include ocx-interactive-data-view-fixes;
+@include ocx-p-message;
+@include ocx-content;

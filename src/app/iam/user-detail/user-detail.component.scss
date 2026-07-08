@@ -1,6 +1,6 @@
-@import 'src/app/_iam-mixins.scss';
+@use 'src/app/_iam-mixins.scss' as *;
 
-@include displaying-text-responsive;
+@include ocx-text-responsive;
 @include readable-disabled-components;
 @include tabview-fix-color-selected-tab;
 @include tabview-reduce-padding;
@@ -9,3 +9,5 @@
 @include compact-list-items;
 @include dialog-footer-buttons;
 @include prepare-inputgroup;
+@include ocx-p-message;
+@include ocx-modal-dialog;
