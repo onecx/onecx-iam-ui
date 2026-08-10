@@ -16,11 +16,7 @@ import {
 import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
 import { AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
 import { SLOT_SERVICE, SlotService } from '@onecx/angular-remote-components'
-import {
-  AngularAcceleratorMissingTranslationHandler,
-  AngularAcceleratorModule,
-  providePortalDialogService
-} from '@onecx/angular-accelerator'
+import { AngularAcceleratorModule, providePortalDialogService } from '@onecx/angular-accelerator'
 
 import { environment } from 'src/environments/environment'
 import { Configuration } from './shared/generated'
