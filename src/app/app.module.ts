@@ -49,8 +49,4 @@ const routes: Routes = [{ path: '', pathMatch: 'full' }]
     provideStandaloneProviders()
   ]
 })
-export class AppModule {
-  constructor() {
-    console.info('OneCX IAM Module constructor')
-  }
-}
+export class AppModule {}

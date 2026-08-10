@@ -22,8 +22,6 @@ import { copyToClipboard, sortByLocale } from 'src/app/shared/utils'
 
 @Component({
   selector: 'app-user-detail',
-  templateUrl: './user-detail.component.html',
-  styleUrls: ['./user-detail.component.scss'],
   standalone: true,
   imports: [
     CommonModule,
@@ -39,7 +37,9 @@ import { copyToClipboard, sortByLocale } from 'src/app/shared/utils'
     TabViewModule,
     TextareaModule,
     TooltipModule
-  ]
+  ],
+  templateUrl: './user-detail.component.html',
+  styleUrls: ['./user-detail.component.scss']
 })
 export class UserDetailComponent implements OnChanges {
   @Input() public displayDialog = false

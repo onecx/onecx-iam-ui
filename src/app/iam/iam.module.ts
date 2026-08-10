@@ -72,8 +72,4 @@ const routes: Routes = [
     provideThemeConfig()
   ]
 })
-export class IamModule {
-  constructor() {
-    console.info('IAM module constructor')
-  }
-}
+export class IamModule {}

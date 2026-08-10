@@ -1,6 +1,5 @@
 import { DoBootstrap, inject, Injector, NgModule, provideAppInitializer } from '@angular/core'
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
-import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule, Routes, Router } from '@angular/router'
 import { TranslateLoader, TranslateModule, MissingTranslationHandler } from '@ngx-translate/core'
@@ -11,15 +10,21 @@ import {
   provideThemeConfig,
   provideTranslationConnectionService,
   provideTranslationPathFromMeta,
-  PortalApiConfiguration
+  PortalApiConfiguration,
+  MultiLanguageMissingTranslationHandler
 } from '@onecx/angular-utils'
 import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
 import { AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
 import { SLOT_SERVICE, SlotService } from '@onecx/angular-remote-components'
-import { AngularAcceleratorMissingTranslationHandler, providePortalDialogService } from '@onecx/angular-accelerator'
+import {
+  AngularAcceleratorMissingTranslationHandler,
+  AngularAcceleratorModule,
+  providePortalDialogService
+} from '@onecx/angular-accelerator'
 
-import { Configuration } from './shared/generated'
 import { environment } from 'src/environments/environment'
+import { Configuration } from './shared/generated'
+import { LabelResolver } from './shared/label.resolver'
 import { AppEntrypointComponent } from './app-entrypoint.component'
 
 function apiConfigProvider(configService: ConfigurationService, appStateService: AppStateService) {
@@ -29,29 +34,33 @@ function apiConfigProvider(configService: ConfigurationService, appStateService:
 const routes: Routes = [
   {
     matcher: startsWith(''),
-    loadChildren: () => import('./iam/onecx-iam.module').then((m) => m.IamModule)
+    loadChildren: () => import('./iam/iam.module').then((m) => m.IamModule)
   }
 ]
 
 @NgModule({
-  declarations: [],
   imports: [
     AppEntrypointComponent,
+    AngularAcceleratorModule,
     AngularAuthModule,
-    BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes),
     TranslateModule.forRoot({
       isolate: true,
-      loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] },
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [HttpClient]
+      },
       missingTranslationHandler: {
         provide: MissingTranslationHandler,
-        useClass: AngularAcceleratorMissingTranslationHandler
+        useClass: MultiLanguageMissingTranslationHandler
       }
     })
   ],
   providers: [
     ConfigurationService,
+    LabelResolver,
     { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] },
     provideAppInitializer(() => {
       const router = inject(Router)
@@ -69,9 +78,7 @@ const routes: Routes = [
   ]
 })
 export class OneCXIamModule implements DoBootstrap {
-  constructor(private readonly injector: Injector) {
-    console.info('OneCX IAM Module constructor')
-  }
+  private readonly injector = inject(Injector)
 
   ngDoBootstrap(): void {
     createAppEntrypoint(AppEntrypointComponent, 'ocx-iam-component', this.injector)
