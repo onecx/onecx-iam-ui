@@ -28,10 +28,9 @@ const config = withModuleFederationPlugin({
     '@onecx/angular-testing': { requiredVersion: 'auto', includeSecondaries: true },
     '@onecx/angular-utils': { requiredVersion: 'auto', includeSecondaries: true },
     '@onecx/angular-webcomponents': { requiredVersion: 'auto', includeSecondaries: true },
-    '@onecx/integration-interface': { requiredVersion: 'auto', includeSecondaries: true },
-    '@onecx/angular-standalone-shell': { requiredVersion: 'auto', includeSecondaries: true }
-  }),
-  sharedMappings: []
+    '@onecx/angular-standalone-shell': { requiredVersion: 'auto', includeSecondaries: true },
+    '@onecx/integration-interface': { requiredVersion: 'auto', includeSecondaries: true }
+  })
 })
 config.devServer = { allowedHosts: 'all' }
 
@@ -58,8 +57,11 @@ const modifyPrimeNgPlugin = new ModifySourcePlugin({
 const modifyMaterialPlugin = new ModifySourcePlugin({
   rules: [
     {
-      test: (module) =>
-        module.resource && (module.resource.includes('@angular/material') || module.resource.includes('@angular/cdk')),
+      test: (module) => {
+        return (
+          module.resource && (module.resource.includes('@angular/material') || module.resource.includes('@angular/cdk'))
+        )
+      },
       operations: [
         new ReplaceOperation(
           'all',
