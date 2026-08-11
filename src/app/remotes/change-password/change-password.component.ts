@@ -16,7 +16,6 @@ import { REMOTE_COMPONENT_CONFIG, RemoteComponentConfig } from '@onecx/angular-u
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 import { DialogState, PortalDialogService, providePortalDialogService } from '@onecx/angular-accelerator'
 
-import { SharedModule } from 'src/app/shared/shared.module'
 import { Configuration, UserInternalAPIService } from 'src/app/shared/generated'
 import { environment } from 'src/environments/environment'
 
@@ -25,7 +24,7 @@ import { ChangePasswordDialogComponent } from './change-password-dialog/change-p
 @Component({
   selector: 'app-ocx-change-password',
   standalone: true,
-  imports: [MessageModule, RippleModule, TooltipModule, TranslateModule, SharedModule, AngularRemoteComponentsModule],
+  imports: [AngularRemoteComponentsModule, MessageModule, RippleModule, TooltipModule, TranslateModule],
   providers: [
     UserInternalAPIService,
     PortalMessageService,

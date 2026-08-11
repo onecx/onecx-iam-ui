@@ -1,11 +1,7 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
-import { CommonModule } from '@angular/common'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { FormsModule } from '@angular/forms'
 import { provideNoopAnimations } from '@angular/platform-browser/animations'
-import { TranslateModule } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { BehaviorSubject, of, throwError } from 'rxjs'
 
@@ -54,18 +50,14 @@ describe('UserDetailComponent', () => {
         }).withDefaultLanguage('en')
       ],
       providers: [
-        provideNoopAnimations(),
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: AdminInternalAPIService, useValue: adminApiSpy },
+        provideNoopAnimations(),
         { provide: UserService, useValue: mockUserService }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
+      ]
     })
       .overrideComponent(UserDetailComponent, {
         set: {
-          imports: [CommonModule, FormsModule, TranslateModule],
-          schemas: [NO_ERRORS_SCHEMA],
           providers: [{ provide: AdminInternalAPIService, useValue: adminApiSpy }]
         }
       })

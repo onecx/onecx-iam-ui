@@ -133,7 +133,7 @@
   </ocx-search-header>
 
   <ocx-content class="ocx-content">
-    @if (loading) {
+    @if (loading || loadingProvider) {
       <p-message
         id="iam_user_search_loading"
         severity="info"
@@ -148,7 +148,7 @@
         [text]="exceptionKey | translate"
       ></p-message>
     }
-    @if (searchCriteriaForm.invalid) {
+    @if (searchCriteriaForm.invalid && !loadingProvider) {
       <p-message
         id="iam_user_search_hint_select_provider_first"
         severity="info"

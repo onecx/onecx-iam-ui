@@ -7,14 +7,14 @@ import { bootstrapRemoteComponent } from '@onecx/angular-webcomponents'
 import { AngularAuthModule } from '@onecx/angular-auth'
 import { createTranslateLoader, provideThemeConfig, provideTranslationPathFromMeta } from '@onecx/angular-utils'
 import { provideTranslateServiceForRoot } from '@onecx/angular-remote-components'
-import { AngularAcceleratorMissingTranslationHandler } from '@onecx/angular-accelerator'
+import { AngularAcceleratorModule, AngularAcceleratorMissingTranslationHandler } from '@onecx/angular-accelerator'
 
 import { environment } from 'src/environments/environment'
 import { OneCXChangePasswordComponent } from './change-password.component'
 
 bootstrapRemoteComponent(OneCXChangePasswordComponent, 'ocx-change-password-component', environment.production, [
   provideHttpClient(withInterceptorsFromDi()),
-  importProvidersFrom(AngularAuthModule, BrowserAnimationsModule),
+  importProvidersFrom(AngularAcceleratorModule, AngularAuthModule, BrowserAnimationsModule),
   provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
   provideTranslateServiceForRoot({
     isolate: true,

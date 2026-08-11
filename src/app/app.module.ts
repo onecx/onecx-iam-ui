@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core'
-import { CommonModule } from '@angular/common'
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
-import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule, Routes } from '@angular/router'
 import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core'
@@ -17,12 +15,9 @@ import { AppComponent } from './app.component'
 
 const routes: Routes = [{ path: '', pathMatch: 'full' }]
 @NgModule({
-  bootstrap: [AppComponent],
   declarations: [],
   imports: [
     AppComponent,
-    CommonModule,
-    BrowserModule,
     BrowserAnimationsModule,
     AngularAuthModule,
     StandaloneShellModule,

@@ -86,7 +86,8 @@ export class UserSearchComponent implements OnInit {
 
   private readonly filterFieldLabelKeys = ['USER.USERNAME', 'USER.LASTNAME', 'USER.FIRSTNAME']
   // dialog
-  public loading = true
+  public loading = false
+  public loadingProvider = false
   public exceptionKey: string | undefined
   public displayDetailDialog = false
   public viewMode: 'list' | 'grid' = 'grid'
@@ -137,7 +138,7 @@ export class UserSearchComponent implements OnInit {
   /* SEARCH CRITERIA => provider, domain => issuer
    */
   public searchProviders(): void {
-    this.loading = true
+    this.loadingProvider = true
     this.exceptionKey = undefined
     this.provider$ = this.iamAdminApi.getAllProviders().pipe(
       map((response: ProvidersResponse) => {
@@ -152,7 +153,7 @@ export class UserSearchComponent implements OnInit {
         console.error('getAllProviders', err)
         return of([])
       }),
-      finalize(() => (this.loading = false))
+      finalize(() => (this.loadingProvider = false))
     )
   }
 

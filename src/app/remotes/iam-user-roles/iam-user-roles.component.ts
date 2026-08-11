@@ -1,9 +1,8 @@
 import { Component, EventEmitter, Inject, Input, OnChanges } from '@angular/core'
 import { Location } from '@angular/common'
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
-import { TranslateModule, TranslateService } from '@ngx-translate/core'
+import { TranslateService } from '@ngx-translate/core'
 import { catchError, finalize, filter, map, mergeMap, Observable, of, ReplaySubject } from 'rxjs'
-
 import {
   AngularRemoteComponentsModule,
   ocxRemoteComponent,
@@ -20,13 +19,12 @@ import {
   RoleSearchCriteria,
   UserRolesResponse
 } from 'src/app/shared/generated'
-import { SharedModule } from 'src/app/shared/shared.module'
 import { environment } from 'src/environments/environment'
 
 @Component({
   selector: 'app-iam-user-roles',
   standalone: true,
-  imports: [AngularRemoteComponentsModule, SharedModule, TranslateModule],
+  imports: [AngularRemoteComponentsModule],
   providers: [
     {
       provide: REMOTE_COMPONENT_CONFIG,
