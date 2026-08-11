@@ -75,7 +75,7 @@ const provider2: Provider = {
   domains: [domain1, domain2]
 }
 
-fdescribe('UserSearchComponent', () => {
+describe('UserSearchComponent', () => {
   let component: UserSearchComponent
   let fixture: ComponentFixture<UserSearchComponent>
   const routerSpy = jasmine.createSpyObj('Router', ['navigate'])
