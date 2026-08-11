@@ -182,12 +182,12 @@
             </p-inputgroup-addon>
             <p-floatlabel variant="on">
               <input
-                #dvFilterInput
+                #globalFilterInput
                 id="iam_user_search_filter"
                 type="text"
                 pInputText
                 [value]="filterText"
-                (input)="onGlobalFilter(dvFilterInput.value, users)"
+                (input)="onGlobalFilter(globalFilterInput.value, users)"
                 [pTooltip]="(filterTooltip$ | async) ?? ''"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -198,10 +198,15 @@
               </label>
             </p-floatlabel>
             <p-button
+              id="iam_user_search_filter_clear"
               icon="pi pi-filter-slash"
-              (click)="dvFilterInput.value = ''; onClearGlobalFilter()"
-              (keydown.enter)="dvFilterInput.value = ''; onClearGlobalFilter()"
-              [attr.aria-label]="'DIALOG.SEARCH.USER.FILTER.CLEAR' | translate"
+              (onClick)="globalFilterInput.value = ''; onClearGlobalFilter()"
+              (onKeydown)="globalFilterInput.value = ''; onClearGlobalFilter()"
+              [disabled]="globalFilterInput.value === ''"
+              [ariaLabel]="'DIALOG.SEARCH.USER.FILTER.CLEAR' | translate"
+              [pTooltip]="'DIALOG.SEARCH.USER.FILTER.CLEAR' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
             />
           </p-inputgroup>
         </ng-template>
@@ -248,22 +253,22 @@
 
         <!-- GRID -->
         <ng-template let-user pTemplate="gridItem">
-          <div [id]="'iam_user_search_data_' + user.id" class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-2">
+          <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-2">
+            @let styleClass = userViewPermission ? 'hover:bg-gray-200 cursor-pointer' : '';
             <p-card
-              [id]="'iam_user_search_data_anchor_' + user.id"
-              [ngClass]="{ 'cursor-pointer': userViewPermission }"
-              styleClass="w-full h-full relative"
+              [id]="'iam_user_search_data_grid_' + user.id"
+              [styleClass]="'w-full h-full relative ' + styleClass"
               [attr.tabindex]="0"
               (click)="onDetail($event, user)"
               (keydown.enter)="onDetail($event, user)"
-              [attr.aria-label]="('BREADCRUMBS.USER' | translate) + ': ' + user.username"
+              [ariaLabel]="('BREADCRUMBS.USER' | translate) + ': ' + user.username"
             >
               <!-- BADGES -->
               @if (isComponentDefined$ | async) {
                 <a
                   *ocxIfPermission="'PERMISSION#VIEW'"
                   tabindex="0"
-                  [id]="'iam_user_search_data_' + user.id + '_action_permissions'"
+                  [id]="'iam_user_search_data_grid_' + user.id + '_action_permissions'"
                   class="card-badge-right badge-1 pi pi-lock button-icon-only"
                   (click)="onUserPermissions($event, user)"
                   [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
@@ -275,7 +280,7 @@
               }
               <div class="flex flex-column gap-2 text-center justify-content-between h-full">
                 <div
-                  [id]="'iam_user_search_data_' + user.id + '_user_name'"
+                  [id]="'iam_user_search_data_grid_' + user.id + '_user_name'"
                   class="font-bold text-responsive"
                   [pTooltip]="user.username.length < 24 ? '' : user.username"
                   tooltipPosition="top"
@@ -284,7 +289,11 @@
                 >
                   {{ user.username }}
                 </div>
-                <div [id]="'iam_user_search_data_' + user.id + '_name'" class="text-xs text-responsive" role="note">
+                <div
+                  [id]="'iam_user_search_data_grid_' + user.id + '_name'"
+                  class="text-xs text-responsive"
+                  role="note"
+                >
                   {{ prepareDisplayName(user, 20, 42) }}
                 </div>
               </div>

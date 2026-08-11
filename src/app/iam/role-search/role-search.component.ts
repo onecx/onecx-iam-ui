@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common'
 import { Component, inject, OnInit, ViewChild } from '@angular/core'
+import { AsyncPipe } from '@angular/common'
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
@@ -46,9 +46,8 @@ export interface RoleSearchCriteriaForm {
   selector: 'app-role-search',
   standalone: true,
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    TranslateModule,
+    AsyncPipe,
+    AngularAcceleratorModule,
     ButtonModule,
     CardModule,
     FloatLabelModule,
@@ -56,9 +55,10 @@ export interface RoleSearchCriteriaForm {
     InputGroupAddonModule,
     InputTextModule,
     MessageModule,
+    ReactiveFormsModule,
     SelectModule,
     TooltipModule,
-    AngularAcceleratorModule,
+    TranslateModule,
     PortalPageComponent
   ],
   templateUrl: './role-search.component.html',

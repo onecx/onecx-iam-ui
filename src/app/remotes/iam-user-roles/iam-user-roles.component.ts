@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, Input, OnChanges } from '@angular/core'
-import { CommonModule, Location } from '@angular/common'
+import { Location } from '@angular/common'
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { catchError, finalize, filter, map, mergeMap, Observable, of, ReplaySubject } from 'rxjs'
@@ -25,15 +25,15 @@ import { environment } from 'src/environments/environment'
 
 @Component({
   selector: 'app-iam-user-roles',
-  templateUrl: './iam-user-roles.component.html',
   standalone: true,
-  imports: [AngularRemoteComponentsModule, CommonModule, TranslateModule, SharedModule],
+  imports: [AngularRemoteComponentsModule, SharedModule, TranslateModule],
   providers: [
     {
       provide: REMOTE_COMPONENT_CONFIG,
       useValue: new ReplaySubject<RemoteComponentConfig>(1)
     }
-  ]
+  ],
+  template: '' // RC provides only data
 })
 @UntilDestroy()
 export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemoteWebcomponent, OnChanges {

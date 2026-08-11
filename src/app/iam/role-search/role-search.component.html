@@ -142,6 +142,7 @@
               </label>
             </p-floatlabel>
             <p-button
+              id="iam_role_search_filter_clear"
               icon="pi pi-filter-slash"
               (onClick)="globalFilterInput.value = ''; onClearGlobalFilter()"
               (onKeydown)="globalFilterInput.value = ''; onClearGlobalFilter()"
@@ -188,13 +189,14 @@
         <ng-template let-role pTemplate="gridItem">
           <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-2">
             <p-card
-              [id]="'iam_role_search_data_grid_row_0'"
+              [id]="'iam_role_search_data_grid_row_' + role.id"
               styleClass="w-full h-full"
-              [attr.aria-label]="('BREADCRUMBS.ROLE' | translate) + ': ' + role.name"
+              [attr.tabindex]="0"
+              [ariaLabel]="('BREADCRUMBS.ROLE' | translate) + ': ' + role.name"
             >
               <div class="flex flex-column gap-2 text-center justify-content-between h-full">
                 <div
-                  [id]="'iam_role_search_data_grid_row_0_role_name'"
+                  [id]="'iam_role_search_data_grid_row_' + role.id + '_role_name'"
                   class="font-bold text-responsive"
                   [pTooltip]="role.name.length < 22 ? '' : role.name"
                   tooltipPosition="top"
@@ -204,7 +206,7 @@
                   {{ role.name }}
                 </div>
                 <div
-                  [id]="'iam_role_search_data_grid_row_0_role_description'"
+                  [id]="'iam_role_search_data_grid_row_' + role.id + '_role_description'"
                   class="text-xs text-responsive"
                   [pTooltip]="role.description?.length < 25 ? '' : role.description"
                   tooltipPosition="top"

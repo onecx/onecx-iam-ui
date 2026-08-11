@@ -381,7 +381,7 @@
         padding-top: 0 !important;
       }
       :not(:first-child) {
-        padding: 0.5rem 0 0 0 !important;
+        padding: 1rem 0 0 0 !important;
       }
     }
     /* correct header layouting by lib */
@@ -396,9 +396,6 @@
 
     /* establish grid-nogutter */
     .p-dataview .p-dataview-content {
-      margin: 0;
-      padding: 0;
-      border-top: var(--table-header-border);
       > .grid {
         gap: 0 !important;
         padding: 0;
@@ -502,9 +499,13 @@
 }
 @mixin dataview-list-flex-zebra-rows {
   :host ::ng-deep {
-    .p-dataview-list .p-dataview-content > div {
-      &:nth-child(even) {
-        background-color: var(--table-body-row-even-bg);
+    .p-dataview-list .p-dataview-content article {
+      &:nth-child(4n + 1),
+      &:nth-child(4n + 2) {
+        background-color: var(
+          --onecx-iam-onecx-iam-ui-datatable-row-even-background,
+          var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02))
+        );
       }
     }
   }
@@ -600,6 +601,7 @@
     .ocx-content > div {
       margin-bottom: 0 !important;
       padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
     }
   }
 }

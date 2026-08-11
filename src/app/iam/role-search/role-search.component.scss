@@ -1,12 +1,20 @@
 @use 'src/app/_iam-mixins.scss' as *;
 
-@include correct-data-view-control;
-@include ocx-search-criteria-fixes;
-@include media-md-h-3-5;
-@include ocx-text-responsive;
-@include dataview-grid-layout-fix;
-@include dataview-card-hover;
-@include dataview-list-split-zebra-rows;
+@include card-badges;
 @include ocx-interactive-data-view-fixes;
+@include dataview-list-flex-zebra-rows;
 @include ocx-p-message;
 @include ocx-content;
+
+:host ::ng-deep {
+  /* fixes for p-card */
+  --onecx-iam-onecx-iam-ui-card-body-padding: 0.5rem;
+  --onecx-iam-onecx-iam-ui-card-border-radius: 4px;
+  --onecx-iam-onecx-iam-ui-card-shadow: 0 2px 1px -1px #0003, 0 1px 1px #00000024, 0 1px 3px #0000001f;
+
+  /* list-view */
+  .card-badge-left.badge-position {
+    top: 13px;
+    left: 10px;
+  }
+}
