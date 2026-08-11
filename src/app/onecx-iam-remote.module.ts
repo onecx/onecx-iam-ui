@@ -7,15 +7,12 @@ import { TranslateLoader, TranslateModule, MissingTranslationHandler } from '@ng
 import { AngularAuthModule } from '@onecx/angular-auth'
 import {
   createTranslateLoader,
-  provideThemeConfig,
-  provideTranslationConnectionService,
-  provideTranslationPathFromMeta,
+  MultiLanguageMissingTranslationHandler,
   PortalApiConfiguration,
-  MultiLanguageMissingTranslationHandler
+  provideTranslationPathFromMeta
 } from '@onecx/angular-utils'
 import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
 import { AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
-import { SLOT_SERVICE, SlotService } from '@onecx/angular-remote-components'
 import { AngularAcceleratorModule, providePortalDialogService } from '@onecx/angular-accelerator'
 
 import { environment } from 'src/environments/environment'
@@ -23,7 +20,7 @@ import { Configuration } from './shared/generated'
 import { LabelResolver } from './shared/label.resolver'
 import { AppEntrypointComponent } from './app-entrypoint.component'
 
-function apiConfigProvider(configService: ConfigurationService, appStateService: AppStateService) {
+function apiConfigProvider() {
   return new PortalApiConfiguration(Configuration, environment.apiPrefix)
 }
 
@@ -57,20 +54,14 @@ const routes: Routes = [
   providers: [
     ConfigurationService,
     LabelResolver,
-    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] },
+    { provide: Configuration, useFactory: apiConfigProvider },
     provideAppInitializer(() => {
-      const router = inject(Router)
-      const appStateService = inject(AppStateService)
-      return initializeRouter(router, appStateService)()
+      const initializerFn = initializeRouter(inject(Router), inject(AppStateService))
+      return initializerFn()
     }),
-    { provide: SLOT_SERVICE, useExisting: SlotService },
     provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
-    provideTranslationPathFromMeta(import.meta.url, 'onecx-angular-accelerator/assets/i18n/'),
-    provideTranslationPathFromMeta(import.meta.url, 'onecx-angular-accelerator/assets/i18n/primeng/'),
-    provideTranslationConnectionService(),
     provideHttpClient(withInterceptorsFromDi()),
-    providePortalDialogService(),
-    provideThemeConfig()
+    providePortalDialogService()
   ]
 })
 export class OneCXIamModule implements DoBootstrap {
