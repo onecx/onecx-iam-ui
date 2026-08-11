@@ -1,7 +1,9 @@
 import { Component, Inject, Input } from '@angular/core'
-import { CommonModule, Location } from '@angular/common'
+import { Location } from '@angular/common'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { Observable, ReplaySubject, catchError, mergeMap, of } from 'rxjs'
+
+import { MessageModule } from 'primeng/message'
 import { RippleModule } from 'primeng/ripple'
 import { TooltipModule } from 'primeng/tooltip'
 
@@ -22,9 +24,8 @@ import { ChangePasswordDialogComponent } from './change-password-dialog/change-p
 
 @Component({
   selector: 'app-ocx-change-password',
-  templateUrl: './change-password.component.html',
   standalone: true,
-  imports: [CommonModule, RippleModule, TooltipModule, TranslateModule, SharedModule, AngularRemoteComponentsModule],
+  imports: [MessageModule, RippleModule, TooltipModule, TranslateModule, SharedModule, AngularRemoteComponentsModule],
   providers: [
     UserInternalAPIService,
     PortalMessageService,
@@ -33,7 +34,8 @@ import { ChangePasswordDialogComponent } from './change-password-dialog/change-p
       provide: REMOTE_COMPONENT_CONFIG,
       useValue: new ReplaySubject<RemoteComponentConfig>(1)
     }
-  ]
+  ],
+  templateUrl: './change-password.component.html'
 })
 export class OneCXChangePasswordComponent implements ocxRemoteComponent, ocxRemoteWebcomponent {
   permissions: string[] = []
