@@ -1,14 +1,8 @@
 @use 'src/app/_iam-mixins.scss' as *;
 
 @include ocx-text-responsive;
-
-/*
-@include tabview-reduce-padding;
-@include listbox-zebra-rows;
-@include listbox-layout;
-@include compact-list-items;
-@include dialog-footer-buttons;
-@include prepare-inputgroup;
-@include ocx-p-message;
+@include ocx-p-tabs;
 @include ocx-modal-dialog;
-*/
+@include dialog-footer-buttons;
+@include ocx-p-listbox-zebra-rows;
+@include ocx-p-listbox-layout;

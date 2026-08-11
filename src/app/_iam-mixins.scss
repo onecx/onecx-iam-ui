@@ -516,11 +516,14 @@
     }
   }
 }
-@mixin listbox-zebra-rows {
+@mixin ocx-p-listbox-zebra-rows {
   :host ::ng-deep {
-    .p-listbox:not(.p-disabled) .p-listbox-item:not(.p-highlight):not(.p-disabled) {
+    .p-listbox:not(.p-disabled) .p-listbox-option:not(.p-listbox-option-selected):not(.p-disabled):not(:hover) {
       &:nth-child(even) {
-        background-color: var(--onecx-iam-onecx-iam-ui-datatable-row-striped-background);
+        background-color: var(
+          --onecx-iam-onecx-iam-ui-datatable-row-even-background,
+          var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02))
+        );
       }
     }
   }
@@ -543,8 +546,11 @@
   }
 }
 /* LISTBOX */
-@mixin listbox-layout {
+@mixin ocx-p-listbox-layout {
   :host ::ng-deep {
+    .p-listbox-option {
+      padding: 0.5rem 1rem !important;
+    }
     .p-listbox {
       box-shadow:
         0 2px 1px -1px rgba(0, 0, 0, 0.2),
