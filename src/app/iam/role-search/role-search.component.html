@@ -8,15 +8,16 @@
     [actions]="(actions$ | async) ?? []"
   >
     <div id="iam_role_search_criteria" [formGroup]="searchCriteriaForm" class="flex flex-wrap gap-4 row-gap-3">
-      <ng-container *ngIf="provider$ | async as provider">
+      @let providers = provider$ | async;
+      @if (providers) {
         <p-floatlabel variant="on" class="min-w-min w-full w-11rem">
           <p-select
             id="iam_role_search_criteria_provider"
             styleClass="w-full input-field-correction"
             formControlName="provider"
             appendTo="body"
-            [options]="provider"
-            (onChange)="onChangeProvider($event.value, provider)"
+            [options]="providers"
+            (onChange)="onChangeProvider($event.value, providers)"
             dataKey="name"
             optionValue="name"
             optionLabel="displayName"
@@ -55,7 +56,7 @@
             {{ 'DIALOG.SEARCH.CRITERIA.DOMAIN' | translate }}
           </label>
         </p-floatlabel>
-      </ng-container>
+      }
       <p-floatlabel variant="on">
         <input
           id="iam_role_search_criteria_role_name"
@@ -74,142 +75,151 @@
   </ocx-search-header>
 
   <ocx-content class="ocx-content">
-    <p-message
-      *ngIf="loading && !exceptionKey"
-      id="iam_role_search_loading"
-      severity="info"
-      styleClass="m-3"
-      [text]="'ACTIONS.LOADING' | translate"
-    ></p-message>
-    <p-message
-      *ngIf="exceptionKey"
-      id="iam_role_search_criteria_error_message"
-      severity="error"
-      styleClass="m-3"
-      [text]="exceptionKey | translate"
-    ></p-message>
-    <p-message
-      *ngIf="!loading && !exceptionKey && searchCriteriaForm.invalid"
-      id="iam_role_search_hint_select_provider_first"
-      severity="info"
-      styleClass="m-3"
-      [text]="'DIALOG.SEARCH.CRITERIA.SELECT_ISSUER_FIRST' | translate"
-    ></p-message>
-    <ocx-interactive-data-view
-      *ngIf="roles$ | async as roles"
-      id="iam_role_search_dataview"
-      [data]="$any(filteredRoles ?? roles)"
-      [layout]="viewMode"
-      [supportedViewLayouts]="['grid', 'list']"
-      [columns]="sortColumns"
-      [displayedColumnKeys]="sortColumnKeys"
-      [emptyResultsMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
-      [disableFilterView]="true"
-      [clientSideFiltering]="true"
-      [clientSideSorting]="true"
-      [sortField]="sortField"
-      [sortDirection]="sortDirectionEnum"
-      [pageSize]="40"
-      [pageSizes]="[40, 100, 500]"
-      (dataViewLayoutChange)="onLayoutChange($event)"
-      (filtered)="onFilterChange($event)"
-      (sorted)="onSortChange($event)"
-    >
-      <!-- GLOBAL FILTER -->
-      <ng-template #topCenter>
-        <p-inputgroup class="w-auto">
-          <p-inputgroup-addon>
-            <i class="pi pi-filter" aria-hidden="true"></i>
-          </p-inputgroup-addon>
-          <p-floatlabel variant="on">
-            <input
-              #dvFilterInput
-              id="iam_role_search_filter"
-              type="text"
-              pInputText
-              [value]="filterText"
-              (input)="onGlobalFilter(dvFilterInput.value, roles)"
-              [pTooltip]="(filterTooltip$ | async) ?? ''"
+    @if (loading || loadingProvider) {
+      <p-message
+        id="iam_role_search_loading"
+        severity="info"
+        styleClass="m-3"
+        [text]="'ACTIONS.LOADING' | translate"
+      ></p-message>
+    } @else if (exceptionKey) {
+      <p-message
+        id="iam_role_search_criteria_error_message"
+        severity="error"
+        styleClass="m-3"
+        [text]="exceptionKey | translate"
+      ></p-message>
+    }
+    @if (searchCriteriaForm.invalid && !loadingProvider) {
+      <p-message
+        id="iam_role_search_hint_select_provider_first"
+        severity="info"
+        styleClass="m-3"
+        [text]="'DIALOG.SEARCH.CRITERIA.SELECT_ISSUER_FIRST' | translate"
+      ></p-message>
+    } @else {
+      @let roles = (roles$ | async) ?? [];
+      <ocx-interactive-data-view
+        id="iam_role_search_dataview"
+        [data]="$any(filteredRoles ?? roles)"
+        [layout]="viewMode"
+        [supportedViewLayouts]="['grid', 'list']"
+        [columns]="sortColumns"
+        [displayedColumnKeys]="sortColumnKeys"
+        [emptyResultsMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
+        [disableFilterView]="true"
+        [clientSideFiltering]="true"
+        [clientSideSorting]="true"
+        [sortField]="sortField"
+        [sortDirection]="sortDirectionEnum"
+        [pageSize]="40"
+        [pageSizes]="[40, 100, 500]"
+        (dataViewLayoutChange)="onLayoutChange($event)"
+        (filtered)="onFilterChange($event)"
+        (sorted)="onSortChange($event)"
+      >
+        <!-- GLOBAL FILTER -->
+        <ng-template #topCenter>
+          <p-inputgroup class="w-auto">
+            <p-inputgroup-addon>
+              <i class="pi pi-filter" aria-hidden="true"></i>
+            </p-inputgroup-addon>
+            <p-floatlabel variant="on">
+              <input
+                #globalFilterInput
+                id="iam_role_search_filter"
+                type="text"
+                pInputText
+                [value]="filterText"
+                (input)="onGlobalFilter(globalFilterInput.value, roles)"
+                [ariaLabel]="'DIALOG.SEARCH.ROLE.FILTER.PLACEHOLDER' | translate"
+                [pTooltip]="(filterTooltip$ | async) ?? ''"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <label for="iam_role_search_filter" aria-hidden="true">
+                {{ 'DIALOG.SEARCH.ROLE.FILTER.PLACEHOLDER' | translate }}
+              </label>
+            </p-floatlabel>
+            <p-button
+              id="iam_role_search_filter_clear"
+              icon="pi pi-filter-slash"
+              (onClick)="globalFilterInput.value = ''; onClearGlobalFilter()"
+              (onKeydown)="globalFilterInput.value = ''; onClearGlobalFilter()"
+              [disabled]="globalFilterInput.value === ''"
+              [ariaLabel]="'DIALOG.SEARCH.ROLE.FILTER.CLEAR' | translate"
+              [pTooltip]="'DIALOG.SEARCH.ROLE.FILTER.CLEAR' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
-              [attr.aria-label]="'DIALOG.SEARCH.ROLE.FILTER.PLACEHOLDER' | translate"
             />
-            <label for="iam_role_search_filter" aria-hidden="true">
-              {{ 'DIALOG.SEARCH.ROLE.FILTER.PLACEHOLDER' | translate }}
-            </label>
-          </p-floatlabel>
-          <p-button
-            icon="pi pi-filter-slash"
-            (click)="dvFilterInput.value = ''; onClearGlobalFilter()"
-            (keydown.enter)="dvFilterInput.value = ''; onClearGlobalFilter()"
-            [attr.aria-label]="'DIALOG.SEARCH.ROLE.FILTER.CLEAR' | translate"
-          />
-        </p-inputgroup>
-      </ng-template>
+          </p-inputgroup>
+        </ng-template>
 
-      <!-- LIST -->
-      <ng-template let-role pTemplate="listItem">
-        <article
-          [id]="'iam_role_search_data_list_row_0'"
-          class="col-12 sm:col-6 h-3rem md:h-3-5rem py-1 md:py-2 px-3 flex flex-column justify-content-between"
-          [attr.aria-label]="('BREADCRUMBS.ROLE' | translate) + ': ' + role.name"
-          [pTooltip]="role.name?.length < 30 ? '' : role.name"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        >
-          <div
-            [id]="'iam_role_search_data_list_row_0_roles_display_name'"
-            class="font-bold text-responsive"
-            aria-hidden="true"
-          >
-            {{ role.name }}
-          </div>
-          <div
-            [id]="'iam_role_search_data_list_row_0_roles_name'"
-            class="text-xs text-responsive"
-            [pTooltip]="role.description?.length < 50 ? '' : role.description"
+        <!-- LIST -->
+        <ng-template let-role pTemplate="listItem">
+          <article
+            [id]="'iam_role_search_data_list_row_0'"
+            class="col-12 sm:col-6 h-3rem md:h-3-5rem py-1 md:py-2 px-3 flex flex-column justify-content-between"
+            [attr.aria-label]="('BREADCRUMBS.ROLE' | translate) + ': ' + role.name"
+            [pTooltip]="role.name?.length < 30 ? '' : role.name"
             tooltipPosition="top"
             tooltipEvent="hover"
-            role="note"
           >
-            {{ role.description }}
-          </div>
-        </article>
-      </ng-template>
-
-      <!-- GRID -->
-      <ng-template let-role pTemplate="gridItem">
-        <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-2">
-          <p-card
-            [id]="'iam_role_search_data_grid_row_0'"
-            styleClass="w-full h-full"
-            [attr.aria-label]="('BREADCRUMBS.ROLE' | translate) + ': ' + role.name"
-          >
-            <div class="flex flex-column gap-2 text-center justify-content-between h-full">
-              <div
-                [id]="'iam_role_search_data_grid_row_0_role_name'"
-                class="font-bold text-responsive"
-                [pTooltip]="role.name.length < 22 ? '' : role.name"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-                aria-hidden="true"
-              >
-                {{ role.name }}
-              </div>
-              <div
-                [id]="'iam_role_search_data_grid_row_0_role_description'"
-                class="text-xs text-responsive"
-                [pTooltip]="role.description?.length < 25 ? '' : role.description"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-                role="note"
-              >
-                {{ role.description }}
-              </div>
+            <div
+              [id]="'iam_role_search_data_list_row_0_roles_display_name'"
+              class="font-bold text-responsive"
+              aria-hidden="true"
+            >
+              {{ role.name }}
             </div>
-          </p-card>
-        </div>
-      </ng-template>
-    </ocx-interactive-data-view>
+            <div
+              [id]="'iam_role_search_data_list_row_0_roles_name'"
+              class="text-xs text-responsive"
+              [pTooltip]="role.description?.length < 50 ? '' : role.description"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+              role="note"
+            >
+              {{ role.description }}
+            </div>
+          </article>
+        </ng-template>
+
+        <!-- GRID -->
+        <ng-template let-role pTemplate="gridItem">
+          <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-2">
+            <p-card
+              [id]="'iam_role_search_data_grid_row_' + role.id"
+              styleClass="w-full h-full"
+              [attr.tabindex]="0"
+              [ariaLabel]="('BREADCRUMBS.ROLE' | translate) + ': ' + role.name"
+            >
+              <div class="flex flex-column gap-2 text-center justify-content-between h-full">
+                <div
+                  [id]="'iam_role_search_data_grid_row_' + role.id + '_role_name'"
+                  class="font-bold text-responsive"
+                  [pTooltip]="role.name.length < 22 ? '' : role.name"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                  aria-hidden="true"
+                >
+                  {{ role.name }}
+                </div>
+                <div
+                  [id]="'iam_role_search_data_grid_row_' + role.id + '_role_description'"
+                  class="text-xs text-responsive"
+                  [pTooltip]="role.description?.length < 25 ? '' : role.description"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                  role="note"
+                >
+                  {{ role.description }}
+                </div>
+              </div>
+            </p-card>
+          </div>
+        </ng-template>
+      </ocx-interactive-data-view>
+    }
   </ocx-content>
 </ocx-portal-page>

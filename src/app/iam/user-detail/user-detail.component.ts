@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common'
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnChanges, Output } from '@angular/core'
+import { AsyncPipe, DatePipe, NgClass } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { catchError, finalize, map, Observable, of } from 'rxjs'
@@ -11,7 +11,7 @@ import { InputTextModule } from 'primeng/inputtext'
 import { ListboxModule } from 'primeng/listbox'
 import { MessageModule } from 'primeng/message'
 import { RippleModule } from 'primeng/ripple'
-import { TabViewModule } from 'primeng/tabview'
+import { TabsModule } from 'primeng/tabs'
 import { TextareaModule } from 'primeng/textarea'
 import { TooltipModule } from 'primeng/tooltip'
 
@@ -22,11 +22,11 @@ import { copyToClipboard, sortByLocale } from 'src/app/shared/utils'
 
 @Component({
   selector: 'app-user-detail',
-  templateUrl: './user-detail.component.html',
-  styleUrls: ['./user-detail.component.scss'],
   standalone: true,
   imports: [
-    CommonModule,
+    AsyncPipe,
+    DatePipe,
+    NgClass,
     FormsModule,
     TranslateModule,
     ButtonModule,
@@ -36,12 +36,19 @@ import { copyToClipboard, sortByLocale } from 'src/app/shared/utils'
     ListboxModule,
     MessageModule,
     RippleModule,
-    TabViewModule,
+    TabsModule,
     TextareaModule,
     TooltipModule
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './user-detail.component.html',
+  styleUrls: ['./user-detail.component.scss']
 })
 export class UserDetailComponent implements OnChanges {
+  private readonly adminApi = inject(AdminInternalAPIService)
+  private readonly user = inject(UserService)
+  private readonly translate = inject(TranslateService)
+  // input
   @Input() public displayDialog = false
   @Input() public idmUser: User | undefined
   @Input() public provider: Provider | undefined
@@ -49,19 +56,11 @@ export class UserDetailComponent implements OnChanges {
 
   public loading = false
   public exceptionKey: string | undefined = undefined
-  public datetimeFormat = 'medium'
+  public datetimeFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
   public userRoles$: Observable<string[]> = of()
   public userAttributes: string | undefined = undefined
   public copyToClipboard = copyToClipboard
   public domain: Domain | undefined
-
-  constructor(
-    private readonly adminApi: AdminInternalAPIService,
-    private readonly user: UserService,
-    private readonly translate: TranslateService
-  ) {
-    this.datetimeFormat = user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
-  }
 
   public ngOnChanges() {
     if (!this.displayDialog) return

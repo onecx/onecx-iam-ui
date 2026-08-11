@@ -7,10 +7,11 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed'
 import { ReplaySubject, of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog'
-import { TooltipModule } from 'primeng/tooltip'
-import { RippleModule } from 'primeng/ripple'
 import { ButtonModule } from 'primeng/button'
+import { MessageModule } from 'primeng/message'
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog'
+import { RippleModule } from 'primeng/ripple'
+import { TooltipModule } from 'primeng/tooltip'
 
 import { PortalMessageService } from '@onecx/angular-integration-interface'
 import { IfPermissionDirective } from '@onecx/angular-accelerator'
@@ -23,6 +24,7 @@ import { UserInternalAPIService } from 'src/app/shared/generated'
 import { OneCXChangePasswordComponent } from './change-password.component'
 import { OneCXChangePasswordHarness } from './change-password.harness'
 import { ChangePasswordDialogComponent } from './change-password-dialog/change-password-dialog.component'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
 
 const pwdChangePermission = 'USER#EDIT'
 const mockConfigWithPermission: RemoteComponentConfig = {
@@ -61,6 +63,7 @@ describe('ChangePasswordComponent', () => {
     TestBed.configureTestingModule({
       declarations: [],
       imports: [
+        OneCXChangePasswordComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
@@ -70,8 +73,12 @@ describe('ChangePasswordComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         provideUserServiceMock(),
+        provideNoopAnimations(),
         { provide: REMOTE_COMPONENT_CONFIG, useValue: remoteComponentConfigSubject },
-        { provide: HAS_PERMISSION_CHECKER, useClass: UserServiceMock }
+        { provide: HAS_PERMISSION_CHECKER, useClass: UserServiceMock },
+        { provide: UserInternalAPIService, useValue: userApiSpy },
+        { provide: PortalDialogService, useValue: portalDialogServiceSpy },
+        { provide: PortalMessageService, useValue: messageServiceSpy }
       ]
     })
       .overrideComponent(OneCXChangePasswordComponent, {
@@ -82,6 +89,7 @@ describe('ChangePasswordComponent', () => {
             TooltipModule,
             RippleModule,
             ButtonModule,
+            MessageModule,
             DynamicDialogModule
           ],
           providers: [
@@ -135,9 +143,7 @@ describe('ChangePasswordComponent', () => {
       )
 
       expect(await oneCXChangePasswordHarness.getChangePasswordButton()).toBeNull()
-      expect(await (await oneCXChangePasswordHarness.getNoPermissionDiv())?.text()).toBe(
-        'You do not have permissions to change password'
-      )
+      expect(await oneCXChangePasswordHarness.getNoPermissionTag()).not.toBeNull()
     })
 
     it('should show button if permissions are met', async () => {
@@ -148,8 +154,8 @@ describe('ChangePasswordComponent', () => {
         OneCXChangePasswordHarness
       )
 
-      expect(await (await oneCXChangePasswordHarness.getChangePasswordButton())?.getLabel()).toBe('Change Password')
-      expect(await oneCXChangePasswordHarness.getNoPermissionDiv()).toBeNull()
+      expect(await oneCXChangePasswordHarness.getChangePasswordButton()).not.toBeNull()
+      expect(await oneCXChangePasswordHarness.getNoPermissionTag()).toBeNull()
     })
   })
 

@@ -1,12 +1,10 @@
-import { CommonModule } from '@angular/common'
-import { Component, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core'
+import { AsyncPipe, NgClass } from '@angular/common'
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { finalize, map, of, Observable, catchError, tap } from 'rxjs'
-import { PrimeIcons } from 'primeng/api'
 
-import { BadgeModule } from 'primeng/badge'
 import { ButtonModule } from 'primeng/button'
 import { CardModule } from 'primeng/card'
 import { FloatLabelModule } from 'primeng/floatlabel'
@@ -14,6 +12,7 @@ import { InputGroupModule } from 'primeng/inputgroup'
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 import { InputTextModule } from 'primeng/inputtext'
 import { MessageModule } from 'primeng/message'
+import { PrimeIcons } from 'primeng/api'
 import { SelectModule } from 'primeng/select'
 import { TooltipModule } from 'primeng/tooltip'
 
@@ -53,14 +52,11 @@ export interface UserSearchCriteriaForm {
 }
 @Component({
   selector: 'app-user-search',
-  templateUrl: './user-search.component.html',
-  styleUrls: ['./user-search.component.scss'],
   standalone: true,
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    TranslateModule,
-    BadgeModule,
+    AsyncPipe,
+    NgClass,
+    AngularAcceleratorModule,
     ButtonModule,
     CardModule,
     FloatLabelModule,
@@ -69,16 +65,30 @@ export interface UserSearchCriteriaForm {
     InputTextModule,
     MessageModule,
     SelectModule,
+    ReactiveFormsModule,
     TooltipModule,
-    AngularAcceleratorModule,
+    TranslateModule,
+    // components
     PortalPageComponent,
     UserDetailComponent
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './user-search.component.html',
+  styleUrls: ['./user-search.component.scss']
 })
 export class UserSearchComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute)
+  private readonly router = inject(Router)
+  private readonly user = inject(UserService)
+  private readonly slotService = inject(SlotService)
+  private readonly portalDialogService = inject(PortalDialogService)
+  private readonly translate = inject(TranslateService)
+  private readonly iamAdminApi = inject(AdminInternalAPIService)
+
   private readonly filterFieldLabelKeys = ['USER.USERNAME', 'USER.LASTNAME', 'USER.FIRSTNAME']
   // dialog
-  public loading = true
+  public loading = false
+  public loadingProvider = false
   public exceptionKey: string | undefined
   public displayDetailDialog = false
   public viewMode: 'list' | 'grid' = 'grid'
@@ -86,13 +96,12 @@ export class UserSearchComponent implements OnInit {
   private rawSearchResults: User[] | undefined = undefined
   public sortField = 'username'
   public sortOrder = 1
-  public searchCriteriaForm: FormGroup<UserSearchCriteriaForm>
+  public searchCriteriaForm!: FormGroup<UserSearchCriteriaForm>
   public domains: Domain[] = []
   public limitText = limitText
   public userViewPermission = false // view permission?
   public sortColumns: DataTableColumn[] = []
   public sortColumnKeys: string[] = []
-  public filterTooltip$: Observable<string>
   // data
   public actions$: Observable<Action[]> | undefined
   public users$: Observable<User[]> | undefined
@@ -101,7 +110,13 @@ export class UserSearchComponent implements OnInit {
   public idmUser: User | undefined = undefined
   public provider: Provider | undefined
   public permissionsSlotName = 'onecx-iam-user-permissions'
-  public isComponentDefined$: Observable<boolean>
+  public isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.permissionsSlotName)
+  public filterTooltip$ = this.translate.stream(['ACTIONS.DATAVIEW.FILTER_OF', ...this.filterFieldLabelKeys]).pipe(
+    map((translations) => {
+      const fields = this.filterFieldLabelKeys.map((key) => translations[key]).join(', ')
+      return `${translations['ACTIONS.DATAVIEW.FILTER_OF']}${fields}`
+    })
+  )
 
   get sortDirectionEnum(): DataSortDirection {
     if (this.sortOrder === -1) return DataSortDirection.ASCENDING
@@ -109,56 +124,11 @@ export class UserSearchComponent implements OnInit {
     return DataSortDirection.NONE
   }
 
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly user: UserService,
-    private readonly slotService: SlotService,
-    private readonly portalDialogService: PortalDialogService,
-    private readonly translate: TranslateService,
-    private readonly iamAdminApi: AdminInternalAPIService
-  ) {
-    this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.permissionsSlotName)
-    this.filterTooltip$ = this.translate.stream(['ACTIONS.DATAVIEW.FILTER_OF', ...this.filterFieldLabelKeys]).pipe(
-      map((translations) => {
-        const fields = this.filterFieldLabelKeys.map((key) => translations[key]).join(', ')
-        return `${translations['ACTIONS.DATAVIEW.FILTER_OF']}${fields}`
-      })
-    )
-    user.hasPermission('USER#VIEW').then((hasPermission) => {
+  constructor() {
+    this.user.hasPermission('USER#VIEW').then((hasPermission) => {
       this.userViewPermission = hasPermission
     })
-    this.searchCriteriaForm = new FormGroup<UserSearchCriteriaForm>({
-      userId: new FormControl<string | null>(null),
-      userName: new FormControl<string | null>(null),
-      firstName: new FormControl<string | null>(null),
-      lastName: new FormControl<string | null>(null),
-      email: new FormControl<string | null>(null),
-      provider: new FormControl<string | null>(null, [Validators.required]),
-      issuer: new FormControl<string | null>(null, [Validators.required])
-    })
-    // Initialize sort columns for users
-    this.sortColumns = [
-      {
-        columnType: ColumnType.STRING,
-        nameKey: 'USER.FIRSTNAME',
-        id: 'firstName',
-        sortable: true
-      },
-      {
-        columnType: ColumnType.STRING,
-        nameKey: 'USER.LASTNAME',
-        id: 'lastName',
-        sortable: true
-      },
-      {
-        columnType: ColumnType.STRING,
-        nameKey: 'USER.USERNAME',
-        id: 'username',
-        sortable: true
-      }
-    ]
-    this.sortColumnKeys = this.sortColumns.map((c) => c.id)
+    this.initForm()
   }
 
   ngOnInit(): void {
@@ -169,7 +139,7 @@ export class UserSearchComponent implements OnInit {
   /* SEARCH CRITERIA => provider, domain => issuer
    */
   public searchProviders(): void {
-    this.loading = true
+    this.loadingProvider = true
     this.exceptionKey = undefined
     this.provider$ = this.iamAdminApi.getAllProviders().pipe(
       map((response: ProvidersResponse) => {
@@ -184,7 +154,7 @@ export class UserSearchComponent implements OnInit {
         console.error('getAllProviders', err)
         return of([])
       }),
-      finalize(() => (this.loading = false))
+      finalize(() => (this.loadingProvider = false))
     )
   }
 
@@ -412,5 +382,39 @@ export class UserSearchComponent implements OnInit {
         }
       )
       .subscribe(() => {})
+  }
+
+  private initForm(): void {
+    this.searchCriteriaForm = new FormGroup<UserSearchCriteriaForm>({
+      userId: new FormControl<string | null>(null),
+      userName: new FormControl<string | null>(null),
+      firstName: new FormControl<string | null>(null),
+      lastName: new FormControl<string | null>(null),
+      email: new FormControl<string | null>(null),
+      provider: new FormControl<string | null>(null, [Validators.required]),
+      issuer: new FormControl<string | null>(null, [Validators.required])
+    })
+    // Initialize sort columns for users
+    this.sortColumns = [
+      {
+        columnType: ColumnType.STRING,
+        nameKey: 'USER.FIRSTNAME',
+        id: 'firstName',
+        sortable: true
+      },
+      {
+        columnType: ColumnType.STRING,
+        nameKey: 'USER.LASTNAME',
+        id: 'lastName',
+        sortable: true
+      },
+      {
+        columnType: ColumnType.STRING,
+        nameKey: 'USER.USERNAME',
+        id: 'username',
+        sortable: true
+      }
+    ]
+    this.sortColumnKeys = this.sortColumns.map((c) => c.id)
   }
 }

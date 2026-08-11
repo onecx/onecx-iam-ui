@@ -1,3 +1,3 @@
 # onecx-iam-ui
 
-OneCX IAM
+OneCX IAM UI

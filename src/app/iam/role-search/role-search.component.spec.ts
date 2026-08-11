@@ -1,5 +1,5 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
-import { CommonModule } from '@angular/common'
+import { AsyncPipe } from '@angular/common'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
@@ -88,20 +88,19 @@ describe('RoleSearchComponent', () => {
         }).withDefaultLanguage('en')
       ],
       providers: [
-        provideNoopAnimations(),
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideNoopAnimations(),
         provideRouter([{ path: '', component: RoleSearchComponent }]),
         { provide: AdminInternalAPIService, useValue: adminApiSpy },
         { provide: UserService, useValue: userServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
+      ]
     })
       .overrideComponent(RoleSearchComponent, {
         set: {
-          imports: [CommonModule, TranslateModule],
+          imports: [AsyncPipe, TranslateModule],
           schemas: [NO_ERRORS_SCHEMA],
           providers: [{ provide: AdminInternalAPIService, useValue: adminApiSpy }]
         }

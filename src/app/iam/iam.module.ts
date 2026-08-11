@@ -1,21 +1,12 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
 
-import { AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
-import { PortalApiConfiguration, providePermissionService, provideThemeConfig } from '@onecx/angular-utils'
+import { providePermissionService } from '@onecx/angular-utils'
 
-import { Configuration } from 'src/app/shared/generated'
-import { environment } from 'src/environments/environment'
 import { LabelResolver } from 'src/app/shared/label.resolver'
 
 import { UserSearchComponent } from './user-search/user-search.component'
 import { RoleSearchComponent } from './role-search/role-search.component'
-import { UserDetailComponent } from './user-detail/user-detail.component'
-import { UserPermissionsComponent } from './user-permissions/user-permissions.component'
-
-export function apiConfigProvider(configService: ConfigurationService, appStateService: AppStateService) {
-  return new PortalApiConfiguration(Configuration, environment.apiPrefix)
-}
 
 const routes: Routes = [
   {
@@ -58,22 +49,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [],
-  imports: [
-    RouterModule.forChild(routes),
-    UserSearchComponent,
-    RoleSearchComponent,
-    UserDetailComponent,
-    UserPermissionsComponent
-  ],
-  providers: [
-    LabelResolver,
-    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] },
-    ...providePermissionService(),
-    provideThemeConfig()
-  ]
+  imports: [RouterModule.forChild(routes), UserSearchComponent, RoleSearchComponent],
+  providers: [...providePermissionService()]
 })
-export class IamModule {
-  constructor() {
-    console.info('IAM module constructor')
-  }
-}
+export class IamModule {}

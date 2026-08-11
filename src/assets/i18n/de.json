@@ -91,7 +91,7 @@
         "DOMAIN": "Domain",
         "PROVIDER": "IDM Provider",
         "NO_PROVIDER": "Zuerst IDM Provider wählen",
-        "SELECT_ISSUER_FIRST": "Um die Suche zu starten, wählen Sie bitte zuerst den IDM-Anbieter und die Domain aus.",
+        "SELECT_ISSUER_FIRST": "Um die Suche starten zu können, wählen Sie bitte zuerst den IDM-Anbieter und die Domain aus.",
         "TOOLTIPS": {
           "PROVIDER": "IDM Provider",
           "DOMAIN": "Domain - Bereich im IDM in dem Benutzer, Rollen etc. verwaltet werden (Keycloak = Realm)"
