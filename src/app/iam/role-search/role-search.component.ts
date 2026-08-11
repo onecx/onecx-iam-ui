@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core'
+import { ChangeDetectionStrategy, Component, inject, OnInit, ViewChild } from '@angular/core'
 import { AsyncPipe } from '@angular/common'
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
@@ -61,6 +61,7 @@ export interface RoleSearchCriteriaForm {
     TranslateModule,
     PortalPageComponent
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './role-search.component.html',
   styleUrls: ['./role-search.component.scss']
 })

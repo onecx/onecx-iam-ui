@@ -1,5 +1,5 @@
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
 import { AsyncPipe } from '@angular/common'
-import { Component, Input } from '@angular/core'
 import { Observable } from 'rxjs'
 import { TranslateModule } from '@ngx-translate/core'
 import { MessageModule } from 'primeng/message'
@@ -10,6 +10,7 @@ import { AngularRemoteComponentsModule, SlotService } from '@onecx/angular-remot
   selector: 'app-user-permissions',
   standalone: true,
   imports: [AsyncPipe, AngularRemoteComponentsModule, MessageModule, TranslateModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './user-permissions.component.html'
 })
 export class UserPermissionsComponent {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnChanges, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnChanges, Output } from '@angular/core'
 import { AsyncPipe, DatePipe, NgClass } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
@@ -40,6 +40,7 @@ import { copyToClipboard, sortByLocale } from 'src/app/shared/utils'
     TextareaModule,
     TooltipModule
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './user-detail.component.html',
   styleUrls: ['./user-detail.component.scss']
 })

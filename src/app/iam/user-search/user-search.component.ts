@@ -1,5 +1,5 @@
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core'
 import { AsyncPipe, NgClass } from '@angular/common'
-import { Component, inject, OnInit } from '@angular/core'
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
@@ -72,6 +72,7 @@ export interface UserSearchCriteriaForm {
     PortalPageComponent,
     UserDetailComponent
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './user-search.component.html',
   styleUrls: ['./user-search.component.scss']
 })
