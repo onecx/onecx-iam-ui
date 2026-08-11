@@ -208,8 +208,8 @@
         <!-- LIST -->
         <ng-template let-user pTemplate="listItem">
           <article
-            [id]="'iam_user_search_data_list_0'"
-            class="relative col-12 sm:col-6 h-3rem md:h-3-5rem py-1 md:py-2 pl-6 pr-3 flex flex-column justify-content-between"
+            [id]="'iam_user_search_data_list_' + user.id"
+            class="relative col-12 sm:col-6 h-3rem md:h-4rem py-1 md:py-2 pl-6 pr-3 flex flex-column justify-content-around border-round"
             [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewPermission }"
             (click)="onDetail($event, user)"
             (keydown.enter)="onDetail($event, user)"
@@ -223,22 +223,24 @@
               <a
                 *ocxIfPermission="'PERMISSION#VIEW'"
                 tabindex="0"
-                [id]="'iam_user_search_data_list_0_action_permissions'"
-                class="card-badge-left badge-position"
+                [id]="'iam_user_search_data_list_' + user.id + '_action_permissions'"
+                class="card-badge-left badge-position button-icon-only pi pi-lock"
                 (click)="onUserPermissions($event, user)"
                 [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
                 [pTooltip]="'DIALOG.PERMISSIONS.TOOLTIP' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
                 role="link"
-              >
-                <p-badge severity="secondary" styleClass="pi pi-lock" />
-              </a>
+              ></a>
             }
-            <div [id]="'iam_user_search_data_list_0_user_name'" class="font-bold text-responsive" aria-hidden="true">
+            <div
+              [id]="'iam_user_search_data_list_' + user.id + '_user_name'"
+              class="font-bold text-responsive"
+              aria-hidden="true"
+            >
               {{ user.username }}
             </div>
-            <div [id]="'iam_user_search_data_list_0_name'" class="text-xs text-responsive" role="note">
+            <div [id]="'iam_user_search_data_list_' + user.id + '_name'" class="text-xs text-responsive" role="note">
               {{ prepareDisplayName(user, 30, 150) }}
             </div>
           </article>
@@ -246,9 +248,9 @@
 
         <!-- GRID -->
         <ng-template let-user pTemplate="gridItem">
-          <div [id]="'iam_user_search_data_grid_0'" class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-2">
+          <div [id]="'iam_user_search_data_' + user.id" class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-2">
             <p-card
-              [id]="'iam_user_search_data_grid_anchor_0'"
+              [id]="'iam_user_search_data_anchor_' + user.id"
               [ngClass]="{ 'cursor-pointer': userViewPermission }"
               styleClass="w-full h-full relative"
               [attr.tabindex]="0"
@@ -261,21 +263,19 @@
                 <a
                   *ocxIfPermission="'PERMISSION#VIEW'"
                   tabindex="0"
-                  [id]="'iam_user_search_data_grid_0_action_permissions'"
-                  class="card-badge-right badge-1"
+                  [id]="'iam_user_search_data_' + user.id + '_action_permissions'"
+                  class="card-badge-right badge-1 pi pi-lock button-icon-only"
                   (click)="onUserPermissions($event, user)"
                   [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
                   [pTooltip]="'DIALOG.PERMISSIONS.TOOLTIP' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                   role="link"
-                >
-                  <p-badge severity="secondary" styleClass="pi pi-lock" />
-                </a>
+                ></a>
               }
               <div class="flex flex-column gap-2 text-center justify-content-between h-full">
                 <div
-                  [id]="'iam_user_search_data_grid_0_user_name'"
+                  [id]="'iam_user_search_data_' + user.id + '_user_name'"
                   class="font-bold text-responsive"
                   [pTooltip]="user.username.length < 24 ? '' : user.username"
                   tooltipPosition="top"
@@ -284,7 +284,7 @@
                 >
                   {{ user.username }}
                 </div>
-                <div [id]="'iam_user_search_data_grid_0_name'" class="text-xs text-responsive" role="note">
+                <div [id]="'iam_user_search_data_' + user.id + '_name'" class="text-xs text-responsive" role="note">
                   {{ prepareDisplayName(user, 20, 42) }}
                 </div>
               </div>

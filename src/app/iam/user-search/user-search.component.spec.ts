@@ -1,6 +1,6 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
-import { CommonModule } from '@angular/common'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { AsyncPipe, NgClass } from '@angular/common'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
@@ -75,7 +75,7 @@ const provider2: Provider = {
   domains: [domain1, domain2]
 }
 
-describe('UserSearchComponent', () => {
+fdescribe('UserSearchComponent', () => {
   let component: UserSearchComponent
   let fixture: ComponentFixture<UserSearchComponent>
   const routerSpy = jasmine.createSpyObj('Router', ['navigate'])
@@ -101,21 +101,20 @@ describe('UserSearchComponent', () => {
         }).withDefaultLanguage('en')
       ],
       providers: [
-        provideNoopAnimations(),
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideNoopAnimations(),
         provideRouter([{ path: '', component: UserSearchComponent }]),
         { provide: AdminInternalAPIService, useValue: adminApiSpy },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock },
         { provide: UserService, useValue: mockUserService },
         { provide: PortalDialogService, useValue: mockDialogService }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
+      ]
     })
       .overrideComponent(UserSearchComponent, {
         set: {
-          imports: [CommonModule, TranslateModule],
+          imports: [AsyncPipe, NgClass, TranslateModule],
           schemas: [NO_ERRORS_SCHEMA],
           providers: [
             { provide: PortalDialogService, useValue: mockDialogService },

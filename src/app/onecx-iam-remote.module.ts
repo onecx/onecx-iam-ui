@@ -9,6 +9,7 @@ import {
   createTranslateLoader,
   MultiLanguageMissingTranslationHandler,
   PortalApiConfiguration,
+  provideThemeConfig,
   provideTranslationPathFromMeta
 } from '@onecx/angular-utils'
 import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
@@ -61,7 +62,8 @@ const routes: Routes = [
     }),
     provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
     provideHttpClient(withInterceptorsFromDi()),
-    providePortalDialogService()
+    providePortalDialogService(),
+    provideThemeConfig()
   ]
 })
 export class OneCXIamModule implements DoBootstrap {
