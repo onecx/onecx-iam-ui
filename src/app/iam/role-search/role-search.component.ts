@@ -75,6 +75,7 @@ export class RoleSearchComponent implements OnInit {
   // detail
   public exceptionKey: string | undefined
   public loading = false
+  public loadingProvider = false
   public displayDetailDialog = false
   public displayDeleteDialog = false
   // data
@@ -125,7 +126,7 @@ export class RoleSearchComponent implements OnInit {
   /* SEARCH CRITERIA => provider, domain => issuer
    */
   public searchProviders(): void {
-    this.loading = true
+    this.loadingProvider = true
     this.exceptionKey = undefined
     this.provider$ = this.iamAdminApi.getAllProviders().pipe(
       map((response: ProvidersResponse) => {
@@ -138,7 +139,7 @@ export class RoleSearchComponent implements OnInit {
         console.error('getAllProviders', err)
         return of([])
       }),
-      finalize(() => (this.loading = false))
+      finalize(() => (this.loadingProvider = false))
     )
   }
   // load appId dropdown with app ids from product
