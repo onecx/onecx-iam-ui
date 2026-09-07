@@ -17,8 +17,8 @@ import { TooltipModule } from 'primeng/tooltip'
 
 import { UserService } from '@onecx/angular-integration-interface'
 
+import { Utils } from 'src/app/shared/utils'
 import { Domain, Provider, Role, AdminInternalAPIService, User, UserRolesResponse } from 'src/app/shared/generated'
-import { copyToClipboard, sortByLocale } from 'src/app/shared/utils'
 
 @Component({
   selector: 'app-user-detail',
@@ -59,7 +59,7 @@ export class UserDetailComponent implements OnChanges {
   public datetimeFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
   public userRoles$: Observable<string[]> = of()
   public userAttributes: string | undefined = undefined
-  public copyToClipboard = copyToClipboard
+  public copyToClipboard = Utils.copyToClipboard
   public domain: Domain | undefined
 
   public ngOnChanges() {
@@ -81,10 +81,10 @@ export class UserDetailComponent implements OnChanges {
       .pipe(
         map((response: UserRolesResponse) => {
           const roles: Role[] = response.roles ?? []
-          return (roles?.map((r) => r.name) as string[]).sort(sortByLocale)
+          return (roles?.map((r) => r.name) as string[]).sort(Utils.sortByLocale)
         }),
         catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.ROLES'
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.ROLES'
           console.error('getUserRoles', err)
           return of([])
         }),

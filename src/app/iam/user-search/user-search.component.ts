@@ -28,7 +28,7 @@ import {
 } from '@onecx/angular-accelerator'
 import { PortalPageComponent } from '@onecx/angular-utils'
 
-import { limitText, sortItemsByDisplayName } from 'src/app/shared/utils'
+import { Utils } from 'src/app/shared/utils'
 import {
   AdminInternalAPIService,
   Domain,
@@ -98,7 +98,7 @@ export class UserSearchComponent implements OnInit {
   public sortOrder = 1
   public searchCriteriaForm!: FormGroup<UserSearchCriteriaForm>
   public domains: Domain[] = []
-  public limitText = limitText
+  public limitText = Utils.limitText
   public userViewPermission = false // view permission?
   public sortColumns: DataTableColumn[] = []
   public sortColumnKeys: string[] = []
@@ -147,10 +147,10 @@ export class UserSearchComponent implements OnInit {
         response.providers?.forEach((p) =>
           provs.push({ ...p, displayName: p.displayName && p.displayName !== '' ? p.displayName : p.name })
         )
-        return provs.sort(sortItemsByDisplayName)
+        return provs.sort(Utils.sortItemsByDisplayName)
       }),
       catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PROVIDER'
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.PROVIDER'
         console.error('getAllProviders', err)
         return of([])
       }),
@@ -171,7 +171,7 @@ export class UserSearchComponent implements OnInit {
           this.domains.push({ ...d, displayName: d.displayName && d.displayName !== '' ? d.displayName : d.name })
         })
       })
-    this.domains.sort(sortItemsByDisplayName)
+    this.domains.sort(Utils.sortItemsByDisplayName)
   }
 
   public onChangeDomain() {
@@ -203,7 +203,7 @@ export class UserSearchComponent implements OnInit {
         this.rawSearchResults = users
       }),
       catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.USER'
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.USER'
         console.error('searchUsersByCriteria', err)
         return of([])
       }),
@@ -255,8 +255,8 @@ export class UserSearchComponent implements OnInit {
     let name = ''
     if (usr.firstName && !usr.lastName) name = usr.firstName
     if (!usr.firstName && usr.lastName) name = usr.lastName
-    if (usr.firstName && usr.lastName) name = limitText(usr.firstName, l1) + ' ' + usr.lastName
-    return limitText(name, l2)
+    if (usr.firstName && usr.lastName) name = Utils.limitText(usr.firstName, l1) + ' ' + usr.lastName
+    return Utils.limitText(name, l2)
   }
 
   /**
