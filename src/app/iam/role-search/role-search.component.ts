@@ -34,7 +34,7 @@ import {
   RolePageResult,
   RoleSearchCriteria
 } from 'src/app/shared/generated'
-import { sortItemsByDisplayName } from 'src/app/shared/utils'
+import { Utils } from 'src/app/shared/utils'
 
 export interface RoleSearchCriteriaForm {
   name: FormControl<string | null>
@@ -133,10 +133,10 @@ export class RoleSearchComponent implements OnInit {
       map((response: ProvidersResponse) => {
         const provs: Provider[] = []
         response.providers?.forEach((p) => provs.push({ ...p, displayName: p.displayName ?? p.name }))
-        return provs.sort(sortItemsByDisplayName)
+        return provs.sort(Utils.sortItemsByDisplayName)
       }),
       catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PROVIDER'
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.PROVIDER'
         console.error('getAllProviders', err)
         return of([])
       }),
@@ -156,7 +156,7 @@ export class RoleSearchComponent implements OnInit {
           this.domains.push({ ...d, displayName: d.displayName ?? d.name })
         })
       })
-    this.domains.sort(sortItemsByDisplayName)
+    this.domains.sort(Utils.sortItemsByDisplayName)
   }
   public onChangeDomain() {
     this.roles$ = of([])
@@ -180,7 +180,7 @@ export class RoleSearchComponent implements OnInit {
         this.rawSearchResults = roles
       }),
       catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.ROLES'
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.ROLES'
         console.error('searchRolesByCriteria', err)
         return of([])
       }),
