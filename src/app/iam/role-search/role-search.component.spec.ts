@@ -158,7 +158,7 @@ describe('RoleSearchComponent', () => {
 
       component.roles$?.subscribe({
         next: (roles) => {
-          expect(roles.length).toBe(1)
+          expect(roles).toHaveSize(1)
           expect(roles[0]).toBe(role1)
           done()
         },
@@ -176,7 +176,7 @@ describe('RoleSearchComponent', () => {
 
       component.roles$?.subscribe({
         next: (roles) => {
-          expect(roles.length).toBe(0)
+          expect(roles).toHaveSize(0)
           done()
         },
         error: done.fail
@@ -193,7 +193,7 @@ describe('RoleSearchComponent', () => {
 
       component.roles$?.subscribe({
         next: (roles) => {
-          expect(roles.length).toBe(2)
+          expect(roles).toHaveSize(2)
           expect(roles.at(0)).toEqual(role1)
           expect(roles.at(1)).toEqual(role2)
           done()
@@ -203,7 +203,7 @@ describe('RoleSearchComponent', () => {
 
       component.roles$?.subscribe({
         next: (roles) => {
-          expect(roles.length).toBe(2)
+          expect(roles).toHaveSize(2)
           expect(roles[0].name).toBe('name1')
         },
         error: done.fail
@@ -222,7 +222,7 @@ describe('RoleSearchComponent', () => {
 
       component.roles$?.subscribe({
         next: (roles) => {
-          expect(roles.length).toBe(0)
+          expect(roles).toHaveSize(0)
           expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.ROLES')
           expect(console.error).toHaveBeenCalledWith('searchRolesByCriteria', errorResponse)
           done()
@@ -243,7 +243,7 @@ describe('RoleSearchComponent', () => {
 
       component.provider$?.subscribe({
         next: (data) => {
-          expect(data.length).toBe(2)
+          expect(data).toHaveSize(2)
           done()
         },
         error: done.fail
@@ -258,7 +258,7 @@ describe('RoleSearchComponent', () => {
 
       component.provider$?.subscribe({
         next: (data) => {
-          expect(data.length).toBe(0)
+          expect(data).toHaveSize(0)
           done()
         },
         error: done.fail
@@ -274,7 +274,7 @@ describe('RoleSearchComponent', () => {
 
       component.provider$?.subscribe({
         next: (data) => {
-          expect(data.length).toBe(0)
+          expect(data).toHaveSize(0)
           expect(console.error).toHaveBeenCalledWith('getAllProviders', errorResponse)
           done()
         },
@@ -289,7 +289,7 @@ describe('RoleSearchComponent', () => {
 
       component.onChangeProvider(undefined, [])
 
-      expect(component.domains.length).toBe(0)
+      expect(component.domains).toHaveSize(0)
       expect(component.searchCriteriaForm?.controls['issuer'].value).toBeNull()
     })
 
@@ -298,7 +298,7 @@ describe('RoleSearchComponent', () => {
 
       component.onChangeProvider(provider2.name, provs)
 
-      expect(component.domains.length).toBe(2)
+      expect(component.domains).toHaveSize(2)
     })
 
     it('should reset search results', (done) => {
@@ -306,7 +306,7 @@ describe('RoleSearchComponent', () => {
 
       component.roles$?.subscribe({
         next: (data) => {
-          expect(data.length).toBe(0)
+          expect(data).toHaveSize(0)
           done()
         },
         error: done.fail

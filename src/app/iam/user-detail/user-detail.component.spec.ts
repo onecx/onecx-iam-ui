@@ -123,7 +123,7 @@ describe('UserDetailComponent', () => {
       component.ngOnChanges()
 
       component.userRoles$.subscribe((roles) => {
-        expect(roles.length).toBe(2)
+        expect(roles).toHaveSize(2)
         expect(roles[0]).toEqual(roles1[0].name!)
         expect(roles[1]).toEqual(roles1[1].name!)
         done()
@@ -141,7 +141,7 @@ describe('UserDetailComponent', () => {
       component.userRoles$.subscribe({
         next: (roles) => {
           if (roles) {
-            expect(roles.length).toBe(0)
+            expect(roles).toHaveSize(0)
           }
           done()
         },
@@ -162,7 +162,7 @@ describe('UserDetailComponent', () => {
       component.userRoles$.subscribe({
         next: (roles) => {
           if (roles) {
-            expect(roles.length).toBe(0)
+            expect(roles).toHaveSize(0)
             expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.ROLES')
             expect(console.error).toHaveBeenCalledWith('getUserRoles', errorResponse)
           }
