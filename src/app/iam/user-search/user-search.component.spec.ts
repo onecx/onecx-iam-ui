@@ -1,17 +1,21 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { AsyncPipe, NgClass } from '@angular/common'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
 import { provideNoopAnimations } from '@angular/platform-browser/animations'
 import { provideRouter, Router, ActivatedRoute } from '@angular/router'
-import { TranslateModule, TranslateService } from '@ngx-translate/core'
+import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError, BehaviorSubject } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
-import { DataSortDirection, PortalDialogService } from '@onecx/angular-accelerator'
+import {
+  AngularAcceleratorModule,
+  DataSortDirection,
+  PageHeaderComponent,
+  PortalDialogService,
+  SearchHeaderComponent
+} from '@onecx/angular-accelerator'
 
 import {
   AdminInternalAPIService,
@@ -21,7 +25,10 @@ import {
   User,
   UserPageResult
 } from 'src/app/shared/generated'
+import { ONECX_MOCK_COMPONENTS } from 'src/app/shared/onecx-mock-components'
+
 import { UserSearchComponent, UserSearchCriteriaForm } from './user-search.component'
+import { PortalPageComponent } from '@onecx/angular-utils'
 
 const searchForm = new FormGroup<UserSearchCriteriaForm>({
   userId: new FormControl<string | null>(null),
@@ -105,17 +112,17 @@ describe('UserSearchComponent', () => {
         provideHttpClientTesting(),
         provideNoopAnimations(),
         provideRouter([{ path: '', component: UserSearchComponent }]),
-        { provide: AdminInternalAPIService, useValue: adminApiSpy },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock },
-        { provide: UserService, useValue: mockUserService },
-        { provide: PortalDialogService, useValue: mockDialogService }
+        { provide: UserService, useValue: mockUserService }
       ]
     })
       .overrideComponent(UserSearchComponent, {
-        set: {
-          imports: [AsyncPipe, NgClass, TranslateModule],
-          schemas: [NO_ERRORS_SCHEMA],
+        remove: {
+          imports: [AngularAcceleratorModule, PortalPageComponent, PageHeaderComponent, SearchHeaderComponent]
+        },
+        add: {
+          imports: [...ONECX_MOCK_COMPONENTS],
           providers: [
             { provide: PortalDialogService, useValue: mockDialogService },
             { provide: AdminInternalAPIService, useValue: adminApiSpy }
