@@ -1,17 +1,21 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
-import { AsyncPipe } from '@angular/common'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
 import { provideNoopAnimations } from '@angular/platform-browser/animations'
 import { provideRouter, Router, ActivatedRoute } from '@angular/router'
-import { TranslateModule } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError, BehaviorSubject } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
-import { DataSortDirection } from '@onecx/angular-accelerator'
+import {
+  AngularAcceleratorModule,
+  BreadcrumbService,
+  DataSortDirection,
+  PageHeaderComponent,
+  SearchHeaderComponent
+} from '@onecx/angular-accelerator'
+import { PortalPageComponent, providePermissionService } from '@onecx/angular-utils'
 
 import {
   AdminInternalAPIService,
@@ -21,6 +25,8 @@ import {
   Role,
   RolePageResult
 } from 'src/app/shared/generated'
+import { ONECX_MOCK_COMPONENTS } from 'src/app/shared/onecx-mock-components'
+
 import { RoleSearchComponent, RoleSearchCriteriaForm } from './role-search.component'
 
 const form = new FormGroup<RoleSearchCriteriaForm>({
@@ -75,7 +81,8 @@ describe('RoleSearchComponent', () => {
   }
   const userServiceSpy = {
     lang$: new BehaviorSubject('en'),
-    hasPermission: jasmine.createSpy('hasPermission').and.returnValue(Promise.resolve(false))
+    hasPermission: jasmine.createSpy('hasPermission').and.returnValue(Promise.resolve(false)),
+    getPermissions: jasmine.createSpy('getPermissions').and.returnValue(Promise.resolve([]))
   }
 
   beforeEach(waitForAsync(() => {
@@ -91,18 +98,23 @@ describe('RoleSearchComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         provideNoopAnimations(),
+        providePermissionService(),
         provideRouter([{ path: '', component: RoleSearchComponent }]),
-        { provide: AdminInternalAPIService, useValue: adminApiSpy },
-        { provide: UserService, useValue: userServiceSpy },
         { provide: Router, useValue: routerSpy },
-        { provide: ActivatedRoute, useValue: routeMock }
+        { provide: ActivatedRoute, useValue: routeMock },
+        { provide: UserService, useValue: userServiceSpy }
       ]
     })
       .overrideComponent(RoleSearchComponent, {
-        set: {
-          imports: [AsyncPipe, TranslateModule],
-          schemas: [NO_ERRORS_SCHEMA],
-          providers: [{ provide: AdminInternalAPIService, useValue: adminApiSpy }]
+        remove: {
+          imports: [AngularAcceleratorModule, PortalPageComponent, PageHeaderComponent, SearchHeaderComponent]
+        },
+        add: {
+          imports: [...ONECX_MOCK_COMPONENTS],
+          providers: [
+            { provide: BreadcrumbService, useValue: {} },
+            { provide: AdminInternalAPIService, useValue: adminApiSpy }
+          ]
         }
       })
       .compileComponents()

@@ -1,13 +1,13 @@
 import { Component } from '@angular/core'
-import { RouterModule } from '@angular/router'
 
 import { StandaloneShellModule } from '@onecx/angular-standalone-shell'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
   standalone: true,
-  imports: [RouterModule, StandaloneShellModule]
+  imports: [AngularAcceleratorModule, StandaloneShellModule],
+  templateUrl: './app.component.html'
 })
 export class AppComponent {
   title = 'onecx-ui'
