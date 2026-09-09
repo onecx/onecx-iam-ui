@@ -190,7 +190,7 @@ describe('UserSearchComponent', () => {
 
       component.users$?.subscribe({
         next: (users) => {
-          expect(users.length).toBe(1)
+          expect(users).toHaveSize(1)
           expect(users[0]).toBe(user1)
           done()
         },
@@ -209,7 +209,7 @@ describe('UserSearchComponent', () => {
 
       component.users$?.subscribe({
         next: (users) => {
-          expect(users.length).toBe(1)
+          expect(users).toHaveSize(1)
           expect(users[0]).toBe(user1)
           done()
         },
@@ -227,7 +227,7 @@ describe('UserSearchComponent', () => {
 
       component.users$?.subscribe({
         next: (users) => {
-          expect(users.length).toBe(0)
+          expect(users).toHaveSize(0)
           done()
         },
         error: done.fail
@@ -244,7 +244,7 @@ describe('UserSearchComponent', () => {
 
       component.users$?.subscribe({
         next: (users) => {
-          expect(users.length).toBe(2)
+          expect(users).toHaveSize(2)
           expect(users.at(0)).toBe(user1)
           expect(users.at(1)).toBe(user2)
           done()
@@ -254,7 +254,7 @@ describe('UserSearchComponent', () => {
 
       component.users$?.subscribe({
         next: (users) => {
-          expect(users.length).toBe(2)
+          expect(users).toHaveSize(2)
           expect(users[0].username).toBe('username1')
         },
         error: done.fail
@@ -274,7 +274,7 @@ describe('UserSearchComponent', () => {
       component.users$?.subscribe({
         next: (users) => {
           if (users) {
-            expect(users.length).toBe(0)
+            expect(users).toHaveSize(0)
             expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.USER')
             expect(console.error).toHaveBeenCalledWith('searchUsersByCriteria', errorResponse)
           }
@@ -306,7 +306,7 @@ describe('UserSearchComponent', () => {
 
       component.provider$?.subscribe({
         next: (data) => {
-          expect(data.length).toBe(2)
+          expect(data).toHaveSize(2)
           done()
         },
         error: done.fail
@@ -321,7 +321,7 @@ describe('UserSearchComponent', () => {
 
       component.provider$?.subscribe({
         next: (data) => {
-          expect(data.length).toBe(0)
+          expect(data).toHaveSize(0)
           done()
         },
         error: done.fail
@@ -337,7 +337,7 @@ describe('UserSearchComponent', () => {
 
       component.provider$?.subscribe({
         next: (data) => {
-          expect(data.length).toBe(0)
+          expect(data).toHaveSize(0)
           expect(console.error).toHaveBeenCalledWith('getAllProviders', errorResponse)
           done()
         },
@@ -352,7 +352,7 @@ describe('UserSearchComponent', () => {
 
       component.onChangeProvider(undefined, [])
 
-      expect(component.domains.length).toBe(0)
+      expect(component.domains).toHaveSize(0)
       expect(component.searchCriteriaForm?.controls['issuer'].value).toBeNull()
     })
 
@@ -361,7 +361,7 @@ describe('UserSearchComponent', () => {
 
       component.onChangeProvider(provider2.name, provs)
 
-      expect(component.domains.length).toBe(2)
+      expect(component.domains).toHaveSize(2)
     })
 
     it('should reset search results', (done) => {
@@ -374,7 +374,7 @@ describe('UserSearchComponent', () => {
 
       component.users$?.subscribe({
         next: (data) => {
-          expect(data.length).toBe(0)
+          expect(data).toHaveSize(0)
           done()
         },
         error: done.fail

@@ -77,7 +77,7 @@ describe('utils', () => {
 
       const sortedItems = items.sort(Utils.sortItemsByLabel)
 
-      expect(sortedItems[0].label).toEqual(undefined)
+      expect(sortedItems[0].label).toBeUndefined()
     })
   })
 
@@ -101,7 +101,7 @@ describe('utils', () => {
 
       const sortedItems = items.sort(Utils.sortItemsByName)
 
-      expect(sortedItems[0].name).toEqual(undefined)
+      expect(sortedItems[0].name).toBeUndefined()
     })
   })
 
@@ -125,7 +125,7 @@ describe('utils', () => {
 
       const sortedItems = items.sort(Utils.sortItemsByDisplayName)
 
-      expect(sortedItems[0].displayName).toEqual(undefined)
+      expect(sortedItems[0].displayName).toBeUndefined()
     })
   })
 
