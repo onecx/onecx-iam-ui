@@ -1,8 +1,8 @@
 @if (displayDialog) {
   <p-dialog
-    [header]="'DIALOG.DETAIL.HEADER' | translate"
     [visible]="true"
-    (onVisibleChange)="onDialogHide()"
+    (visibleChange)="onDialogHide()"
+    [header]="'DIALOG.DETAIL.HEADER' | translate"
     [modal]="true"
     [closable]="true"
     [draggable]="true"
