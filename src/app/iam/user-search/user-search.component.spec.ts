@@ -697,4 +697,69 @@ describe('UserSearchComponent', () => {
       expect(text).toEqual('first long... last a...')
     })
   })
+
+  describe('restoreStateFromQueryParams', () => {
+    it('should return false when query params are empty', () => {
+      ;(component as any).route.snapshot.queryParams = {}
+
+      const result = component['restoreStateFromQueryParams']()
+
+      expect(result).toBeFalse()
+    })
+
+    it('should return false when snapshot.queryParams is undefined and fallback {} is used', () => {
+      ;(component as any).route = { snapshot: undefined }
+
+      const result = component['restoreStateFromQueryParams']([])
+
+      expect(result).toBeFalse()
+    })
+
+    it('should not call onChangeProvider when provider is missing', () => {
+      ;(component as any).route.snapshot.queryParams = {
+        issuer: domain1.issuer
+      }
+
+      spyOn(component, 'onChangeProvider')
+
+      const result = component['restoreStateFromQueryParams']([])
+
+      expect(result).toBeTrue()
+      expect(component.onChangeProvider).not.toHaveBeenCalled()
+      expect(String(component.searchCriteriaForm.controls['issuer'].value ?? '')).toBe(String(domain1.issuer ?? ''))
+    })
+
+    it('should keep issuer null when issuer and domain are both null', () => {
+      ;(component as any).route.snapshot.queryParams = {
+        provider: provider1.name,
+        issuer: null,
+        domain: null,
+        userName: user1.username
+      }
+
+      spyOn(component, 'onChangeProvider')
+
+      const result = component['restoreStateFromQueryParams']([provider1])
+
+      expect(result).toBeTrue()
+      expect(String(component.searchCriteriaForm.controls['provider'].value ?? '')).toBe(String(provider1.name ?? ''))
+      expect(component.searchCriteriaForm.controls['issuer'].value).toBeNull()
+      expect(String(component.searchCriteriaForm.controls['userName'].value ?? '')).toBe(String(user1.username ?? ''))
+      expect(component.onChangeProvider).toHaveBeenCalledWith(provider1.name, [provider1])
+    })
+
+    it('should patch issuer again when provider and matching domains exist', () => {
+      ;(component as any).route.snapshot.queryParams = {
+        provider: provider2.name,
+        issuer: domain2.issuer
+      }
+
+      component['restoreStateFromQueryParams']([provider2])
+
+      expect((component.domains ?? []).map((domain) => domain.name).sort()).toEqual(
+        (provider2.domains ?? []).map((domain) => domain.name).sort()
+      )
+      expect(String(component.searchCriteriaForm.controls['issuer'].value ?? '')).toBe(String(domain2.issuer ?? ''))
+    })
+  })
 })
