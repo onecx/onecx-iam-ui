@@ -30,4 +30,4 @@ bootstrapRemoteComponent(OneCXIamUserRolesComponent, 'ocx-iam-user-roles-compone
     }
   }),
   provideThemeConfig()
-])
+]).catch((err) => console.error(err))

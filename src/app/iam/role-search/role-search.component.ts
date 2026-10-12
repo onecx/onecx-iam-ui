@@ -275,7 +275,8 @@ export class RoleSearchComponent implements OnInit {
   }
 
   onBack() {
-    this.router.navigate(['../'], { relativeTo: this.route })
+    const navPromise = this.router.navigate(['../'], { relativeTo: this.route })
+    navPromise?.catch?.((err) => console.error(err))
   }
   public onSearch() {
     this.searchRoles()

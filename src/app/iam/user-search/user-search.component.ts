@@ -125,9 +125,12 @@ export class UserSearchComponent implements OnInit {
   }
 
   constructor() {
-    this.user.hasPermission('USER#VIEW').then((hasPermission) => {
-      this.userViewPermission = hasPermission
-    })
+    this.user
+      .hasPermission('USER#VIEW')
+      .then((hasPermission) => {
+        this.userViewPermission = hasPermission
+      })
+      .catch((err) => console.error(err))
     this.initForm()
   }
 
@@ -319,7 +322,8 @@ export class UserSearchComponent implements OnInit {
   }
 
   public onGoToRoleSearch(): void {
-    this.router.navigate(['./roles'], { relativeTo: this.route })
+    const navPromise = this.router.navigate(['./roles'], { relativeTo: this.route })
+    navPromise?.catch?.((err) => console.error(err))
   }
   public onSearch(): void {
     this.searchUsers()

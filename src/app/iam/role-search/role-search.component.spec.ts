@@ -555,6 +555,17 @@ describe('RoleSearchComponent', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['../'], { relativeTo: routeMock })
   })
 
+  it('should log when router navigation rejects onBack', async () => {
+    const error = new Error('navigation failed')
+    routerSpy.navigate.and.returnValue(Promise.reject(error))
+    spyOn(console, 'error')
+
+    component.onBack()
+    await Promise.resolve()
+
+    expect(console.error).toHaveBeenCalledWith(error)
+  })
+
   it('should prepare action buttons with translated labels and tooltips', () => {
     spyOn(component, 'onBack')
 

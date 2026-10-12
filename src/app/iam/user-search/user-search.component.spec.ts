@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
@@ -149,6 +149,18 @@ describe('UserSearchComponent', () => {
     it('should create', () => {
       expect(component).toBeTruthy()
     })
+
+    it('should log when permission check rejects', fakeAsync(() => {
+      const error = new Error('permission failed')
+      const consoleErrorSpy = spyOn(console, 'error')
+      mockUserService.hasPermission.and.returnValue(Promise.reject(error))
+
+      const newComponent = TestBed.createComponent(UserSearchComponent).componentInstance
+      tick()
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(error)
+      expect(newComponent).toBeTruthy()
+    }))
 
     it('action translations', (done) => {
       const actionData = {
@@ -598,6 +610,17 @@ describe('UserSearchComponent', () => {
 
       expect(routerSpy.navigate).toHaveBeenCalledWith(['./roles'], { relativeTo: routeMock })
     })
+
+    it('should log when route navigation rejects onGoToRoleSearch', fakeAsync(() => {
+      const error = new Error('role navigation failed')
+      const consoleErrorSpy = spyOn(console, 'error')
+      routerSpy.navigate.and.returnValue(Promise.reject(error))
+
+      component.onGoToRoleSearch()
+      tick()
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(error)
+    }))
 
     it('should reset search criteria, filter, and results on onSearchReset', () => {
       component.searchCriteriaForm = searchForm
