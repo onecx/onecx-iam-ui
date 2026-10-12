@@ -434,11 +434,14 @@ export class UserSearchComponent implements OnInit {
       email: formValue.email
     }
 
+    const filteredQueryParams = Object.fromEntries(
+      Object.entries(queryParams).filter(([, value]) => value !== null && value !== undefined && value !== '')
+    )
+
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams,
-      replaceUrl: true,
-      queryParamsHandling: 'merge'
+      queryParams: filteredQueryParams,
+      replaceUrl: true
     })
   }
 

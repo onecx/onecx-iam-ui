@@ -300,11 +300,14 @@ export class RoleSearchComponent implements OnInit {
       name: formValue.name
     }
 
+    const filteredQueryParams = Object.fromEntries(
+      Object.entries(queryParams).filter(([, value]) => value !== null && value !== undefined && value !== '')
+    )
+
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams,
-      replaceUrl: true,
-      queryParamsHandling: 'merge'
+      queryParams: filteredQueryParams,
+      replaceUrl: true
     })
   }
 
