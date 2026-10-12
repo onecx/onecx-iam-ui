@@ -46,7 +46,11 @@
     "SEARCH": {
       "NO_DATA": "Keine Daten",
       "NOT_FOUND": "Keine Daten",
-      "OF": "von"
+      "OF": "von",
+      "RESET_BUTTON": {
+        "ARIA_LABEL": "Suchkriterien und Ergebnisse zurücksetzen",
+        "TOOLTIP": "Suchkriterien und Ergebnisse zurücksetzen"
+      }
     },
     "VIEW": {
       "LABEL": "Ansehen"
