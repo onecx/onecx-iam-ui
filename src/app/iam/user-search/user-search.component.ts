@@ -185,6 +185,7 @@ export class UserSearchComponent implements OnInit {
       issuer = this.searchCriteriaForm?.controls['issuer'].value
     // provider + domain (incl. issuer)
     this.provider = { ...this.provider, domains: this.domains.filter((d) => d.issuer === issuer) }
+    this.onSearch()
   }
 
   /* SEARCH

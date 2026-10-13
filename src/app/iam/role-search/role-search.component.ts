@@ -161,6 +161,7 @@ export class RoleSearchComponent implements OnInit {
   }
   public onChangeDomain() {
     this.roles$ = of([])
+    this.onSearch()
   }
 
   public searchRoles() {

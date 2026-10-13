@@ -158,120 +158,81 @@
         [text]="'DIALOG.SEARCH.CRITERIA.SELECT_ISSUER_FIRST' | translate"
       ></p-message>
     } @else {
-      @let users = (users$ | async) ?? [];
-      <ocx-interactive-data-view
-        id="iam_user_search_dataview"
-        [data]="$any(filteredUsers ?? users)"
-        [layout]="viewMode"
-        [supportedViewLayouts]="['grid', 'list']"
-        [columns]="sortColumns"
-        [displayedColumnKeys]="sortColumnKeys"
-        [emptyResultsMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
-        [disableFilterView]="true"
-        [clientSideSorting]="true"
-        [sortField]="sortField"
-        [sortDirection]="sortDirectionEnum"
-        [pageSize]="40"
-        [pageSizes]="[40, 100, 500]"
-        (dataViewLayoutChange)="onLayoutChange($event)"
-        (sorted)="onSortChange($event)"
-      >
-        <!-- GLOBAL FILTER -->
-        <ng-template #topCenter>
-          <p-inputgroup class="w-auto">
-            <p-inputgroup-addon>
-              <i class="pi pi-filter" aria-hidden="true"></i>
-            </p-inputgroup-addon>
-            <p-floatlabel variant="on">
-              <input
-                #globalFilterInput
-                id="iam_user_search_filter"
-                type="text"
-                pInputText
-                [value]="filterText"
-                (input)="onGlobalFilter(globalFilterInput.value, users)"
-                [pTooltip]="(filterTooltip$ | async) ?? ''"
+      @let users = users$ | async;
+      @if (users !== null) {
+        <ocx-interactive-data-view
+          id="iam_user_search_dataview"
+          [data]="$any(filteredUsers ?? users)"
+          [layout]="viewMode"
+          [supportedViewLayouts]="['grid', 'list']"
+          [columns]="sortColumns"
+          [displayedColumnKeys]="sortColumnKeys"
+          [emptyResultsMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
+          [disableFilterView]="true"
+          [clientSideSorting]="true"
+          [sortField]="sortField"
+          [sortDirection]="sortDirectionEnum"
+          [pageSize]="40"
+          [pageSizes]="[40, 100, 500]"
+          (dataViewLayoutChange)="onLayoutChange($event)"
+          (sorted)="onSortChange($event)"
+        >
+          <!-- GLOBAL FILTER -->
+          <ng-template #topCenter>
+            <p-inputgroup class="w-auto">
+              <p-inputgroup-addon>
+                <i class="pi pi-filter" aria-hidden="true"></i>
+              </p-inputgroup-addon>
+              <p-floatlabel variant="on">
+                <input
+                  #globalFilterInput
+                  id="iam_user_search_filter"
+                  type="text"
+                  pInputText
+                  [value]="filterText"
+                  (input)="onGlobalFilter(globalFilterInput.value, users)"
+                  [pTooltip]="(filterTooltip$ | async) ?? ''"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                  [attr.aria-label]="'DIALOG.SEARCH.USER.FILTER.PLACEHOLDER' | translate"
+                />
+                <label for="iam_user_search_filter" aria-hidden="true">
+                  {{ 'DIALOG.SEARCH.USER.FILTER.PLACEHOLDER' | translate }}
+                </label>
+              </p-floatlabel>
+              <p-button
+                id="iam_user_search_filter_clear"
+                icon="pi pi-filter-slash"
+                (onClick)="globalFilterInput.value = ''; onClearGlobalFilter()"
+                (onKeydown)="globalFilterInput.value = ''; onClearGlobalFilter()"
+                [disabled]="globalFilterInput.value === ''"
+                [ariaLabel]="'DIALOG.SEARCH.USER.FILTER.CLEAR' | translate"
+                [pTooltip]="'DIALOG.SEARCH.USER.FILTER.CLEAR' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
-                [attr.aria-label]="'DIALOG.SEARCH.USER.FILTER.PLACEHOLDER' | translate"
               />
-              <label for="iam_user_search_filter" aria-hidden="true">
-                {{ 'DIALOG.SEARCH.USER.FILTER.PLACEHOLDER' | translate }}
-              </label>
-            </p-floatlabel>
-            <p-button
-              id="iam_user_search_filter_clear"
-              icon="pi pi-filter-slash"
-              (onClick)="globalFilterInput.value = ''; onClearGlobalFilter()"
-              (onKeydown)="globalFilterInput.value = ''; onClearGlobalFilter()"
-              [disabled]="globalFilterInput.value === ''"
-              [ariaLabel]="'DIALOG.SEARCH.USER.FILTER.CLEAR' | translate"
-              [pTooltip]="'DIALOG.SEARCH.USER.FILTER.CLEAR' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-          </p-inputgroup>
-        </ng-template>
-        <!-- LIST -->
-        <ng-template let-user pTemplate="listItem">
-          <article
-            [id]="'iam_user_search_data_list_' + user.id"
-            class="relative col-12 sm:col-6 h-3rem md:h-4rem py-1 md:py-2 pl-6 pr-3 flex flex-column justify-content-around border-round"
-            [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewPermission }"
-            (click)="onDetail($event, user)"
-            (keydown.enter)="onDetail($event, user)"
-            [attr.aria-label]="('BREADCRUMBS.USER' | translate) + ': ' + user.username"
-            [pTooltip]="user.username.length < 50 ? '' : user.username"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          >
-            <!-- BADGES -->
-            @if (isComponentDefined$ | async) {
-              <a
-                *ocxIfPermission="'PERMISSION#VIEW'"
-                tabindex="0"
-                [id]="'iam_user_search_data_list_' + user.id + '_action_permissions'"
-                class="card-badge-left badge-position button-icon-only pi pi-lock"
-                (click)="onUserPermissions($event, user)"
-                [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
-                [pTooltip]="'DIALOG.PERMISSIONS.TOOLTIP' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-                role="link"
-              ></a>
-            }
-            <div
-              [id]="'iam_user_search_data_list_' + user.id + '_user_name'"
-              class="font-bold text-responsive"
-              aria-hidden="true"
-            >
-              {{ user.username }}
-            </div>
-            <div [id]="'iam_user_search_data_list_' + user.id + '_name'" class="text-xs text-responsive" role="note">
-              {{ prepareDisplayName(user, 30, 150) }}
-            </div>
-          </article>
-        </ng-template>
-
-        <!-- GRID -->
-        <ng-template let-user pTemplate="gridItem">
-          <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-2">
-            @let styleClass = userViewPermission ? 'hover:bg-gray-200 cursor-pointer' : '';
-            <p-card
-              [id]="'iam_user_search_data_grid_' + user.id"
-              [styleClass]="'w-full h-full relative ' + styleClass"
-              [attr.tabindex]="0"
+            </p-inputgroup>
+          </ng-template>
+          <!-- LIST -->
+          <ng-template let-user pTemplate="listItem">
+            <article
+              [id]="'iam_user_search_data_list_' + user.id"
+              class="relative col-12 sm:col-6 h-3rem md:h-4rem py-1 md:py-2 pl-6 pr-3 flex flex-column justify-content-around border-round"
+              [ngClass]="{ 'hover:bg-gray-200 cursor-pointer': userViewPermission }"
               (click)="onDetail($event, user)"
               (keydown.enter)="onDetail($event, user)"
-              [ariaLabel]="('BREADCRUMBS.USER' | translate) + ': ' + user.username"
+              [attr.aria-label]="('BREADCRUMBS.USER' | translate) + ': ' + user.username"
+              [pTooltip]="user.username.length < 50 ? '' : user.username"
+              tooltipPosition="top"
+              tooltipEvent="hover"
             >
               <!-- BADGES -->
               @if (isComponentDefined$ | async) {
                 <a
                   *ocxIfPermission="'PERMISSION#VIEW'"
                   tabindex="0"
-                  [id]="'iam_user_search_data_grid_' + user.id + '_action_permissions'"
-                  class="card-badge-right badge-1 pi pi-lock button-icon-only"
+                  [id]="'iam_user_search_data_list_' + user.id + '_action_permissions'"
+                  class="card-badge-left badge-position button-icon-only pi pi-lock"
                   (click)="onUserPermissions($event, user)"
                   [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
                   [pTooltip]="'DIALOG.PERMISSIONS.TOOLTIP' | translate"
@@ -280,29 +241,70 @@
                   role="link"
                 ></a>
               }
-              <div class="flex flex-column gap-2 text-center justify-content-between h-full">
-                <div
-                  [id]="'iam_user_search_data_grid_' + user.id + '_user_name'"
-                  class="font-bold text-responsive"
-                  [pTooltip]="user.username.length < 24 ? '' : user.username"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                  aria-hidden="true"
-                >
-                  {{ user.username }}
-                </div>
-                <div
-                  [id]="'iam_user_search_data_grid_' + user.id + '_name'"
-                  class="text-xs text-responsive"
-                  role="note"
-                >
-                  {{ prepareDisplayName(user, 20, 42) }}
-                </div>
+              <div
+                [id]="'iam_user_search_data_list_' + user.id + '_user_name'"
+                class="font-bold text-responsive"
+                aria-hidden="true"
+              >
+                {{ user.username }}
               </div>
-            </p-card>
-          </div>
-        </ng-template>
-      </ocx-interactive-data-view>
+              <div [id]="'iam_user_search_data_list_' + user.id + '_name'" class="text-xs text-responsive" role="note">
+                {{ prepareDisplayName(user, 30, 150) }}
+              </div>
+            </article>
+          </ng-template>
+
+          <!-- GRID -->
+          <ng-template let-user pTemplate="gridItem">
+            <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-2">
+              @let styleClass = userViewPermission ? 'hover:bg-gray-200 cursor-pointer' : '';
+              <p-card
+                [id]="'iam_user_search_data_grid_' + user.id"
+                [styleClass]="'w-full h-full relative ' + styleClass"
+                [attr.tabindex]="0"
+                (click)="onDetail($event, user)"
+                (keydown.enter)="onDetail($event, user)"
+                [ariaLabel]="('BREADCRUMBS.USER' | translate) + ': ' + user.username"
+              >
+                <!-- BADGES -->
+                @if (isComponentDefined$ | async) {
+                  <a
+                    *ocxIfPermission="'PERMISSION#VIEW'"
+                    tabindex="0"
+                    [id]="'iam_user_search_data_grid_' + user.id + '_action_permissions'"
+                    class="card-badge-right badge-1 pi pi-lock button-icon-only"
+                    (click)="onUserPermissions($event, user)"
+                    [attr.aria-label]="'DIALOG.PERMISSIONS.HEADER' | translate"
+                    [pTooltip]="'DIALOG.PERMISSIONS.TOOLTIP' | translate"
+                    tooltipPosition="top"
+                    tooltipEvent="hover"
+                    role="link"
+                  ></a>
+                }
+                <div class="flex flex-column gap-2 text-center justify-content-between h-full">
+                  <div
+                    [id]="'iam_user_search_data_grid_' + user.id + '_user_name'"
+                    class="font-bold text-responsive"
+                    [pTooltip]="user.username.length < 24 ? '' : user.username"
+                    tooltipPosition="top"
+                    tooltipEvent="hover"
+                    aria-hidden="true"
+                  >
+                    {{ user.username }}
+                  </div>
+                  <div
+                    [id]="'iam_user_search_data_grid_' + user.id + '_name'"
+                    class="text-xs text-responsive"
+                    role="note"
+                  >
+                    {{ prepareDisplayName(user, 20, 42) }}
+                  </div>
+                </div>
+              </p-card>
+            </div>
+          </ng-template>
+        </ocx-interactive-data-view>
+      }
     }
   </ocx-content>
 </ocx-portal-page>
