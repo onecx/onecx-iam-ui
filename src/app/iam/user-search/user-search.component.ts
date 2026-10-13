@@ -3,7 +3,7 @@ import { AsyncPipe, NgClass } from '@angular/common'
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
-import { finalize, map, of, Observable, catchError, tap } from 'rxjs'
+import { finalize, map, of, Observable, catchError, take, tap } from 'rxjs'
 
 import { ButtonModule } from 'primeng/button'
 import { CardModule } from 'primeng/card'
@@ -125,15 +125,19 @@ export class UserSearchComponent implements OnInit {
   }
 
   constructor() {
-    this.user.hasPermission('USER#VIEW').then((hasPermission) => {
-      this.userViewPermission = hasPermission
-    })
+    this.user
+      .hasPermission('USER#VIEW')
+      .then((hasPermission) => {
+        this.userViewPermission = hasPermission
+      })
+      .catch((err) => console.error(err))
     this.initForm()
   }
 
   ngOnInit(): void {
     this.prepareActionButtons()
     this.searchProviders()
+    this.provider$?.pipe(take(1)).subscribe((providers) => this.restoreStateFromQueryParams(providers))
   }
 
   /* SEARCH CRITERIA => provider, domain => issuer
@@ -318,10 +322,12 @@ export class UserSearchComponent implements OnInit {
   }
 
   public onGoToRoleSearch(): void {
-    this.router.navigate(['./roles'], { relativeTo: this.route })
+    const navPromise = this.router.navigate(['./roles'], { relativeTo: this.route })
+    navPromise?.catch?.((err) => console.error(err))
   }
   public onSearch(): void {
     this.searchUsers()
+    this.updateSearchParamsFromState()
   }
   public searchOnlyById(val: string) {
     if (val) {
@@ -337,6 +343,7 @@ export class UserSearchComponent implements OnInit {
     this.rawSearchResults = undefined
     this.filteredUsers = undefined
     this.filterText = ''
+    this.onSearch()
   }
 
   public onHideDetailDialog(): void {
@@ -416,5 +423,66 @@ export class UserSearchComponent implements OnInit {
       }
     ]
     this.sortColumnKeys = this.sortColumns.map((c) => c.id)
+  }
+
+  private updateSearchParamsFromState(): void {
+    const formValue = this.searchCriteriaForm.getRawValue()
+    const queryParams: Record<string, string | null | undefined> = {
+      provider: formValue.provider,
+      issuer: formValue.issuer,
+      domain: formValue.issuer,
+      userId: formValue.userId,
+      userName: formValue.userName,
+      firstName: formValue.firstName,
+      lastName: formValue.lastName,
+      email: formValue.email
+    }
+
+    const filteredQueryParams = Object.fromEntries(
+      Object.entries(queryParams).filter(([, value]) => value !== null && value !== undefined && value !== '')
+    )
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: filteredQueryParams,
+      replaceUrl: true
+    })
+  }
+
+  private restoreStateFromQueryParams(providers: Provider[] = []): boolean {
+    const queryParams = this.route.snapshot?.queryParams ?? {}
+    const hasQueryParams = Object.keys(queryParams).length > 0
+
+    if (!hasQueryParams) {
+      return false
+    }
+
+    const providerName = queryParams['provider'] ?? queryParams['idmProvider'] ?? null
+    const issuer = queryParams['issuer'] ?? queryParams['domain'] ?? null
+    const userId = queryParams['userId'] ?? null
+    const userName = queryParams['userName'] ?? null
+    const firstName = queryParams['firstName'] ?? null
+    const lastName = queryParams['lastName'] ?? null
+    const email = queryParams['email'] ?? null
+
+    this.searchCriteriaForm.patchValue({
+      provider: providerName,
+      issuer,
+      userId,
+      userName,
+      firstName,
+      lastName,
+      email
+    })
+
+    if (providerName) {
+      this.onChangeProvider(providerName, providers)
+      if (issuer && this.domains.length) {
+        this.searchCriteriaForm.patchValue({ issuer })
+      }
+    }
+
+    this.searchUsers()
+    return true
   }
 }

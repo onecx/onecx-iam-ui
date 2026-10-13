@@ -46,7 +46,11 @@
     "SEARCH": {
       "NO_DATA": "No Data",
       "NOT_FOUND": "No data",
-      "OF": "of"
+      "OF": "of",
+      "RESET_BUTTON": {
+        "ARIA_LABEL": "Reset search criteria and results",
+        "TOOLTIP": "Reset search criteria and results"
+      }
     },
     "VIEW": {
       "LABEL": "View"

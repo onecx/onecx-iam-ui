@@ -555,6 +555,17 @@ describe('RoleSearchComponent', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['../'], { relativeTo: routeMock })
   })
 
+  it('should log when router navigation rejects onBack', async () => {
+    const error = new Error('navigation failed')
+    routerSpy.navigate.and.returnValue(Promise.reject(error))
+    spyOn(console, 'error')
+
+    component.onBack()
+    await Promise.resolve()
+
+    expect(console.error).toHaveBeenCalledWith(error)
+  })
+
   it('should prepare action buttons with translated labels and tooltips', () => {
     spyOn(component, 'onBack')
 
@@ -572,5 +583,77 @@ describe('RoleSearchComponent', () => {
         expect(component.onBack).toHaveBeenCalled()
       })
     }
+  })
+
+  describe('restoreStateFromQueryParams', () => {
+    it('should return false when query params are empty', () => {
+      ;(component as any).route.snapshot.queryParams = {}
+
+      const result = component['restoreStateFromQueryParams']([])
+
+      expect(result).toBeFalse()
+    })
+
+    it('should not call onChangeProvider when provider is missing', () => {
+      ;(component as any).route.snapshot.queryParams = {
+        issuer: domain1.issuer
+      }
+
+      spyOn(component, 'onChangeProvider')
+
+      const result = component['restoreStateFromQueryParams']([])
+
+      expect(result).toBeTrue()
+      expect(component.onChangeProvider).not.toHaveBeenCalled()
+      expect(String(component.searchCriteriaForm.controls['issuer'].value ?? '')).toBe(String(domain1.issuer ?? ''))
+    })
+
+    it('should use the default empty providers array when restoring state', () => {
+      ;(component as any).route.snapshot.queryParams = {
+        provider: provider2.name,
+        issuer: null,
+        domain: domain2.issuer,
+        name: role1.name
+      }
+
+      spyOn(component, 'onChangeProvider')
+
+      const result = component['restoreStateFromQueryParams']()
+
+      expect(result).toBeTrue()
+      expect(String(component.searchCriteriaForm.controls['provider'].value ?? '')).toBe(String(provider2.name ?? ''))
+      expect(String(component.searchCriteriaForm.controls['issuer'].value ?? '')).toBe(String(domain2.issuer ?? ''))
+      expect(component.onChangeProvider).toHaveBeenCalledWith(provider2.name, [])
+    })
+
+    it('should keep issuer null when neither issuer nor domain is provided', () => {
+      ;(component as any).route.snapshot.queryParams = {
+        provider: provider1.name,
+        issuer: null,
+        name: role1.name
+      }
+
+      spyOn(component, 'onChangeProvider')
+
+      const result = component['restoreStateFromQueryParams']([])
+
+      expect(result).toBeTrue()
+      expect(component.searchCriteriaForm.controls['issuer'].value).toBeNull()
+      expect(component.onChangeProvider).toHaveBeenCalledWith(provider1.name, [])
+    })
+
+    it('should patch issuer again when provider and matching domains exist', () => {
+      ;(component as any).route.snapshot.queryParams = {
+        provider: provider2.name,
+        issuer: domain2.issuer
+      }
+
+      component['restoreStateFromQueryParams']([provider2])
+
+      expect((component.domains ?? []).map((domain) => domain.name).sort()).toEqual(
+        (provider2.domains ?? []).map((domain) => domain.name).sort()
+      )
+      expect(String(component.searchCriteriaForm.controls['issuer'].value ?? '')).toBe(String(domain2.issuer ?? ''))
+    })
   })
 })

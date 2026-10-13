@@ -29,4 +29,4 @@ bootstrapRemoteComponent(OneCXChangePasswordComponent, 'ocx-change-password-comp
     }
   }),
   provideThemeConfig()
-])
+]).catch((err) => console.error(err))
