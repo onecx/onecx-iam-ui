@@ -296,7 +296,6 @@ export class RoleSearchComponent implements OnInit {
     const formValue = this.searchCriteriaForm.getRawValue()
     const queryParams: Record<string, string | null | undefined> = {
       provider: formValue.provider,
-      issuer: formValue.issuer,
       domain: formValue.issuer,
       name: formValue.name
     }

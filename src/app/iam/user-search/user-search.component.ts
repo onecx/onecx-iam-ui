@@ -429,7 +429,6 @@ export class UserSearchComponent implements OnInit {
     const formValue = this.searchCriteriaForm.getRawValue()
     const queryParams: Record<string, string | null | undefined> = {
       provider: formValue.provider,
-      issuer: formValue.issuer,
       domain: formValue.issuer,
       userId: formValue.userId,
       userName: formValue.userName,
