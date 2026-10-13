@@ -343,7 +343,7 @@ export class UserSearchComponent implements OnInit {
     this.rawSearchResults = undefined
     this.filteredUsers = undefined
     this.filterText = ''
-    this.onSearch()
+    this.updateSearchParamsFromState()
   }
 
   public onHideDetailDialog(): void {

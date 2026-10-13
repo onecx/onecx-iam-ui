@@ -289,7 +289,7 @@ export class RoleSearchComponent implements OnInit {
     this.filteredRoles = undefined
     this.filterText = ''
     this.filter = ''
-    this.onSearch()
+    this.updateSearchParamsFromState()
   }
 
   private updateSearchParamsFromState(): void {
