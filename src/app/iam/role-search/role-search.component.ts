@@ -161,6 +161,7 @@ export class RoleSearchComponent implements OnInit {
   }
   public onChangeDomain() {
     this.roles$ = of([])
+    this.onSearch()
   }
 
   public searchRoles() {
@@ -289,14 +290,13 @@ export class RoleSearchComponent implements OnInit {
     this.filteredRoles = undefined
     this.filterText = ''
     this.filter = ''
-    this.onSearch()
+    this.updateSearchParamsFromState()
   }
 
   private updateSearchParamsFromState(): void {
     const formValue = this.searchCriteriaForm.getRawValue()
     const queryParams: Record<string, string | null | undefined> = {
       provider: formValue.provider,
-      issuer: formValue.issuer,
       domain: formValue.issuer,
       name: formValue.name
     }

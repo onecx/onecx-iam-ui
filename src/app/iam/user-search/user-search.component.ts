@@ -185,6 +185,7 @@ export class UserSearchComponent implements OnInit {
       issuer = this.searchCriteriaForm?.controls['issuer'].value
     // provider + domain (incl. issuer)
     this.provider = { ...this.provider, domains: this.domains.filter((d) => d.issuer === issuer) }
+    this.onSearch()
   }
 
   /* SEARCH
@@ -343,7 +344,7 @@ export class UserSearchComponent implements OnInit {
     this.rawSearchResults = undefined
     this.filteredUsers = undefined
     this.filterText = ''
-    this.onSearch()
+    this.updateSearchParamsFromState()
   }
 
   public onHideDetailDialog(): void {
@@ -429,7 +430,6 @@ export class UserSearchComponent implements OnInit {
     const formValue = this.searchCriteriaForm.getRawValue()
     const queryParams: Record<string, string | null | undefined> = {
       provider: formValue.provider,
-      issuer: formValue.issuer,
       domain: formValue.issuer,
       userId: formValue.userId,
       userName: formValue.userName,
