@@ -305,11 +305,13 @@ export class RoleSearchComponent implements OnInit {
       Object.entries(queryParams).filter(([, value]) => value !== null && value !== undefined && value !== '')
     )
 
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: filteredQueryParams,
-      replaceUrl: true
-    })
+    this.router
+      .navigate([], {
+        relativeTo: this.route,
+        queryParams: filteredQueryParams,
+        replaceUrl: true
+      })
+      .catch((err) => console.error(err))
   }
 
   private restoreStateFromQueryParams(providers: Provider[] = []): boolean {
