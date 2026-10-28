@@ -72,7 +72,7 @@ describe('RoleSearchComponent', () => {
   let component: RoleSearchComponent
   let fixture: ComponentFixture<RoleSearchComponent>
   const routerSpy = jasmine.createSpyObj('router', ['navigate'])
-  const routeMock = { snapshot: { paramMap: new Map() } }
+  const routeMock = { snapshot: { paramMap: new Map(), queryParams: {} } }
 
   const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
   const adminApiSpy = {
@@ -122,6 +122,7 @@ describe('RoleSearchComponent', () => {
   }))
 
   beforeEach(() => {
+    routerSpy.navigate.and.returnValue(Promise.resolve(true))
     fixture = TestBed.createComponent(RoleSearchComponent)
     component = fixture.componentInstance
     // fixture.detectChanges()
@@ -507,6 +508,17 @@ describe('RoleSearchComponent', () => {
       expect(component.filter).toBe('')
       expect(component['rawSearchResults']).toBeUndefined()
     })
+
+    it('should log when query params update rejects onSearch', async () => {
+      const error = new Error('query params update failed')
+      const consoleErrorSpy = spyOn(console, 'error')
+      routerSpy.navigate.and.returnValue(Promise.reject(error))
+
+      component.onSearch()
+      await Promise.resolve()
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(error)
+    })
   })
 
   describe('applyFilter', () => {
@@ -588,6 +600,14 @@ describe('RoleSearchComponent', () => {
   describe('restoreStateFromQueryParams', () => {
     it('should return false when query params are empty', () => {
       ;(component as any).route.snapshot.queryParams = {}
+
+      const result = component['restoreStateFromQueryParams']([])
+
+      expect(result).toBeFalse()
+    })
+
+    it('should return false when snapshot is undefined and fallback {} is used', () => {
+      ;(component as any).route = { snapshot: undefined }
 
       const result = component['restoreStateFromQueryParams']([])
 

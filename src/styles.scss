@@ -4,9 +4,3 @@
 
 /* portal core styles from onecx libraries */
 @use 'node_modules/@onecx/angular-accelerator/assets/styles.scss';
-
-// disable default settings of dialogs created by portal dialog service
-.buttonDialogScrollableContent {
-  max-height: unset !important;
-  margin-bottom: 1rem !important;
-}

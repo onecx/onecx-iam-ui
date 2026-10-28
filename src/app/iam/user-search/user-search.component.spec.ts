@@ -86,7 +86,7 @@ describe('UserSearchComponent', () => {
   let component: UserSearchComponent
   let fixture: ComponentFixture<UserSearchComponent>
   const routerSpy = jasmine.createSpyObj('Router', ['navigate'])
-  const routeMock = { snapshot: { paramMap: new Map() } }
+  const routeMock = { snapshot: { paramMap: new Map(), queryParams: {} } }
 
   const adminApiSpy = {
     getAllProviders: jasmine.createSpy('getAllProviders').and.returnValue(of({})),
@@ -139,6 +139,7 @@ describe('UserSearchComponent', () => {
   }))
 
   beforeEach(() => {
+    routerSpy.navigate.and.returnValue(Promise.resolve(true))
     fixture = TestBed.createComponent(UserSearchComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
@@ -634,6 +635,17 @@ describe('UserSearchComponent', () => {
       expect(component.filterText).toBe('')
       expect(component['rawSearchResults']).toBeUndefined()
     })
+
+    it('should log when query param update rejects onSearch', fakeAsync(() => {
+      const error = new Error('query params update failed')
+      const consoleErrorSpy = spyOn(console, 'error')
+      routerSpy.navigate.and.returnValue(Promise.reject(error))
+
+      component.onSearch()
+      tick()
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(error)
+    }))
 
     it('should prepare action buttons with translated labels and tooltips', () => {
       spyOn(component, 'onGoToRoleSearch')
