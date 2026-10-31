@@ -4,12 +4,16 @@
 @include ocx-interactive-data-view-fixes;
 @include dataview-list-flex-zebra-rows;
 @include ocx-p-message;
-@include ocx-content;
 
 :host ::ng-deep {
   .ocx-content > div {
     margin-bottom: 0;
-    padding: 0 0.5rem;
+    padding: 0;
+  }
+
+  .p-dataview .p-dataview-content {
+    padding-left: 0;
+    padding-right: 0;
   }
 
   /* fixes for p-card */

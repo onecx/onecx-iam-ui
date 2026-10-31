@@ -255,12 +255,12 @@
           </ng-template>
 
           <!-- GRID -->
-          <ng-template let-user pTemplate="gridItem">
-            <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-2">
+          <ng-template pTemplate="gridItem" let-user>
+            <div class="col-6 md:col-4 xl:col-3 p-2">
               @let styleClass = userViewPermission ? 'hover:bg-gray-200 cursor-pointer' : '';
               <p-card
                 [id]="'iam_user_search_data_grid_' + user.id"
-                [styleClass]="'w-full h-full relative ' + styleClass"
+                [styleClass]="'relative m-2 p-1 ' + styleClass"
                 [attr.tabindex]="0"
                 (click)="onDetail($event, user)"
                 (keydown.enter)="onDetail($event, user)"
