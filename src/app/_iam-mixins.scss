@@ -380,10 +380,8 @@
       :first-child {
         padding-top: 0;
       }
-      :not(:first-child) {
-        padding: 1rem 0 0 0 !important;
-      }
     }
+
     /* correct header layouting by lib */
     .table-header-wrapper {
       flex-direction: row;
@@ -396,6 +394,9 @@
 
     /* establish grid-nogutter */
     .p-dataview .p-dataview-content {
+      margin: 0;
+      padding: 0;
+      border-top: var(--table-header-border);
       > .grid {
         gap: 0 !important;
         padding: 0;
