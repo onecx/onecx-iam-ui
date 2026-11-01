@@ -11,7 +11,12 @@
     [style]="{ width: '450px' }"
   >
     @if (exceptionKey) {
-      <p-message id="iam_user_roles_message_error" severity="error" [text]="exceptionKey | translate"></p-message>
+      <p-message
+        id="iam_user_roles_message_error"
+        styleClass="w-fit"
+        severity="error"
+        [text]="exceptionKey | translate"
+      ></p-message>
     } @else {
       <p-tabs value="0">
         <p-tablist>

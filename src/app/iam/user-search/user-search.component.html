@@ -139,14 +139,14 @@
       <p-message
         id="iam_user_search_loading"
         severity="info"
-        styleClass="m-3"
+        styleClass="m-3 w-fit"
         [text]="'ACTIONS.LOADING' | translate"
       ></p-message>
     } @else if (exceptionKey) {
       <p-message
         id="iam_user_search_error_message"
         severity="error"
-        styleClass="m-3"
+        styleClass="m-3 w-fit"
         [text]="exceptionKey | translate"
       ></p-message>
     }
@@ -154,7 +154,7 @@
       <p-message
         id="iam_user_search_hint_select_provider_first"
         severity="info"
-        styleClass="m-3"
+        styleClass="m-3 w-fit"
         [text]="'DIALOG.SEARCH.CRITERIA.SELECT_ISSUER_FIRST' | translate"
       ></p-message>
     } @else {
@@ -260,7 +260,7 @@
               @let styleClass = userViewPermission ? 'hover:bg-gray-200 cursor-pointer' : '';
               <p-card
                 [id]="'iam_user_search_data_grid_' + user.id"
-                [styleClass]="'relative m-2 p-1 ' + styleClass"
+                [styleClass]="'relative m-1 ' + styleClass"
                 [attr.tabindex]="0"
                 (click)="onDetail($event, user)"
                 (keydown.enter)="onDetail($event, user)"
