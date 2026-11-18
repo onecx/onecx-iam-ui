@@ -1,7 +1,8 @@
-import { Component, Inject, Input } from '@angular/core'
+import { Component, DestroyRef, inject, Input } from '@angular/core'
 import { Location } from '@angular/common'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { Observable, ReplaySubject, catchError, mergeMap, of } from 'rxjs'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 
 import { MessageModule } from 'primeng/message'
 import { RippleModule } from 'primeng/ripple'
@@ -39,15 +40,18 @@ import { ChangePasswordDialogComponent } from './change-password-dialog/change-p
 export class OneCXChangePasswordComponent implements ocxRemoteComponent, ocxRemoteWebcomponent {
   permissions: string[] = []
 
-  constructor(
-    @Inject(REMOTE_COMPONENT_CONFIG) private readonly remoteComponentConfig: ReplaySubject<RemoteComponentConfig>,
-    private readonly userService: UserService,
-    private readonly iamUserService: UserInternalAPIService,
-    private readonly portalDialogService: PortalDialogService,
-    private readonly msgService: PortalMessageService,
-    private readonly translateService: TranslateService
-  ) {
-    this.userService.lang$.subscribe((lang) => this.translateService.use(lang))
+  private readonly remoteComponentConfig = inject<ReplaySubject<RemoteComponentConfig>>(REMOTE_COMPONENT_CONFIG)
+  private readonly userService = inject(UserService)
+  private readonly iamUserService = inject(UserInternalAPIService)
+  private readonly portalDialogService = inject(PortalDialogService)
+  private readonly msgService = inject(PortalMessageService)
+  private readonly translateService = inject(TranslateService)
+  private readonly destroyRef = inject(DestroyRef)
+
+  constructor() {
+    this.userService.lang$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((lang) => this.translateService.use(lang))
   }
 
   @Input() set ocxRemoteComponentConfig(config: RemoteComponentConfig) {

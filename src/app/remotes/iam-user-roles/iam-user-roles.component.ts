@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Inject, Input, OnChanges } from '@angular/core'
+import { Component, DestroyRef, EventEmitter, inject, Input, OnChanges } from '@angular/core'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { Location } from '@angular/common'
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
 import { TranslateService } from '@ngx-translate/core'
 import { catchError, finalize, filter, map, mergeMap, Observable, of, ReplaySubject } from 'rxjs'
 import {
@@ -33,7 +33,6 @@ import { environment } from 'src/environments/environment'
   ],
   template: '' // RC provides only data
 })
-@UntilDestroy()
 export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemoteWebcomponent, OnChanges {
   @Input() userId: string | undefined = undefined
   @Input() issuer: string | undefined = undefined
@@ -42,13 +41,16 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
 
   public iamRoles$: Observable<Role[]> | undefined
 
-  constructor(
-    @Inject(REMOTE_COMPONENT_CONFIG) private readonly remoteComponentConfig: ReplaySubject<RemoteComponentConfig>,
-    private readonly userService: UserService,
-    private readonly translateService: TranslateService,
-    private readonly adminApi: AdminInternalAPIService
-  ) {
-    this.userService.lang$.subscribe((lang) => this.translateService.use(lang))
+  private readonly remoteComponentConfig = inject<ReplaySubject<RemoteComponentConfig>>(REMOTE_COMPONENT_CONFIG)
+  private readonly userService = inject(UserService)
+  private readonly translateService = inject(TranslateService)
+  private readonly adminApi = inject(AdminInternalAPIService)
+  private readonly destroyRef = inject(DestroyRef)
+
+  constructor() {
+    this.userService.lang$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((lang) => this.translateService.use(lang))
   }
 
   @Input() set ocxRemoteComponentConfig(config: RemoteComponentConfig) {
@@ -67,7 +69,7 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
     if (this.userId === '$$ocx-iam-roles-search-all-indicator$$') {
       this.iamRoles$ = this.userService.profile$.pipe(
         filter((x) => x !== undefined),
-        untilDestroyed(this),
+        takeUntilDestroyed(this.destroyRef),
         mergeMap((profile) =>
           this.adminApi
             .searchRolesByCriteria({
@@ -82,28 +84,25 @@ export class OneCXIamUserRolesComponent implements ocxRemoteComponent, ocxRemote
                 console.error('iam.searchRolesByCriteria', err)
                 return of([])
               }),
-              finalize(() => {
-                this.roleList.emit(roles)
-              })
+              finalize(() => this.roleList.emit(roles))
             )
         )
       )
-      this.iamRoles$.subscribe()
+      this.iamRoles$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe()
     } else if (this.userId && this.issuer) {
       this.adminApi
         .getUserRoles({ userId: this.userId, searchUserRolesRequest: { issuer: this.issuer } })
-        .pipe(
-          map((response: UserRolesResponse) => {
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (response: UserRolesResponse) => {
             roles = response.roles?.sort(this.sortByRoleName) ?? []
-            return roles
-          }),
-          catchError((err) => {
+            this.roleList.emit(roles)
+          },
+          error: (err) => {
             console.error('iam.getUserRoles', err)
-            return of([])
-          }),
-          finalize(() => this.roleList.emit(roles))
-        )
-        .subscribe()
+            this.roleList.emit([])
+          }
+        })
     } else {
       this.roleList.emit(roles)
     }

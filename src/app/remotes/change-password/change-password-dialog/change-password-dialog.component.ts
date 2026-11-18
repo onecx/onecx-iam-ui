@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core'
+import { Component, EventEmitter, inject, Output } from '@angular/core'
 import {
   AbstractControl,
   AbstractControlOptions,
@@ -29,7 +29,9 @@ export class ChangePasswordDialogComponent implements DialogPrimaryButtonDisable
   dialogResult: string = ''
   @Output() primaryButtonEnabled: EventEmitter<boolean> = new EventEmitter()
 
-  constructor(private readonly fb: FormBuilder) {
+  private readonly fb = inject(FormBuilder)
+
+  constructor() {
     this.formGroup = this.fb.group(
       {
         password: new FormControl<string>('', [Validators.required]),
