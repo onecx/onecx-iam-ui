@@ -10,10 +10,7 @@
     </ng-template>
   </ocx-slot>
 } @else {
-  <p-message
-    id="iam_user_permissions_error_message"
-    severity="info"
-    styleClass="m-3 w-fit"
-    [text]="'DIALOG.PERMISSIONS.SLOT_NOT_DEFINED' | translate"
-  ></p-message>
+  <div class="message-info m-3 border-round border-1 p-2">
+    <span>{{ 'DIALOG.PERMISSIONS.SLOT_NOT_DEFINED' | translate }}</span>
+  </div>
 }

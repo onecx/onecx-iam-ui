@@ -775,3 +775,12 @@
     }
   }
 }
+
+@mixin message-info {
+  .message-info {
+    background: color-mix(in srgb, #eff6ff, transparent 5%);
+    border: 1px solid var(--onecx-iam-onecx-iam-ui-blue-200);
+    color: var(--onecx-iam-onecx-iam-ui-blue-600);
+    font-weight: var(--font-weight-medium);
+  }
+}
