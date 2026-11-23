@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
-import { NoopAnimationsModule } from '@angular/platform-browser/animations'
 import { of, ReplaySubject, throwError } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
@@ -28,7 +27,6 @@ describe('OneCXIamUserRolesComponent', () => {
   beforeEach(() => {
     remoteComponentConfigSubject = new ReplaySubject<RemoteComponentConfig>(1)
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),

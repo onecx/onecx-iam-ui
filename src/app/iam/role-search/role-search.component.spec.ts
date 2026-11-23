@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
-import { provideNoopAnimations } from '@angular/platform-browser/animations'
 import { provideRouter, Router, ActivatedRoute } from '@angular/router'
 import { of, throwError, BehaviorSubject } from 'rxjs'
 
@@ -91,7 +90,6 @@ describe('RoleSearchComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        provideNoopAnimations(),
         providePermissionService(),
         provideRouter([{ path: '', component: RoleSearchComponent }]),
         provideTranslateTestingService({
