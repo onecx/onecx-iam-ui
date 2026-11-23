@@ -1,11 +1,11 @@
 /* eslint-disable deprecation/deprecation */
-import { NgModule } from '@angular/core'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
+import { TranslateModule } from '@ngx-translate/core'
 import { ReplaySubject, of, throwError } from 'rxjs'
-import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { ButtonModule } from 'primeng/button'
 import { MessageModule } from 'primeng/message'
@@ -13,18 +13,16 @@ import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog'
 import { RippleModule } from 'primeng/ripple'
 import { TooltipModule } from 'primeng/tooltip'
 
+import { AngularAcceleratorModule, PortalDialogService } from '@onecx/angular-accelerator'
 import { PortalMessageService } from '@onecx/angular-integration-interface'
-import { IfPermissionDirective } from '@onecx/angular-accelerator'
-import { HAS_PERMISSION_CHECKER, REMOTE_COMPONENT_CONFIG, RemoteComponentConfig } from '@onecx/angular-utils'
-
-import { PortalDialogService } from '@onecx/angular-accelerator'
 import { provideUserServiceMock, UserServiceMock } from '@onecx/angular-integration-interface/mocks'
+import { provideTranslateTestingService } from '@onecx/angular-testing'
+import { HAS_PERMISSION_CHECKER, REMOTE_COMPONENT_CONFIG, RemoteComponentConfig } from '@onecx/angular-utils'
 
 import { UserInternalAPIService } from 'src/app/shared/generated'
 import { OneCXChangePasswordComponent } from './change-password.component'
 import { OneCXChangePasswordHarness } from './change-password.harness'
 import { ChangePasswordDialogComponent } from './change-password-dialog/change-password-dialog.component'
-import { provideNoopAnimations } from '@angular/platform-browser/animations'
 
 const pwdChangePermission = 'USER#EDIT'
 const mockConfigWithPermission: RemoteComponentConfig = {
@@ -33,13 +31,6 @@ const mockConfigWithPermission: RemoteComponentConfig = {
   permissions: [pwdChangePermission],
   baseUrl: 'base_url'
 }
-
-@NgModule({
-  imports: [],
-  declarations: [IfPermissionDirective],
-  exports: [IfPermissionDirective]
-})
-class PortalDependencyModule {}
 
 describe('ChangePasswordComponent', () => {
   let component: OneCXChangePasswordComponent
@@ -62,18 +53,16 @@ describe('ChangePasswordComponent', () => {
     remoteComponentConfigSubject = new ReplaySubject<RemoteComponentConfig>(1)
     TestBed.configureTestingModule({
       declarations: [],
-      imports: [
-        OneCXChangePasswordComponent,
-        TranslateTestingModule.withTranslations({
-          de: require('src/assets/i18n/de.json'),
-          en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('en')
-      ],
+      imports: [OneCXChangePasswordComponent],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
         provideUserServiceMock(),
         provideNoopAnimations(),
+        provideTranslateTestingService({
+          de: require('src/assets/i18n/de.json'),
+          en: require('src/assets/i18n/en.json')
+        }),
         { provide: REMOTE_COMPONENT_CONFIG, useValue: remoteComponentConfigSubject },
         { provide: HAS_PERMISSION_CHECKER, useClass: UserServiceMock },
         { provide: UserInternalAPIService, useValue: userApiSpy },
@@ -84,13 +73,13 @@ describe('ChangePasswordComponent', () => {
       .overrideComponent(OneCXChangePasswordComponent, {
         set: {
           imports: [
-            PortalDependencyModule,
-            TranslateTestingModule,
+            AngularAcceleratorModule,
             TooltipModule,
             RippleModule,
             ButtonModule,
             MessageModule,
-            DynamicDialogModule
+            DynamicDialogModule,
+            TranslateModule
           ],
           providers: [
             DialogService,

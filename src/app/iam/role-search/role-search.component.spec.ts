@@ -4,7 +4,6 @@ import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
 import { provideNoopAnimations } from '@angular/platform-browser/animations'
 import { provideRouter, Router, ActivatedRoute } from '@angular/router'
-import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError, BehaviorSubject } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
@@ -15,6 +14,7 @@ import {
   PageHeaderComponent,
   SearchHeaderComponent
 } from '@onecx/angular-accelerator'
+import { provideTranslateTestingService } from '@onecx/angular-testing'
 import { PortalPageComponent, providePermissionService } from '@onecx/angular-utils'
 
 import {
@@ -87,19 +87,17 @@ describe('RoleSearchComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RoleSearchComponent,
-        TranslateTestingModule.withTranslations({
-          de: require('src/assets/i18n/de.json'),
-          en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('en')
-      ],
+      imports: [RoleSearchComponent],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
         provideNoopAnimations(),
         providePermissionService(),
         provideRouter([{ path: '', component: RoleSearchComponent }]),
+        provideTranslateTestingService({
+          de: require('src/assets/i18n/de.json'),
+          en: require('src/assets/i18n/en.json')
+        }),
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock },
         { provide: UserService, useValue: userServiceSpy }

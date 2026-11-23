@@ -2,10 +2,10 @@ import { TestBed } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { NoopAnimationsModule } from '@angular/platform-browser/animations'
-import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, ReplaySubject, throwError } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
+import { provideTranslateTestingService } from '@onecx/angular-testing'
 import { REMOTE_COMPONENT_CONFIG, RemoteComponentConfig } from '@onecx/angular-utils'
 
 import { AdminInternalAPIService, RolePageResult, UserRolesResponse } from 'src/app/shared/generated'
@@ -28,26 +28,22 @@ describe('OneCXIamUserRolesComponent', () => {
   beforeEach(() => {
     remoteComponentConfigSubject = new ReplaySubject<RemoteComponentConfig>(1)
     TestBed.configureTestingModule({
-      declarations: [],
-      imports: [
-        TranslateTestingModule.withTranslations({
-          de: require('src/assets/i18n/de.json'),
-          en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('en'),
-        NoopAnimationsModule
-      ],
+      imports: [NoopAnimationsModule],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
         {
           provide: REMOTE_COMPONENT_CONFIG,
           useValue: remoteComponentConfigSubject
-        }
+        },
+        provideTranslateTestingService({
+          de: require('src/assets/i18n/de.json'),
+          en: require('src/assets/i18n/en.json')
+        })
       ]
     })
       .overrideComponent(OneCXIamUserRolesComponent, {
         set: {
-          imports: [TranslateTestingModule],
           providers: [{ provide: AdminInternalAPIService, useValue: roleApiSpy }]
         }
       })
