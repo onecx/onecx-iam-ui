@@ -81,7 +81,7 @@ describe('RoleSearchComponent', () => {
   const userServiceSpy = {
     lang$: new BehaviorSubject('en'),
     hasPermission: jasmine.createSpy('hasPermission').and.returnValue(Promise.resolve(false)),
-    getPermissions: jasmine.createSpy('getPermissions').and.returnValue(Promise.resolve([]))
+    getPermissions: () => of([])
   }
 
   beforeEach(waitForAsync(() => {
@@ -129,6 +129,7 @@ describe('RoleSearchComponent', () => {
     adminApiSpy.getAllProviders.calls.reset()
     adminApiSpy.searchRolesByCriteria.calls.reset()
     translateServiceSpy.get.calls.reset()
+    adminApiSpy.getAllProviders.and.returnValue(of({}))
   })
 
   describe('initialize', () => {

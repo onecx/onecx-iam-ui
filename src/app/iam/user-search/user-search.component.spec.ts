@@ -93,7 +93,8 @@ describe('UserSearchComponent', () => {
   }
   const mockUserService = {
     lang$: new BehaviorSubject('en'),
-    hasPermission: jasmine.createSpy('hasPermission').and.returnValue(Promise.resolve(false))
+    hasPermission: jasmine.createSpy('hasPermission').and.returnValue(Promise.resolve(false)),
+    getPermissions: jasmine.createSpy('getPermissions').and.returnValue(of([]))
   }
   const mockDialogService = { openDialog: jasmine.createSpy('openDialog').and.returnValue(of({})) }
 
@@ -133,6 +134,7 @@ describe('UserSearchComponent', () => {
     // to spy data: refill with neutral data
     adminApiSpy.searchUsersByCriteria.and.returnValue(of({}))
     adminApiSpy.getAllProviders.and.returnValue(of({}))
+    mockUserService.hasPermission.and.returnValue(Promise.resolve(false))
   }))
 
   beforeEach(() => {

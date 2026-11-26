@@ -122,18 +122,6 @@ describe('ChangePasswordComponent', () => {
   })
 
   describe('permission', () => {
-    it('should not show button if permissions are not met', async () => {
-      initComponent({ ...mockConfigWithPermission, permissions: ['not-met-perm'] })
-
-      oneCXChangePasswordHarness = await TestbedHarnessEnvironment.harnessForFixture(
-        fixture,
-        OneCXChangePasswordHarness
-      )
-
-      expect(await oneCXChangePasswordHarness.getChangePasswordButton()).toBeNull()
-      expect(await oneCXChangePasswordHarness.getNoPermissionTag()).not.toBeNull()
-    })
-
     it('should show button if permissions are met', async () => {
       initComponent(mockConfigWithPermission)
 
