@@ -11,8 +11,7 @@ import { AngularRemoteComponentsModule, SlotService } from '@onecx/angular-remot
   standalone: true,
   imports: [AsyncPipe, AngularRemoteComponentsModule, MessageModule, TranslateModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './user-permissions.component.html',
-  styleUrls: ['./user-permissions.component.scss']
+  templateUrl: './user-permissions.component.html'
 })
 export class UserPermissionsComponent {
   @Input() id: string | undefined = 'undefined' // why ever this is required

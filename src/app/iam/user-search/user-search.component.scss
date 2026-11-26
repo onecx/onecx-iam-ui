@@ -5,7 +5,6 @@
 @include dataview-list-flex-zebra-rows;
 @include ocx-text-responsive;
 @include ocx-content;
-@include message-info;
 
 :host ::ng-deep {
   .p-dataview .p-dataview-content {

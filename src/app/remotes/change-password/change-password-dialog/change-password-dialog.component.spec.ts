@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
 import { TranslateService } from '@ngx-translate/core'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { firstValueFrom } from 'rxjs'
@@ -19,10 +19,11 @@ describe('ChangePasswordDialog', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [],
-      imports: [BrowserAnimationsModule, ChangePasswordDialogComponent, FormsModule, ReactiveFormsModule],
+      imports: [ChangePasswordDialogComponent, FormsModule, ReactiveFormsModule],
       providers: [
         DynamicDialogConfig,
         DynamicDialogRef,
+        provideNoopAnimations(),
         provideTranslateTestingService({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')

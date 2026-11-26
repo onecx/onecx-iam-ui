@@ -135,18 +135,18 @@
 
   <ocx-content class="ocx-content">
     @if (loading || loadingProvider) {
-      <div class="message-info m-3 border-round border-1 p-2">
-        <span>{{ 'ACTIONS.LOADING' | translate }}</span>
-      </div>
+      <p-message id="iam_user_search_loading" severity="info" styleClass="m-3 w-fit">{{
+        'ACTIONS.LOADING' | translate
+      }}</p-message>
     } @else if (exceptionKey) {
-      <div class="message-info m-3 border-round border-1 p-2">
-        <span>{{ exceptionKey | translate }}</span>
-      </div>
+      <p-message id="iam_user_search_error_message" severity="error" styleClass="m-3 w-fit">{{
+        exceptionKey | translate
+      }}</p-message>
     }
     @if (searchCriteriaForm.invalid && !loadingProvider) {
-      <div class="message-info m-3 border-round border-1 p-2">
-        <span>{{ 'DIALOG.SEARCH.CRITERIA.SELECT_ISSUER_FIRST' | translate }}</span>
-      </div>
+      <p-message id="iam_user_search_hint_select_provider_first" severity="info" styleClass="m-3 w-fit">{{
+        'DIALOG.SEARCH.CRITERIA.SELECT_ISSUER_FIRST' | translate
+      }}</p-message>
     } @else {
       @let users = users$ | async;
       @if (users !== null) {

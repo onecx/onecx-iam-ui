@@ -2,6 +2,7 @@ import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angul
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
 import { provideRouter, Router, ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { of, throwError, BehaviorSubject } from 'rxjs'
@@ -102,6 +103,7 @@ describe('UserSearchComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideNoopAnimations(),
         provideRouter([{ path: '', component: UserSearchComponent }]),
         provideTranslateTestingService({
           de: require('src/assets/i18n/de.json'),

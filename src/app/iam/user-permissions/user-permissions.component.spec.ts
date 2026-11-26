@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
 
 import { provideTranslateTestingService } from '@onecx/angular-testing'
 
@@ -16,6 +17,7 @@ describe('UserPermissionsComponent', () => {
       providers: [
         provideHttpClientTesting(),
         provideHttpClient(),
+        provideNoopAnimations(),
         provideTranslateTestingService({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
