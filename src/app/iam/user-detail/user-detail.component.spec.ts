@@ -1,11 +1,10 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
-import { provideNoopAnimations } from '@angular/platform-browser/animations'
-import { TranslateTestingModule } from 'ngx-translate-testing'
 import { BehaviorSubject, of, throwError } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
+import { provideTranslateTestingService } from '@onecx/angular-testing'
 
 import { AdminInternalAPIService, Provider, Role, User, UserRolesResponse } from 'src/app/shared/generated'
 import { UserDetailComponent } from './user-detail.component'
@@ -42,17 +41,14 @@ describe('UserDetailComponent', () => {
   beforeEach(waitForAsync(() => {
     mockUserService = { lang$: new BehaviorSubject('de') }
     TestBed.configureTestingModule({
-      imports: [
-        UserDetailComponent,
-        TranslateTestingModule.withTranslations({
-          de: require('src/assets/i18n/de.json'),
-          en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('en')
-      ],
+      imports: [UserDetailComponent],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        provideNoopAnimations(),
+        provideTranslateTestingService({
+          de: require('src/assets/i18n/de.json'),
+          en: require('src/assets/i18n/en.json')
+        }),
         { provide: UserService, useValue: mockUserService }
       ]
     })

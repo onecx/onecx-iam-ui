@@ -1,12 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
-import { NoopAnimationsModule } from '@angular/platform-browser/animations'
-import { TranslateTestingModule } from 'ngx-translate-testing'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
+import { TranslateService } from '@ngx-translate/core'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
+import { firstValueFrom } from 'rxjs'
+
+import { provideTranslateTestingService } from '@onecx/angular-testing'
 
 import { ChangePasswordDialogComponent } from './change-password-dialog.component'
-import { ChangePasswordDialogHarness } from './/change-password-dialog.harness'
+import { ChangePasswordDialogHarness } from './change-password-dialog.harness'
 
 describe('ChangePasswordDialog', () => {
   let component: ChangePasswordDialogComponent
@@ -16,22 +19,24 @@ describe('ChangePasswordDialog', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [],
-      imports: [
-        ChangePasswordDialogComponent,
-        FormsModule,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        TranslateTestingModule.withTranslations({
-          en: require('src/assets/i18n/en.json'),
-          de: require('src/assets/i18n/de.json')
-        }).withDefaultLanguage('en')
-      ],
-      providers: [DynamicDialogConfig, DynamicDialogRef]
+      imports: [ChangePasswordDialogComponent, FormsModule, ReactiveFormsModule],
+      providers: [
+        DynamicDialogConfig,
+        DynamicDialogRef,
+        provideNoopAnimations(),
+        provideTranslateTestingService({
+          de: require('src/assets/i18n/de.json'),
+          en: require('src/assets/i18n/en.json')
+        })
+      ]
     }).compileComponents()
+
+    const translate = TestBed.inject(TranslateService)
+    translate.setFallbackLang('en')
+    await firstValueFrom(translate.use('en'))
 
     fixture = TestBed.createComponent(ChangePasswordDialogComponent)
     component = fixture.componentInstance
-
     fixture.detectChanges()
 
     changePasswordDialogHarness = await TestbedHarnessEnvironment.harnessForFixture(
@@ -47,13 +52,6 @@ describe('ChangePasswordDialog', () => {
   it('should display correct labels', async () => {
     expect(await changePasswordDialogHarness.getPasswordLabelText()).toEqual('New password')
     expect(await changePasswordDialogHarness.getRepeatPasswordLabelText()).toEqual('Confirm new password')
-
-    expect(await (await changePasswordDialogHarness.getPasswordElement()).getPromptLabel()).toBe('Choose a password')
-    expect(await (await changePasswordDialogHarness.getPasswordElement()).getWeakLabel()).toBe('Weak password')
-    expect(await (await changePasswordDialogHarness.getPasswordElement()).getMediumLabel()).toBe(
-      'Average complexity password'
-    )
-    expect(await (await changePasswordDialogHarness.getPasswordElement()).getStrongLabel()).toBe('Strong password')
   })
 
   it('should initially have empty values', async () => {

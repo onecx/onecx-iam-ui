@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core'
+import { Component, EventEmitter, inject, Output } from '@angular/core'
 import {
   AbstractControl,
   AbstractControlOptions,
@@ -29,7 +29,9 @@ export class ChangePasswordDialogComponent implements DialogPrimaryButtonDisable
   dialogResult: string = ''
   @Output() primaryButtonEnabled: EventEmitter<boolean> = new EventEmitter()
 
-  constructor(private readonly fb: FormBuilder) {
+  private readonly fb = inject(FormBuilder)
+
+  constructor() {
     this.formGroup = this.fb.group(
       {
         password: new FormControl<string>('', [Validators.required]),
@@ -43,14 +45,11 @@ export class ChangePasswordDialogComponent implements DialogPrimaryButtonDisable
 
   public matchPasswords(firstField: string, secondField: string): (control: AbstractControl) => void {
     return (control: AbstractControl): void => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       if (control.get(firstField)?.value && control.get(firstField)!.value === control.get(secondField)!.value) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         control.get(secondField)!.setErrors(null)
         this.primaryButtonEnabled.emit(true)
         this.dialogResult = control.get(firstField)?.value
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         control.get(secondField)!.setErrors({ notEqual: true })
         this.primaryButtonEnabled.emit(false)
         this.dialogResult = ''

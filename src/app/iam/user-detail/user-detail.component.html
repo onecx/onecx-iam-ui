@@ -11,12 +11,9 @@
     [style]="{ width: '450px' }"
   >
     @if (exceptionKey) {
-      <p-message
-        id="iam_user_roles_message_error"
-        styleClass="w-fit"
-        severity="error"
-        [text]="exceptionKey | translate"
-      ></p-message>
+      <p-message id="iam_user_roles_message_error" styleClass="w-fit" severity="error">{{
+        exceptionKey | translate
+      }}</p-message>
     } @else {
       <p-tabs value="0">
         <p-tablist>
@@ -69,7 +66,7 @@
                     pInputText
                     type="text"
                     id="iam_user_detail_item_id"
-                    class="w-full pt-3 pb-2 text-responsive"
+                    class="w-full text-responsive"
                     [disabled]="true"
                     [value]="idmUser?.id"
                     [attr.aria-label]="'USER.ID' | translate"
@@ -102,7 +99,7 @@
                     pInputText
                     type="text"
                     id="iam_user_detail_item_user_name"
-                    class="w-full pt-3 pb-2 text-responsive"
+                    class="w-full text-responsive"
                     [disabled]="true"
                     [value]="idmUser?.username"
                     [attr.aria-label]="'USER.USERNAME' | translate"
@@ -135,7 +132,7 @@
                     pInputText
                     type="text"
                     id="iam_user_detail_item_user_email"
-                    class="w-full pt-3 pb-2 text-responsive"
+                    class="w-full text-responsive"
                     [disabled]="true"
                     [value]="idmUser?.email"
                     [attr.aria-label]="'USER.EMAIL' | translate"
@@ -168,7 +165,7 @@
                     pInputText
                     type="text"
                     id="iam_user_detail_item_first_name"
-                    class="w-full pt-3 pb-2 text-responsive"
+                    class="w-full text-responsive"
                     [disabled]="true"
                     [value]="idmUser?.firstName"
                     [attr.aria-label]="'USER.FIRSTNAME' | translate"
@@ -201,7 +198,7 @@
                     pInputText
                     type="text"
                     id="iam_user_detail_item_last_name"
-                    class="w-full pt-3 pb-2 text-responsive"
+                    class="w-full text-responsive"
                     [disabled]="true"
                     [value]="idmUser?.lastName"
                     [attr.aria-label]="'USER.LASTNAME' | translate"
@@ -273,7 +270,7 @@
                   pInputText
                   type="text"
                   id="iam_user_detail_item_provider"
-                  class="w-full pt-3 pb-2 text-responsive"
+                  class="w-full text-responsive"
                   [disabled]="true"
                   [value]="displayName"
                   [ariaLabel]="'USER.IDM.PROVIDER' | translate"
@@ -290,7 +287,7 @@
                   pInputText
                   type="text"
                   id="iam_user_detail_item_domain"
-                  class="w-full pt-3 pb-2 text-responsive"
+                  class="w-full text-responsive"
                   [disabled]="true"
                   [value]="domainName"
                   [attr.aria-label]="'USER.IDM.DOMAIN' | translate"
@@ -305,7 +302,7 @@
                   pInputText
                   type="text"
                   id="iam_user_detail_item_issuer"
-                  class="w-full pt-3 pb-2 text-responsive"
+                  class="w-full text-responsive"
                   [disabled]="true"
                   [value]="domain?.issuer"
                   [attr.aria-label]="'USER.IDM.ISSUER' | translate"
@@ -320,7 +317,7 @@
                   pInputText
                   type="text"
                   id="iam_user_detail_item_origin"
-                  class="w-full pt-3 pb-2 text-responsive"
+                  class="w-full text-responsive"
                   [disabled]="true"
                   [value]="idmUser?.origin"
                   [attr.aria-label]="'USER.ORIGIN' | translate"
@@ -335,7 +332,7 @@
                   pInputText
                   type="text"
                   id="iam_user_detail_item_creation_date"
-                  class="w-full pt-3 pb-2 text-responsive"
+                  class="w-full text-responsive"
                   [disabled]="true"
                   [value]="idmUser?.createdTimestamp | date: datetimeFormat : ''"
                   [attr.aria-label]="'INTERNAL.CREATION_DATE' | translate"

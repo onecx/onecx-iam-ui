@@ -23,7 +23,6 @@
             dataKey="name"
             optionValue="name"
             optionLabel="displayName"
-            [autoDisplayFirst]="true"
             [showClear]="true"
             [ariaLabel]="'DIALOG.SEARCH.CRITERIA.PROVIDER' | translate"
             [pTooltip]="'DIALOG.SEARCH.CRITERIA.TOOLTIPS.PROVIDER' | translate"
@@ -136,27 +135,18 @@
 
   <ocx-content class="ocx-content">
     @if (loading || loadingProvider) {
-      <p-message
-        id="iam_user_search_loading"
-        severity="info"
-        styleClass="m-3 w-fit"
-        [text]="'ACTIONS.LOADING' | translate"
-      ></p-message>
+      <p-message id="iam_user_search_loading" severity="info" styleClass="m-3 w-fit">{{
+        'ACTIONS.LOADING' | translate
+      }}</p-message>
     } @else if (exceptionKey) {
-      <p-message
-        id="iam_user_search_error_message"
-        severity="error"
-        styleClass="m-3 w-fit"
-        [text]="exceptionKey | translate"
-      ></p-message>
+      <p-message id="iam_user_search_error_message" severity="error" styleClass="m-3 w-fit">{{
+        exceptionKey | translate
+      }}</p-message>
     }
     @if (searchCriteriaForm.invalid && !loadingProvider) {
-      <p-message
-        id="iam_user_search_hint_select_provider_first"
-        severity="info"
-        styleClass="m-3 w-fit"
-        [text]="'DIALOG.SEARCH.CRITERIA.SELECT_ISSUER_FIRST' | translate"
-      ></p-message>
+      <p-message id="iam_user_search_hint_select_provider_first" severity="info" styleClass="m-3 w-fit">{{
+        'DIALOG.SEARCH.CRITERIA.SELECT_ISSUER_FIRST' | translate
+      }}</p-message>
     } @else {
       @let users = users$ | async;
       @if (users !== null) {

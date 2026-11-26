@@ -1,8 +1,10 @@
-import { Component, Inject, Input } from '@angular/core'
+import { Component, DestroyRef, inject, Input } from '@angular/core'
 import { Location } from '@angular/common'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { Observable, ReplaySubject, catchError, mergeMap, of } from 'rxjs'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 
+import { ButtonModule } from 'primeng/button'
 import { MessageModule } from 'primeng/message'
 import { RippleModule } from 'primeng/ripple'
 import { TooltipModule } from 'primeng/tooltip'
@@ -14,7 +16,12 @@ import {
 } from '@onecx/angular-remote-components'
 import { REMOTE_COMPONENT_CONFIG, RemoteComponentConfig } from '@onecx/angular-utils'
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
-import { DialogState, PortalDialogService, providePortalDialogService } from '@onecx/angular-accelerator'
+import {
+  AngularAcceleratorModule,
+  DialogState,
+  PortalDialogService,
+  providePortalDialogService
+} from '@onecx/angular-accelerator'
 
 import { Configuration, UserInternalAPIService } from 'src/app/shared/generated'
 import { environment } from 'src/environments/environment'
@@ -24,30 +31,33 @@ import { ChangePasswordDialogComponent } from './change-password-dialog/change-p
 @Component({
   selector: 'app-ocx-change-password',
   standalone: true,
-  imports: [AngularRemoteComponentsModule, MessageModule, RippleModule, TooltipModule, TranslateModule],
-  providers: [
-    UserInternalAPIService,
-    PortalMessageService,
-    providePortalDialogService(),
-    {
-      provide: REMOTE_COMPONENT_CONFIG,
-      useValue: new ReplaySubject<RemoteComponentConfig>(1)
-    }
+  imports: [
+    AngularAcceleratorModule,
+    ButtonModule,
+    AngularRemoteComponentsModule,
+    MessageModule,
+    RippleModule,
+    TooltipModule,
+    TranslateModule
   ],
+  providers: [UserInternalAPIService, PortalMessageService, providePortalDialogService()],
   templateUrl: './change-password.component.html'
 })
 export class OneCXChangePasswordComponent implements ocxRemoteComponent, ocxRemoteWebcomponent {
   permissions: string[] = []
 
-  constructor(
-    @Inject(REMOTE_COMPONENT_CONFIG) private readonly remoteComponentConfig: ReplaySubject<RemoteComponentConfig>,
-    private readonly userService: UserService,
-    private readonly iamUserService: UserInternalAPIService,
-    private readonly portalDialogService: PortalDialogService,
-    private readonly msgService: PortalMessageService,
-    private readonly translateService: TranslateService
-  ) {
-    this.userService.lang$.subscribe((lang) => this.translateService.use(lang))
+  private readonly remoteComponentConfig = inject<ReplaySubject<RemoteComponentConfig>>(REMOTE_COMPONENT_CONFIG)
+  private readonly userService = inject(UserService)
+  private readonly iamUserService = inject(UserInternalAPIService)
+  private readonly portalDialogService = inject(PortalDialogService)
+  private readonly msgService = inject(PortalMessageService)
+  private readonly translateService = inject(TranslateService)
+  private readonly destroyRef = inject(DestroyRef)
+
+  constructor() {
+    this.userService.lang$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((lang) => this.translateService.use(lang))
   }
 
   @Input() set ocxRemoteComponentConfig(config: RemoteComponentConfig) {
@@ -62,7 +72,7 @@ export class OneCXChangePasswordComponent implements ocxRemoteComponent, ocxRemo
     })
   }
 
-  private openChangePasswordEditorDialog(): Observable<DialogState<string>> {
+  private openChangePasswordEditorDialog(): Observable<DialogState<string> | null> {
     return this.portalDialogService.openDialog<string>(
       'CHANGE_PASSWORD.DIALOG.TITLE',
       ChangePasswordDialogComponent,

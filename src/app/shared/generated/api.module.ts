@@ -1,6 +1,6 @@
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { provideThemeConfig } from '@onecx/angular-utils'
+import { provideThemeConfig } from '@onecx/angular-utils/theme/primeng'
 import { Configuration } from './configuration'
 
 @NgModule({

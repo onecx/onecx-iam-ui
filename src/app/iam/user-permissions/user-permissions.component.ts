@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
+import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core'
 import { AsyncPipe } from '@angular/common'
 import { Observable } from 'rxjs'
 import { TranslateModule } from '@ngx-translate/core'
@@ -24,7 +24,9 @@ export class UserPermissionsComponent {
   public isRemoteComponentDefined$: Observable<boolean> | undefined
   public dialogResult: string | undefined = undefined
 
-  constructor(private readonly slotService: SlotService) {
+  private readonly slotService = inject(SlotService)
+
+  constructor() {
     this.isRemoteComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.slotName)
   }
 }
